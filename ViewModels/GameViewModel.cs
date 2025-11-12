@@ -313,17 +313,33 @@ namespace GameAletheiaCross.ViewModels
         private void OnOpenTerminal()
         {
             StopGameLoop();
+            Console.WriteLine("💻 Terminal abierta");
             Dispatcher.UIThread.Post(() =>
             {
                 _navigate(new TerminalViewModel(_navigate, _playerId, CurrentLevel.Id, this));
             });
         }
         
-        private void OnPause()
+        private async void OnPause()
         {
             StopGameLoop();
+            
+            // ✅ GUARDAR POSICIÓN DEL JUGADOR
+            try
+            {
+                var dbService = new MongoDbService();
+                var playerRepo = new PlayerRepository(dbService);
+                await playerRepo.UpdateAsync(_playerId, Player);
+                Console.WriteLine("✓ Progreso guardado");
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"✗ Error guardando: {ex.Message}");
+            }
+            
             Dispatcher.UIThread.Post(() =>
             {
+                Console.WriteLine("⏸️ Juego pausado - Volviendo al menú");
                 _navigate(new MainMenuViewModel(_navigate));
             });
         }

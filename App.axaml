@@ -13,27 +13,42 @@
         <SolidColorBrush x:Key="PrimaryBrush" Color="#00FF00"/>
         <SolidColorBrush x:Key="SecondaryBrush" Color="#0080FF"/>
         <SolidColorBrush x:Key="DangerBrush" Color="#FF0000"/>
+        
+        <!-- 🔤 Fuente Global JetBrainsMono -->
+        <FontFamily x:Key="MonoFont">avares://GameAletheiaCross/Assets/Fonts/JetBrainsMono-Regular.ttf#JetBrains Mono</FontFamily>
     </Application.Resources>
 
     <Application.DataTemplates>
         <DataTemplate DataType="vm:MainMenuViewModel">
-            <views:MainMenuView/>
+            <views:MainMenuView />
         </DataTemplate>
         
         <DataTemplate DataType="vm:CharacterSelectViewModel">
-            <views:CharacterSelectView/>
+            <views:CharacterSelectView />
         </DataTemplate>
         
         <DataTemplate DataType="vm:FactionSelectViewModel">
-            <views:FactionSelectView/>
+            <views:FactionSelectView />
+        </DataTemplate>
+
+        <DataTemplate DataType="vm:LoadGameViewModel">
+            <views:LoadGameView />
+        </DataTemplate>
+
+        <DataTemplate DataType="vm:RankingViewModel">
+            <views:RankingView />
         </DataTemplate>
         
         <DataTemplate DataType="vm:GameViewModel">
-            <views:GameView/>
+            <views:GameView />
         </DataTemplate>
         
         <DataTemplate DataType="vm:TerminalViewModel">
-            <views:TerminalView/>
+            <views:TerminalView />
+        </DataTemplate>
+
+        <DataTemplate DataType="vm:DialogueViewModel">
+            <views:DialogueView />
         </DataTemplate>
     </Application.DataTemplates>
 </Application>

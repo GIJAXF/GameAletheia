@@ -91,3 +91,4 @@
 /home/jax/GameAletheiaCross/obj/Debug/net9.0/GameAletheiaCross.pdb
 /home/jax/GameAletheiaCross/obj/Debug/net9.0/GameAletheiaCross.genruntimeconfig.cache
 /home/jax/GameAletheiaCross/obj/Debug/net9.0/ref/GameAletheiaCross.dll
+/home/jax/GameAletheiaCross/obj/Debug/net9.0/GameAletheiaCross.sourcelink.json

@@ -46,8 +46,40 @@ namespace GameAletheiaCross.ViewModels
             }
         }
 
-        private void OnLoadGame() => Console.WriteLine("Cargar Partida - TODO");
-        private void OnShowRanking() => Console.WriteLine("Ranking - TODO");
+        private void OnLoadGame()
+        {
+            try
+            {
+                Dispatcher.UIThread.Post(() =>
+                {
+                    Console.WriteLine("Navegando a cargar partida...");
+                    _navigate(new LoadGameViewModel(_navigate));
+                });
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Error en OnLoadGame: {ex.Message}");
+                Console.WriteLine(ex.StackTrace);
+            }
+        }
+
+        private void OnShowRanking()
+        {
+            try
+            {
+                Dispatcher.UIThread.Post(() =>
+                {
+                    Console.WriteLine("Navegando a ranking...");
+                    _navigate(new RankingViewModel(_navigate));
+                });
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Error en OnShowRanking: {ex.Message}");
+                Console.WriteLine(ex.StackTrace);
+            }
+        }
+
         private void OnExit() => Environment.Exit(0);
     }
 }

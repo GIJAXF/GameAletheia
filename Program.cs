@@ -18,6 +18,15 @@ namespace GameAletheiaCross
             {
                 // 🧠 Inicializa conexión MongoDB
                 var dbService = new MongoDbService("mongodb://localhost:27017", "HackerFantasmaDB");
+
+                // ✅ VERIFICAR CONEXIÓN ANTES DE CONTINUAR
+                if (!dbService.Ping())
+                {
+                    Console.WriteLine("💀 ERROR: No se pudo conectar a MongoDB. Asegúrate de que el servicio esté corriendo.");
+                    Console.WriteLine("   Inicia MongoDB con: mongod");
+                    return;
+                }
+
                 var levelRepo = new LevelRepository(dbService);
                 var puzzleRepo = new PuzzleRepository(dbService);
 
