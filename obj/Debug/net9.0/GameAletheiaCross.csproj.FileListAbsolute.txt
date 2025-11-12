@@ -85,10 +85,10 @@
 /home/jax/GameAletheiaCross/obj/Debug/net9.0/GameAletheiaCross.AssemblyInfoInputs.cache
 /home/jax/GameAletheiaCross/obj/Debug/net9.0/GameAletheiaCross.AssemblyInfo.cs
 /home/jax/GameAletheiaCross/obj/Debug/net9.0/GameAletheiaCross.csproj.CoreCompileInputs.cache
+/home/jax/GameAletheiaCross/obj/Debug/net9.0/GameAletheiaCross.sourcelink.json
 /home/jax/GameAletheiaCross/obj/Debug/net9.0/GameAlet.B67B5B92.Up2Date
 /home/jax/GameAletheiaCross/obj/Debug/net9.0/GameAletheiaCross.dll
 /home/jax/GameAletheiaCross/obj/Debug/net9.0/refint/GameAletheiaCross.dll
 /home/jax/GameAletheiaCross/obj/Debug/net9.0/GameAletheiaCross.pdb
 /home/jax/GameAletheiaCross/obj/Debug/net9.0/GameAletheiaCross.genruntimeconfig.cache
 /home/jax/GameAletheiaCross/obj/Debug/net9.0/ref/GameAletheiaCross.dll
-/home/jax/GameAletheiaCross/obj/Debug/net9.0/GameAletheiaCross.sourcelink.json

@@ -10,7 +10,7 @@
     
     <Grid>
         <!-- Canvas principal del juego -->
-        <Canvas Width="1280" Height="720" Background="#1a1a2e" ClipToBounds="True">
+        <Canvas x:Name="GameCanvas" Width="1280" Height="720" Background="#1a1a2e" ClipToBounds="True">
             
             <!-- 🔹 PLATAFORMAS SIN ITEMSCONTROL (Renderizado directo) -->
             <ItemsControl ItemsSource="{Binding CurrentLevel.Platforms}">

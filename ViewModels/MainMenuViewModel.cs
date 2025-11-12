@@ -1,5 +1,4 @@
 using ReactiveUI;
-using System.Reactive.Concurrency;
 using Avalonia.Threading;
 using System;
 using System.Reactive;
@@ -14,7 +13,6 @@ namespace GameAletheiaCross.ViewModels
         {
             _navigate = navigate;
 
-            // 🔧 Fijamos el scheduler al hilo principal de Avalonia:
             var mainThread = RxApp.MainThreadScheduler;
 
             NewGameCommand = ReactiveCommand.Create(OnNewGame, outputScheduler: mainThread);
@@ -32,7 +30,6 @@ namespace GameAletheiaCross.ViewModels
         {
             try
             {
-                // Aseguramos navegación en hilo de UI:
                 Dispatcher.UIThread.Post(() =>
                 {
                     Console.WriteLine("Navegando a selección de personaje...");

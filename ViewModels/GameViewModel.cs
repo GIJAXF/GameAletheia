@@ -139,10 +139,7 @@ namespace GameAletheiaCross.ViewModels
                 
                 Console.WriteLine($"✓ Jugador cargado: {Player.Name}");
                 
-                // ✅ ESPERAR a que el nivel cargue completamente
                 await LoadCurrentLevel();
-                
-                // ✅ SOLO después, iniciar el loop
                 StartGameLoop();
             }
             catch (Exception ex)
@@ -163,7 +160,7 @@ namespace GameAletheiaCross.ViewModels
                     return;
                 }
                 
-                // Reiniciar posición del jugador al inicio del nivel
+                // Reiniciar posición del jugador
                 Player.Position.X = 100;
                 Player.Position.Y = 400;
                 Player.Velocity.X = 0;
@@ -175,7 +172,6 @@ namespace GameAletheiaCross.ViewModels
                 Console.WriteLine($"✓ Plataformas: {CurrentLevel.Platforms?.Count ?? 0}");
                 Console.WriteLine($"✓ NPCs: {CurrentLevel.NPCs?.Count ?? 0}");
                 
-                // ✅ CRÍTICO: Notificar que CurrentLevel cambió
                 this.RaisePropertyChanged(nameof(CurrentLevel));
                 this.RaisePropertyChanged(nameof(Player));
             }
@@ -225,13 +221,9 @@ namespace GameAletheiaCross.ViewModels
                 Player.Velocity.X = 0;
             }
 
-            // Verificar interacciones cercanas
             CheckNearbyInteractions();
-            
-            // Verificar si llegó a la salida
             CheckLevelExit();
             
-            // ✅ Notificar cambios
             this.RaisePropertyChanged(nameof(Player));
         }
         
@@ -281,13 +273,17 @@ namespace GameAletheiaCross.ViewModels
 
         private void CheckInteractions()
         {
-            if (CurrentLevel?.NPCs == null) return;
+            if (CurrentLevel?.NPCs == null || CurrentLevel.NPCs.Count == 0)
+            {
+                Console.WriteLine("⚠️ No hay NPCs en este nivel");
+                return;
+            }
 
             var nearestNPC = _npcManager.FindNearestNPC(Player, CurrentLevel.NPCs);
             
             if (nearestNPC != null)
             {
-                Console.WriteLine($"Interactuando con {nearestNPC.Name}");
+                Console.WriteLine($"💬 Hablando con: {nearestNPC.Name}");
                 _npcManager.MarkAsInteracted(nearestNPC);
                 
                 PauseGameLoop();
@@ -295,6 +291,10 @@ namespace GameAletheiaCross.ViewModels
                 {
                     _navigate(new DialogueViewModel(_navigate, nearestNPC, this));
                 });
+            }
+            else
+            {
+                Console.WriteLine("⚠️ No hay NPCs cercanos");
             }
         }
 
@@ -305,6 +305,7 @@ namespace GameAletheiaCross.ViewModels
 
             if (distance < EXIT_DETECTION_DISTANCE)
             {
+                Console.WriteLine("🎯 ¡Jugador llegó a la salida!");
                 OnLevelComplete();
             }
         }
@@ -315,25 +316,44 @@ namespace GameAletheiaCross.ViewModels
             
             Console.WriteLine("🎉 ¡Nivel completado!");
             
-            bool canAdvance = await _levelManager.CanAdvanceAsync(_playerId, CurrentLevel.Id);
-            
-            if (canAdvance)
+            try
             {
-                bool advanced = await _levelManager.AdvanceToNextLevelAsync(_playerId);
+                var dbService = new MongoDbService();
+                var playerRepo = new PlayerRepository(dbService);
                 
-                if (advanced)
+                // Sumar puntos por completar nivel
+                Player.TotalScore += 100;
+                await playerRepo.UpdateAsync(_playerId, Player);
+                
+                Console.WriteLine($"✓ +100 puntos. Score total: {Player.TotalScore}");
+                
+                bool canAdvance = await _levelManager.CanAdvanceAsync(_playerId, CurrentLevel.Id);
+                
+                if (canAdvance)
                 {
-                    await LoadCurrentLevel();
-                    ResumeGameLoop();
-                }
-                else
-                {
-                    await Dispatcher.UIThread.InvokeAsync(() =>
+                    bool advanced = await _levelManager.AdvanceToNextLevelAsync(_playerId);
+                    
+                    if (advanced)
                     {
-                        Console.WriteLine("🏆 ¡Has completado todos los niveles!");
-                        _navigate(new MainMenuViewModel(_navigate));
-                    });
+                        Console.WriteLine("✓ Avanzando al siguiente nivel...");
+                        await LoadCurrentLevel();
+                        
+                        await Task.Delay(1000);
+                        ResumeGameLoop();
+                    }
+                    else
+                    {
+                        await Dispatcher.UIThread.InvokeAsync(() =>
+                        {
+                            Console.WriteLine("🏆 ¡¡HAS COMPLETADO EL JUEGO!!");
+                            _navigate(new MainMenuViewModel(_navigate));
+                        });
+                    }
                 }
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"❌ Error completando nivel: {ex.Message}");
             }
         }
         

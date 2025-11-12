@@ -22,7 +22,6 @@ namespace GameAletheiaCross.ViewModels
             
             BackCommand = ReactiveCommand.Create(OnBack);
             
-            // Cargar ranking
             Task.Run(LoadRanking);
         }
         
