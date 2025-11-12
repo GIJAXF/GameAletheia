@@ -8,312 +8,291 @@ using MongoDB.Driver;
 
 namespace GameAletheiaCross.Data
 {
-    public class SeedData
+    public class AdvancedSeedData
     {
         private readonly MongoDbService _dbService;
+        private readonly PuzzleRepository _puzzleRepo;
+        private readonly LevelRepository _levelRepo;
 
-        public SeedData()
+        public AdvancedSeedData(MongoDbService dbService)
         {
-            _dbService = new MongoDbService();
+            _dbService = dbService;
+            _puzzleRepo = new PuzzleRepository(dbService);
+            _levelRepo = new LevelRepository(dbService);
         }
 
-        public async Task SeedAllAsync()
+        public async Task SeedAdvancedPuzzlesAsync()
         {
-            Console.WriteLine("🌱 Iniciando seed de datos...");
-            
-            await SeedFactionsAsync();
-            await SeedNPCsAsync();
-            await SeedLevelsAsync();
-            await SeedPuzzlesAsync();
-            
-            Console.WriteLine("✅ Seed completado exitosamente!");
-        }
+            Console.WriteLine("🧩 Generando puzzles de programación avanzados...");
 
-        private async Task SeedFactionsAsync()
-        {
-            var factionsCollection = _dbService.GetCollection<Faction>("factions");
-            var count = await factionsCollection.CountDocumentsAsync(_ => true);
+            var levels = await _levelRepo.GetAllAsync();
             
-            if (count > 0)
+            foreach (var level in levels)
             {
-                Console.WriteLine("⚠️ Las facciones ya existen, saltando...");
-                return;
+                await CreatePuzzlesForLevel(level);
             }
 
-            var factions = new List<Faction>
-            {
-                new Faction
-                {
-                    Name = "Hackers Éticos",
-                    Type = "Hacking",
-                    Leader = "Ghost",
-                    Description = "Defensores de la libertad digital y la privacidad",
-                    ThemeColor = "#00FF00"
-                },
-                new Faction
-                {
-                    Name = "Guardianes Corporativos",
-                    Type = "Security",
-                    Leader = "Director Smith",
-                    Description = "Protectores del orden y la seguridad corporativa",
-                    ThemeColor = "#0066FF"
-                },
-                new Faction
-                {
-                    Name = "Rebeldes Anónimos",
-                    Type = "Rebellion",
-                    Leader = "Phoenix",
-                    Description = "Luchadores por la transparencia y contra la opresión",
-                    ThemeColor = "#FF0066"
-                }
-            };
-
-            await factionsCollection.InsertManyAsync(factions);
-            Console.WriteLine($"✓ {factions.Count} facciones creadas");
+            Console.WriteLine("✅ Puzzles avanzados generados");
         }
 
-        private async Task SeedNPCsAsync()
+        private async Task CreatePuzzlesForLevel(Level level)
         {
-            var npcsCollection = _dbService.GetCollection<NPC>("npcs");
-            var count = await npcsCollection.CountDocumentsAsync(_ => true);
-            
-            if (count > 0)
-            {
-                Console.WriteLine("⚠️ Los NPCs ya existen, saltando...");
-                return;
-            }
-
-            var npcs = new List<NPC>
-            {
-                new NPC
-                {
-                    Name = "Guía Digital",
-                    Role = "Tutorial",
-                    FactionId = "",
-                    PositionX = 300,
-                    PositionY = 400,
-                    Dialogue = "Bienvenido a Aletheia. Este es un mundo digital donde la verdad es relativa. Usa las flechas para moverte y ESPACIO para interactuar.",
-                    IsActive = true
-                },
-                new NPC
-                {
-                    Name = "Hacker Misterioso",
-                    Role = "Quest Giver",
-                    FactionId = "",
-                    PositionX = 500,
-                    PositionY = 400,
-                    Dialogue = "La terminal está bloqueada. Solo alguien con conocimientos de programación puede desbloquearla. ¿Te atreves?",
-                    IsActive = true
-                },
-                new NPC
-                {
-                    Name = "Comerciante de Información",
-                    Role = "Shop",
-                    FactionId = "",
-                    PositionX = 600,
-                    PositionY = 400,
-                    Dialogue = "Vendo pistas y conocimiento. Cada decisión que tomes afectará tu camino en este mundo.",
-                    IsActive = true
-                }
-            };
-
-            await npcsCollection.InsertManyAsync(npcs);
-            Console.WriteLine($"✓ {npcs.Count} NPCs creados");
-        }
-
-private async Task SeedLevelsAsync()
-{
-    var levelRepo = new LevelRepository(_dbService);
-    var npcsCollection = _dbService.GetCollection<NPC>("npcs");
-
-    var existingLevels = await levelRepo.GetAllAsync();
-    if (existingLevels.Count > 0)
-    {
-        Console.WriteLine("⚠️ Los niveles ya existen, saltando...");
-        return;
-    }
-
-    var allNpcs = await npcsCollection.Find(_ => true).ToListAsync();
-    var guiaId = allNpcs.Find(n => n.Name == "Guía Digital")?.Id ?? "";
-    var hackerId = allNpcs.Find(n => n.Name == "Hacker Misterioso")?.Id ?? "";
-    var comercianteId = allNpcs.Find(n => n.Name == "Comerciante de Información")?.Id ?? "";
-
-    var levels = new List<Level>
-    {
-        new Level
-        {
-            Name = "El Despertar",
-            Type = "Tutorial",
-            Difficulty = 1,
-            OrderNumber = 1,
-            Description = "Despierta en un mundo digital desconocido. Aprende a moverte, saltar e interactuar con tu entorno.",
-            TimeLimit = 300,
-            Background = "cyber_city_start.png",
-            Platforms = new List<Level.Platform>
-            {
-                new Level.Platform { X = 0, Y = 500, Width = 1280, Height = 30, IsSolid = true },
-                new Level.Platform { X = 200, Y = 420, Width = 100, Height = 20, IsSolid = true },
-                new Level.Platform { X = 400, Y = 350, Width = 100, Height = 20, IsSolid = true },
-                new Level.Platform { X = 650, Y = 280, Width = 120, Height = 20, IsSolid = true }
-            },
-            Enemies = new List<Level.Enemy>(),
-            NPCIds = new List<string> { guiaId }
-        },
-        new Level
-        {
-            Name = "La Primera Barrera",
-            Type = "Puzzle",
-            Difficulty = 2,
-            OrderNumber = 2,
-            Description = "Una terminal bloquea tu avance. Demuestra tus habilidades de programación para seguir adelante.",
-            TimeLimit = 480,
-            Background = "data_terminal_room.png",
-            Platforms = new List<Level.Platform>
-            {
-                new Level.Platform { X = 0, Y = 500, Width = 1280, Height = 30, IsSolid = true },
-                new Level.Platform { X = 250, Y = 420, Width = 100, Height = 20, IsSolid = true },
-                new Level.Platform { X = 450, Y = 360, Width = 100, Height = 20, IsSolid = true },
-                new Level.Platform { X = 650, Y = 300, Width = 100, Height = 20, IsSolid = true }
-            },
-            Enemies = new List<Level.Enemy>
-            {
-                new Level.Enemy { X = 600, Y = 470, Type = "FirewallBot", PatrolRoute = new List<string>{ "left", "right" } }
-            },
-            NPCIds = new List<string> { hackerId }
-        },
-        new Level
-        {
-            Name = "Redline Data Vault",
-            Type = "Corporativo",
-            Difficulty = 3,
-            OrderNumber = 3,
-            Description = "Has hackeado la red de Redline Corporation. Esquiva los drones de seguridad y llega al núcleo.",
-            TimeLimit = 600,
-            Background = "corporate_vault.png",
-            Platforms = new List<Level.Platform>
-            {
-                new Level.Platform { X = 0, Y = 550, Width = 1280, Height = 30, IsSolid = true },
-                new Level.Platform { X = 300, Y = 460, Width = 100, Height = 20, IsSolid = true },
-                new Level.Platform { X = 500, Y = 380, Width = 100, Height = 20, IsSolid = true },
-                new Level.Platform { X = 750, Y = 300, Width = 120, Height = 20, IsSolid = true }
-            },
-            Enemies = new List<Level.Enemy>
-            {
-                new Level.Enemy { X = 400, Y = 500, Type = "Drone", PatrolRoute = new List<string>{ "left", "right" } },
-                new Level.Enemy { X = 700, Y = 480, Type = "Camera", PatrolRoute = new List<string>{ "scan" } }
-            },
-            NPCIds = new List<string> { comercianteId }
-        },
-        new Level
-        {
-            Name = "El Laberinto de Datos",
-            Type = "Challenge",
-            Difficulty = 4,
-            OrderNumber = 4,
-            Description = "Los datos fluyen como laberintos infinitos. Evita las trampas y encuentra la salida.",
-            TimeLimit = 900,
-            Background = "data_maze.png",
-            Platforms = new List<Level.Platform>
-            {
-                new Level.Platform { X = 0, Y = 550, Width = 1280, Height = 30, IsSolid = true },
-                new Level.Platform { X = 150, Y = 480, Width = 80, Height = 20, IsSolid = true },
-                new Level.Platform { X = 300, Y = 410, Width = 80, Height = 20, IsSolid = true },
-                new Level.Platform { X = 450, Y = 340, Width = 80, Height = 20, IsSolid = true },
-                new Level.Platform { X = 600, Y = 280, Width = 80, Height = 20, IsSolid = true },
-                new Level.Platform { X = 800, Y = 220, Width = 80, Height = 20, IsSolid = true }
-            },
-            Enemies = new List<Level.Enemy>
-            {
-                new Level.Enemy { X = 350, Y = 500, Type = "DataBug", PatrolRoute = new List<string>{ "left", "right" } },
-                new Level.Enemy { X = 750, Y = 480, Type = "Glitch", PatrolRoute = new List<string>{ "dash", "hover" } }
-            },
-            NPCIds = new List<string>()
-        },
-        new Level
-        {
-            Name = "El Núcleo de Aletheia",
-            Type = "Final",
-            Difficulty = 5,
-            OrderNumber = 5,
-            Description = "Llegaste al núcleo. Las inteligencias artificiales de Aletheia te pondrán a prueba.",
-            TimeLimit = 1200,
-            Background = "aletheia_core.png",
-            Platforms = new List<Level.Platform>
-            {
-                new Level.Platform { X = 0, Y = 550, Width = 1280, Height = 30, IsSolid = true },
-                new Level.Platform { X = 350, Y = 480, Width = 150, Height = 20, IsSolid = true },
-                new Level.Platform { X = 600, Y = 420, Width = 150, Height = 20, IsSolid = true },
-                new Level.Platform { X = 850, Y = 360, Width = 150, Height = 20, IsSolid = true }
-            },
-            Enemies = new List<Level.Enemy>
-            {
-                new Level.Enemy { X = 500, Y = 500, Type = "Firewall", PatrolRoute = new List<string>{ "hover", "attack" } },
-                new Level.Enemy { X = 800, Y = 500, Type = "AISentinel", PatrolRoute = new List<string>{ "dash", "idle" } }
-            },
-            NPCIds = new List<string>()
-        }
-    };
-
-    foreach (var level in levels)
-    {
-        await levelRepo.CreateAsync(level);
-    }
-
-    Console.WriteLine($"✓ {levels.Count} niveles creados");
-}
-
-
-        private async Task SeedPuzzlesAsync()
-        {
-            var puzzleRepo = new PuzzleRepository(_dbService);
-            var levelRepo = new LevelRepository(_dbService);
-            
-            var existingPuzzles = await puzzleRepo.GetAllAsync();
+            var existingPuzzles = await _puzzleRepo.GetAllByLevelIdAsync(level.Id);
             if (existingPuzzles.Count > 0)
             {
-                Console.WriteLine("⚠️ Los puzzles ya existen, saltando...");
+                Console.WriteLine($"⚠️ Puzzles ya existen para nivel {level.OrderNumber}");
                 return;
             }
 
-            var level2 = await levelRepo.GetByOrderNumberAsync(2);
-            if (level2 == null)
+            List<Puzzle> puzzles = level.OrderNumber switch
             {
-                Console.WriteLine("✗ No se pudo obtener el nivel 2");
-                return;
-            }
+                1 => CreateLevel1Puzzles(level.Id),
+                2 => CreateLevel2Puzzles(level.Id),
+                3 => CreateLevel3Puzzles(level.Id),
+                4 => CreateLevel4Puzzles(level.Id),
+                5 => CreateLevel5Puzzles(level.Id),
+                6 => CreateLevel6Puzzles(level.Id),
+                7 => CreateLevel7Puzzles(level.Id),
+                _ => new List<Puzzle>()
+            };
 
-            var puzzles = new List<Puzzle>
+            foreach (var puzzle in puzzles)
+            {
+                await _puzzleRepo.CreateAsync(puzzle);
+                Console.WriteLine($"  ✓ Puzzle creado: {puzzle.Name}");
+            }
+        }
+
+        private List<Puzzle> CreateLevel1Puzzles(string levelId)
+        {
+            return new List<Puzzle>
             {
                 new Puzzle
                 {
-                    Name = "Hola Mundo Digital",
-                    Type = "Basic",
-                    Description = "Tu primera misión: Escribe un programa que imprima 'Aletheia' en la consola.",
-                    ExpectedOutput = "Aletheia",
+                    LevelId = levelId,
+                    Name = "Bienvenida Digital",
+                    Type = "Tutorial",
+                    Description = "Tu primera misión: Imprime 'Bienvenido a Aletheia' en la consola.",
+                    ExpectedOutput = "Bienvenido a Aletheia",
                     StarterCode = @"public class Main {
     public static void main(String[] args) {
         // Escribe tu código aquí
         
     }
 }",
-                    LevelId = level2.Id,
                     Difficulty = 1,
                     Hints = new List<string>
                     {
-                        "Usa System.out.println() para imprimir en la consola",
-                        "Recuerda usar comillas dobles para el texto: \"Aletheia\"",
-                        "No olvides el punto y coma al final de cada instrucción"
+                        "Usa System.out.println() para imprimir en consola",
+                        "El texto debe ir entre comillas dobles: \"Bienvenido a Aletheia\"",
+                        "No olvides el punto y coma (;) al final"
+                    },
+                    Points = 50
+                }
+            };
+        }
+
+        private List<Puzzle> CreateLevel2Puzzles(string levelId)
+        {
+            return new List<Puzzle>
+            {
+                new Puzzle
+                {
+                    LevelId = levelId,
+                    Name = "Suma de Dos Números",
+                    Type = "Aritmética",
+                    Description = "Crea dos variables enteras con los valores 15 y 27, súmalas e imprime el resultado.",
+                    ExpectedOutput = "42",
+                    StarterCode = @"public class Main {
+    public static void main(String[] args) {
+        // Define dos variables y súmalas
+        
+    }
+}",
+                    Difficulty = 1,
+                    Hints = new List<string>
+                    {
+                        "Usa 'int' para declarar variables enteras",
+                        "Ejemplo: int a = 15;",
+                        "Suma las variables y guarda en una tercera: int suma = a + b;"
+                    },
+                    Points = 75
+                }
+            };
+        }
+
+        private List<Puzzle> CreateLevel3Puzzles(string levelId)
+        {
+            return new List<Puzzle>
+            {
+                new Puzzle
+                {
+                    LevelId = levelId,
+                    Name = "Detector de Pares",
+                    Type = "Condicionales",
+                    Description = "Crea una variable con el valor 8. Si es par, imprime 'PAR', si es impar imprime 'IMPAR'.",
+                    ExpectedOutput = "PAR",
+                    StarterCode = @"public class Main {
+    public static void main(String[] args) {
+        int numero = 8;
+        // Verifica si es par o impar
+        
+    }
+}",
+                    Difficulty = 2,
+                    Hints = new List<string>
+                    {
+                        "Usa el operador módulo (%) para verificar si es par",
+                        "Si numero % 2 == 0, entonces es par",
+                        "Usa if-else para la condición"
                     },
                     Points = 100
                 }
             };
+        }
 
-            foreach (var puzzle in puzzles)
+        private List<Puzzle> CreateLevel4Puzzles(string levelId)
+        {
+            return new List<Puzzle>
             {
-                await puzzleRepo.CreateAsync(puzzle);
-            }
-            
-            Console.WriteLine($"✓ {puzzles.Count} puzzles creados");
+                new Puzzle
+                {
+                    LevelId = levelId,
+                    Name = "Bucle de Energía",
+                    Type = "Bucles",
+                    Description = "Usa un bucle for para imprimir los números del 1 al 5, cada uno en una línea.",
+                    ExpectedOutput = "1\n2\n3\n4\n5",
+                    StarterCode = @"public class Main {
+    public static void main(String[] args) {
+        // Usa un bucle for
+        
+    }
+}",
+                    Difficulty = 2,
+                    Hints = new List<string>
+                    {
+                        "Sintaxis: for(int i = 1; i <= 5; i++)",
+                        "Dentro del bucle usa System.out.println(i)",
+                        "Cada número debe estar en una línea separada"
+                    },
+                    Points = 125
+                }
+            };
+        }
+
+        private List<Puzzle> CreateLevel5Puzzles(string levelId)
+        {
+            return new List<Puzzle>
+            {
+                new Puzzle
+                {
+                    LevelId = levelId,
+                    Name = "Factorial Recursivo",
+                    Type = "Recursión",
+                    Description = "Calcula el factorial de 5 usando una función recursiva. Imprime solo el resultado.",
+                    ExpectedOutput = "120",
+                    StarterCode = @"public class Main {
+    public static int factorial(int n) {
+        // Implementa la recursión aquí
+        
+    }
+    
+    public static void main(String[] args) {
+        System.out.println(factorial(5));
+    }
+}",
+                    Difficulty = 3,
+                    Hints = new List<string>
+                    {
+                        "Caso base: si n == 0 o n == 1, retorna 1",
+                        "Caso recursivo: return n * factorial(n - 1)",
+                        "El factorial de 5 es 5 * 4 * 3 * 2 * 1 = 120"
+                    },
+                    Points = 200
+                }
+            };
+        }
+
+        private List<Puzzle> CreateLevel6Puzzles(string levelId)
+        {
+            return new List<Puzzle>
+            {
+                new Puzzle
+                {
+                    LevelId = levelId,
+                    Name = "Array de Datos Corporativos",
+                    Type = "Arrays",
+                    Description = "Crea un array con los números {3, 7, 1, 9, 2}, encuentra el máximo e imprímelo.",
+                    ExpectedOutput = "9",
+                    StarterCode = @"public class Main {
+    public static void main(String[] args) {
+        int[] datos = {3, 7, 1, 9, 2};
+        // Encuentra el máximo
+        
+    }
+}",
+                    Difficulty = 3,
+                    Hints = new List<string>
+                    {
+                        "Crea una variable 'max' con el primer elemento",
+                        "Recorre el array con un bucle for",
+                        "Si datos[i] > max, actualiza max = datos[i]"
+                    },
+                    Points = 175
+                }
+            };
+        }
+
+        private List<Puzzle> CreateLevel7Puzzles(string levelId)
+        {
+            return new List<Puzzle>
+            {
+                new Puzzle
+                {
+                    LevelId = levelId,
+                    Name = "Secuencia de Fibonacci",
+                    Type = "Algoritmos",
+                    Description = "Imprime los primeros 7 números de la secuencia de Fibonacci separados por espacios.",
+                    ExpectedOutput = "0 1 1 2 3 5 8",
+                    StarterCode = @"public class Main {
+    public static void main(String[] args) {
+        // Genera la secuencia de Fibonacci
+        
+    }
+}",
+                    Difficulty = 4,
+                    Hints = new List<string>
+                    {
+                        "Inicia con a = 0, b = 1",
+                        "En cada iteración: siguiente = a + b, luego a = b, b = siguiente",
+                        "Usa System.out.print() en lugar de println para la misma línea"
+                    },
+                    Points = 250
+                },
+                new Puzzle
+                {
+                    LevelId = levelId,
+                    Name = "Desafío Final: Número Primo",
+                    Type = "Algoritmos Avanzados",
+                    Description = "Verifica si el número 17 es primo. Imprime 'PRIMO' si lo es, 'NO PRIMO' si no.",
+                    ExpectedOutput = "PRIMO",
+                    StarterCode = @"public class Main {
+    public static void main(String[] args) {
+        int numero = 17;
+        // Verifica si es primo
+        
+    }
+}",
+                    Difficulty = 4,
+                    Hints = new List<string>
+                    {
+                        "Un número es primo si solo es divisible por 1 y por sí mismo",
+                        "Usa un bucle para verificar divisibilidad desde 2 hasta numero/2",
+                        "Si encuentras un divisor, no es primo"
+                    },
+                    Points = 300
+                }
+            };
         }
     }
 }

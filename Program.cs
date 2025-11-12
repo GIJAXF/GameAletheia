@@ -6,6 +6,7 @@ using Avalonia.ReactiveUI;
 using GameAletheiaCross.Services;
 using GameAletheiaCross.Services.Database;
 using GameAletheiaCross.Services.Database.Repositories;
+using GameAletheiaCross.Data;
 
 namespace GameAletheiaCross
 {
@@ -16,16 +17,21 @@ namespace GameAletheiaCross
         {
             try
             {
+                Console.WriteLine("🎮 Iniciando Game Aletheia Cross...");
+                
                 // 🧠 Inicializa conexión MongoDB
                 var dbService = new MongoDbService("mongodb://localhost:27017", "HackerFantasmaDB");
 
                 // ✅ VERIFICAR CONEXIÓN ANTES DE CONTINUAR
                 if (!dbService.Ping())
                 {
-                    Console.WriteLine("💀 ERROR: No se pudo conectar a MongoDB. Asegúrate de que el servicio esté corriendo.");
+                    Console.WriteLine("💀 ERROR: No se pudo conectar a MongoDB.");
+                    Console.WriteLine("   Asegúrate de que el servicio esté corriendo.");
                     Console.WriteLine("   Inicia MongoDB con: mongod");
                     return;
                 }
+
+                Console.WriteLine("✅ Conexión a MongoDB establecida");
 
                 var levelRepo = new LevelRepository(dbService);
                 var puzzleRepo = new PuzzleRepository(dbService);
@@ -34,8 +40,15 @@ namespace GameAletheiaCross
                 var generator = new LevelGenerator(levelRepo, puzzleRepo);
                 await generator.GenerateDefaultLevelsAsync();
 
+                // 🎯 Genera puzzles avanzados
+                Console.WriteLine("🧩 Verificando puzzles de programación...");
+                var advancedSeed = new AdvancedSeedData(dbService);
+                await advancedSeed.SeedAdvancedPuzzlesAsync();
+
                 // ⚙️ Configura ReactiveUI para Avalonia
                 RxApp.MainThreadScheduler = AvaloniaScheduler.Instance;
+
+                Console.WriteLine("🚀 Iniciando interfaz gráfica...\n");
 
                 // 🚀 Inicia la app
                 BuildAvaloniaApp()

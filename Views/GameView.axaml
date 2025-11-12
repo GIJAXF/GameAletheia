@@ -12,7 +12,7 @@
         <!-- Canvas principal del juego -->
         <Canvas x:Name="GameCanvas" Width="1280" Height="720" Background="#1a1a2e" ClipToBounds="True">
             
-            <!-- 🔹 PLATAFORMAS SIN ITEMSCONTROL (Renderizado directo) -->
+            <!-- PLATAFORMAS -->
             <ItemsControl ItemsSource="{Binding CurrentLevel.Platforms}">
                 <ItemsControl.ItemsPanel>
                     <ItemsPanelTemplate>
@@ -33,7 +33,7 @@
                 </ItemsControl.ItemTemplate>
             </ItemsControl>
             
-            <!-- 🔹 NPCs -->
+            <!-- NPCs -->
             <ItemsControl ItemsSource="{Binding CurrentLevel.NPCs}">
                 <ItemsControl.ItemsPanel>
                     <ItemsPanelTemplate>
@@ -58,7 +58,7 @@
                 </ItemsControl.ItemTemplate>
             </ItemsControl>
             
-            <!-- 🔹 JUGADOR -->
+            <!-- JUGADOR -->
             <Rectangle Fill="#e94560" 
                      Stroke="#ff0080"
                      StrokeThickness="2"
@@ -71,7 +71,7 @@
                 </Rectangle.RenderTransform>
             </Rectangle>
             
-            <!-- 🔹 ZONA DE SALIDA (Portal) -->
+            <!-- ZONA DE SALIDA (Portal) -->
             <Ellipse Fill="#00ff88" 
                    Opacity="0.6"
                    Stroke="#00ff00"
@@ -86,7 +86,7 @@
             </Ellipse>
         </Canvas>
         
-        <!-- 🔹 UI OVERLAY -->
+        <!-- UI OVERLAY -->
         <Grid>
             <!-- Info del nivel (arriba izquierda) -->
             <StackPanel HorizontalAlignment="Left" 
@@ -95,28 +95,40 @@
                 <TextBlock Text="{Binding LevelInfo}" 
                          FontSize="18" 
                          FontWeight="Bold"
-                         Foreground="#00d9ff"
-                         FontFamily="monospace" />
+                         Foreground="#00d9ff" />
                 <TextBlock Text="{Binding Player.Name}" 
                          FontSize="14" 
                          Foreground="White" 
-                         Margin="0,5,0,0"
-                         FontFamily="monospace" />
+                         Margin="0,5,0,0" />
                 <TextBlock FontSize="14" 
                          Foreground="#e94560" 
-                         Margin="0,5,0,0"
-                         FontFamily="monospace">
+                         Margin="0,5,0,0">
                     <Run Text="❤️ HP: "/><Run Text="{Binding Player.Health}"/>
                 </TextBlock>
                 <TextBlock FontSize="14" 
                          Foreground="#ffd700" 
-                         Margin="0,5,0,0"
-                         FontFamily="monospace">
+                         Margin="0,5,0,0">
                     <Run Text="⭐ Score: "/><Run Text="{Binding Player.TotalScore}"/>
                 </TextBlock>
             </StackPanel>
             
-            <!-- Hint de interacción -->
+            <!-- Mensaje de estado (centro superior) -->
+            <Border Background="#000000DD" 
+                   Padding="20,10" 
+                   CornerRadius="5"
+                   HorizontalAlignment="Center" 
+                   VerticalAlignment="Top" 
+                   Margin="0,20,0,0"
+                   IsVisible="{Binding StatusMessage, Converter={x:Static StringConverters.IsNotNullOrEmpty}}"
+                   MaxWidth="600">
+                <TextBlock Text="{Binding StatusMessage}" 
+                         FontSize="14" 
+                         Foreground="#FFD700"
+                         TextAlignment="Center"
+                         TextWrapping="Wrap" />
+            </Border>
+            
+            <!-- Hint de interacción (centro inferior) -->
             <Border Background="#000000AA" 
                    Padding="15,10" 
                    CornerRadius="5"
@@ -127,7 +139,6 @@
                 <TextBlock Text="{Binding InteractionHint}" 
                          FontSize="16" 
                          Foreground="#00ff88"
-                         FontFamily="monospace"
                          TextAlignment="Center" />
             </Border>
             
@@ -140,14 +151,12 @@
                        Command="{Binding OpenTerminalCommand}"
                        Background="#0f3460"
                        Foreground="White"
-                       Padding="15,8"
-                       FontFamily="monospace" />
+                       Padding="15,8" />
                 <Button Content="⏸️ Pausa (ESC)" 
                        Command="{Binding PauseCommand}"
                        Background="#533483"
                        Foreground="White"
-                       Padding="15,8"
-                       FontFamily="monospace" />
+                       Padding="15,8" />
             </StackPanel>
             
             <!-- Controles (abajo izquierda) -->
@@ -161,28 +170,22 @@
                     <TextBlock Text="Controles:" 
                              FontSize="14" 
                              FontWeight="Bold"
-                             Foreground="#00d9ff"
-                             FontFamily="monospace" />
+                             Foreground="#00d9ff" />
                     <TextBlock Text="← → : Mover" 
                              FontSize="12" 
-                             Foreground="White"
-                             FontFamily="monospace" />
+                             Foreground="White" />
                     <TextBlock Text="↑ : Saltar" 
                              FontSize="12" 
-                             Foreground="White"
-                             FontFamily="monospace" />
+                             Foreground="White" />
                     <TextBlock Text="ESPACIO : Interactuar" 
                              FontSize="12" 
-                             Foreground="White"
-                             FontFamily="monospace" />
+                             Foreground="White" />
                     <TextBlock Text="T : Terminal" 
                              FontSize="12" 
-                             Foreground="White"
-                             FontFamily="monospace" />
+                             Foreground="White" />
                     <TextBlock Text="ESC : Pausa" 
                              FontSize="12" 
-                             Foreground="White"
-                             FontFamily="monospace" />
+                             Foreground="White" />
                 </StackPanel>
             </Border>
         </Grid>

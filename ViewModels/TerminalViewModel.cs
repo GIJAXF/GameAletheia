@@ -1,10 +1,11 @@
 using ReactiveUI;
 using System;
 using System.Reactive;
+using System.Threading.Tasks;
+using Avalonia.Threading;
 using GameAletheiaCross.Models;
 using GameAletheiaCross.Services;
 using GameAletheiaCross.Services.Database;
-using GameAletheiaCross.Services.Database.Repositories;
 
 namespace GameAletheiaCross.ViewModels
 {
@@ -15,12 +16,14 @@ namespace GameAletheiaCross.ViewModels
         private readonly string _levelId;
         private readonly GameViewModel _gameViewModel;
         
-        private Puzzle _currentPuzzle;
+        private Puzzle? _currentPuzzle;
         private string _code = "";
         private string _output = "";
         private int _currentHintIndex = 0;
+        private bool _isCompiling = false;
+        
         private readonly JavaCompilerService _compiler;
-        private readonly LevelManager _levelManager;
+        private readonly PuzzleService _puzzleService;
         
         public TerminalViewModel(Action<ViewModelBase> navigate, string playerId, string levelId, GameViewModel gameViewModel)
         {
@@ -31,16 +34,19 @@ namespace GameAletheiaCross.ViewModels
             
             var dbService = new MongoDbService();
             _compiler = new JavaCompilerService();
-            _levelManager = new LevelManager(dbService);
+            _puzzleService = new PuzzleService(dbService);
             
-            CompileCommand = ReactiveCommand.Create(OnCompile);
+            CompileCommand = ReactiveCommand.Create(OnCompile, this.WhenAnyValue(x => x.IsCompiling, compiling => !compiling));
             ShowHintCommand = ReactiveCommand.Create(OnShowHint);
             CloseCommand = ReactiveCommand.Create(OnClose);
+            ResetCodeCommand = ReactiveCommand.Create(OnResetCode);
             
             LoadPuzzle();
         }
         
-        public Puzzle CurrentPuzzle
+        // ============= PROPIEDADES =============
+        
+        public Puzzle? CurrentPuzzle
         {
             get => _currentPuzzle;
             set => this.RaiseAndSetIfChanged(ref _currentPuzzle, value);
@@ -57,30 +63,46 @@ namespace GameAletheiaCross.ViewModels
             get => _output;
             set => this.RaiseAndSetIfChanged(ref _output, value);
         }
+
+        public bool IsCompiling
+        {
+            get => _isCompiling;
+            set => this.RaiseAndSetIfChanged(ref _isCompiling, value);
+        }
+
+        public string PuzzleTitle => CurrentPuzzle != null 
+            ? $"{CurrentPuzzle.Name} [{CurrentPuzzle.Type}] - {CurrentPuzzle.Points} pts" 
+            : "Sin puzzle";
+
+        public int TotalHints => CurrentPuzzle?.Hints?.Count ?? 0;
+        public int HintsUsed => _currentHintIndex;
+        
+        // ============= COMANDOS =============
         
         public ReactiveCommand<Unit, Unit> CompileCommand { get; }
         public ReactiveCommand<Unit, Unit> ShowHintCommand { get; }
         public ReactiveCommand<Unit, Unit> CloseCommand { get; }
+        public ReactiveCommand<Unit, Unit> ResetCodeCommand { get; }
+        
+        // ============= MÉTODOS PRIVADOS =============
         
         private async void LoadPuzzle()
         {
             try
             {
-                var dbService = new MongoDbService();
-                var puzzleRepo = new PuzzleRepository(dbService);
-                
-                CurrentPuzzle = await puzzleRepo.GetByLevelIdAsync(_levelId);
+                CurrentPuzzle = await _puzzleService.GetPuzzleForLevelAsync(_levelId);
                 
                 if (CurrentPuzzle != null)
                 {
                     Code = CurrentPuzzle.StarterCode ?? "";
-                    Output = $"🎯 {CurrentPuzzle.Name}\n\n{CurrentPuzzle.Description}\n\n▶ Escribe tu código y presiona COMPILAR";
+                    Output = BuildWelcomeMessage();
                     Console.WriteLine($"✓ Puzzle cargado: {CurrentPuzzle.Name}");
+                    this.RaisePropertyChanged(nameof(PuzzleTitle));
                 }
                 else
                 {
-                    Output = "⚠️ No hay puzzle disponible para este nivel";
-                    Console.WriteLine("✗ Puzzle no encontrado");
+                    Output = "⚠️ No hay puzzles disponibles para este nivel.\n\nPuedes continuar explorando.";
+                    Console.WriteLine("⚠️ No hay puzzles en este nivel");
                 }
             }
             catch (Exception ex)
@@ -89,83 +111,197 @@ namespace GameAletheiaCross.ViewModels
                 Console.WriteLine($"✗ Error: {ex.Message}");
             }
         }
+
+        private string BuildWelcomeMessage()
+        {
+            if (CurrentPuzzle == null) return "";
+
+            return $@"╔═══════════════════════════════════════════════════════╗
+║  🎯 {CurrentPuzzle.Name.ToUpper()}
+║  Dificultad: {"★".PadRight(CurrentPuzzle.Difficulty, '★')}{"☆".PadRight(5 - CurrentPuzzle.Difficulty, '☆')}
+║  Recompensa: {CurrentPuzzle.Points} puntos
+╚═══════════════════════════════════════════════════════╝
+
+📋 DESCRIPCIÓN:
+{CurrentPuzzle.Description}
+
+💡 Tienes {CurrentPuzzle.Hints?.Count ?? 0} pistas disponibles
+▶ Escribe tu código y presiona COMPILAR cuando estés listo
+";
+        }
         
         private async void OnCompile()
         {
             if (string.IsNullOrWhiteSpace(Code))
             {
-                Output = "⚠️ Escribe código antes de compilar";
+                Output = "⚠️ ERROR: El código está vacío\n\nEscribe tu solución antes de compilar.";
                 return;
             }
             
             if (CurrentPuzzle == null)
             {
-                Output = "✗ No hay puzzle cargado";
+                Output = "✗ ERROR: No hay puzzle cargado";
                 return;
             }
-            
-            Output = "⏳ Compilando y ejecutando...";
+
+            IsCompiling = true;
+            Output = "⏳ Compilando y ejecutando tu código...\n\nPor favor espera...";
             
             try
             {
-                var result = await _compiler.CompileAndRunAsync(Code, CurrentPuzzle.ExpectedOutput);
+                // Compilar y ejecutar el código
+                var compilationResult = await _compiler.CompileAndRunAsync(Code, CurrentPuzzle.ExpectedOutput);
                 
-                if (result.Success)
+                if (compilationResult.Success)
                 {
-                    Output = $"✅ ¡CORRECTO!\n\n" +
-                            $"Salida esperada: {CurrentPuzzle.ExpectedOutput}\n" +
-                            $"Tu salida: {result.Output}\n\n" +
-                            $"🎉 ¡Puzzle resuelto! +{CurrentPuzzle.Points} puntos\n\n" +
-                            $"El nivel continuará en 3 segundos...";
+                    // Validar con el servicio de puzzles
+                    var validationResult = await _puzzleService.ValidateSolutionAsync(
+                        _playerId, 
+                        CurrentPuzzle.Id, 
+                        Code, 
+                        compilationResult.Output);
                     
-                    Console.WriteLine($"✓ Puzzle resuelto: {CurrentPuzzle.Name}");
-                    
-                    // Registrar que completó el puzzle
-                    await _levelManager.CompletePuzzleAsync(_playerId, CurrentPuzzle.Id);
-                    
-                    // Esperar antes de cerrar
-                    await System.Threading.Tasks.Task.Delay(3000);
-                    OnClose();
+                    if (validationResult.IsValid)
+                    {
+                        await HandleSuccessfulSolution(validationResult);
+                    }
+                    else
+                    {
+                        HandleIncorrectSolution(compilationResult.Output);
+                    }
                 }
                 else
                 {
-                    Output = $"❌ ERROR DE COMPILACIÓN\n\n{result.ErrorMessage}\n\n" +
-                            $"Revisa tu código e intenta de nuevo.";
-                    Console.WriteLine($"✗ Compilación fallida");
+                    HandleCompilationError(compilationResult.ErrorMessage);
                 }
             }
             catch (Exception ex)
             {
-                Output = $"❌ Error: {ex.Message}";
-                Console.WriteLine($"✗ Error: {ex.Message}");
+                Output = $"❌ ERROR INESPERADO\n\n{ex.Message}\n\nVerifica que JDK esté instalado correctamente.";
+                Console.WriteLine($"✗ Error de compilación: {ex.Message}");
             }
+            finally
+            {
+                IsCompiling = false;
+            }
+        }
+
+        private async Task HandleSuccessfulSolution(PuzzleValidationResult result)
+        {
+            Output = $@"
+╔═══════════════════════════════════════════════════════╗
+║  ✅ ¡PUZZLE RESUELTO CORRECTAMENTE!
+╚═══════════════════════════════════════════════════════╝
+
+🎉 ¡Excelente trabajo!
+💰 Has ganado {result.PointsEarned} puntos
+
+📊 Estadísticas:
+   • Pistas usadas: {_currentHintIndex}/{TotalHints}
+   • Tiempo: --:--
+
+{CurrentPuzzle!.Name} completado exitosamente.
+
+La terminal se cerrará en 3 segundos...
+";
+            
+            Console.WriteLine($"✓ Puzzle resuelto: {CurrentPuzzle.Name} (+{result.PointsEarned} pts)");
+            
+            // Notificar al GameViewModel que el puzzle fue resuelto
+            await _gameViewModel.OnPuzzleCompletedAsync(CurrentPuzzle.Id);
+            
+            // Esperar y cerrar
+            await Task.Delay(3000);
+            OnClose();
+        }
+
+        private void HandleIncorrectSolution(string actualOutput)
+        {
+            Output = $@"❌ SOLUCIÓN INCORRECTA
+
+Tu código compiló correctamente pero la salida no es la esperada.
+
+📝 Salida esperada:
+{CurrentPuzzle!.ExpectedOutput}
+
+📝 Tu salida:
+{actualOutput}
+
+💡 Revisa tu lógica e intenta nuevamente.
+💡 Puedes usar el botón PISTA si necesitas ayuda.
+";
+            Console.WriteLine("✗ Solución incorrecta");
+        }
+
+        private void HandleCompilationError(string errorMessage)
+        {
+            Output = $@"❌ ERROR DE COMPILACIÓN
+
+Tu código tiene errores de sintaxis:
+
+{errorMessage}
+
+💡 Consejos:
+   • Verifica punto y comas (;)
+   • Revisa llaves {{ }} correctamente cerradas
+   • Asegúrate de que las variables estén declaradas
+   • Verifica nombres de métodos (case-sensitive)
+
+Usa el botón PISTA si necesitas ayuda.
+";
+            Console.WriteLine("✗ Error de compilación");
         }
         
         private void OnShowHint()
         {
-            if (CurrentPuzzle == null || CurrentPuzzle.Hints == null || CurrentPuzzle.Hints.Count == 0)
+            if (CurrentPuzzle == null)
             {
-                Output = "⚠️ No hay pistas disponibles";
+                Output = "⚠️ No hay puzzle cargado";
                 return;
             }
+
+            var hint = _puzzleService.GetNextHint(CurrentPuzzle, _currentHintIndex);
             
-            if (_currentHintIndex < CurrentPuzzle.Hints.Count)
+            if (_currentHintIndex < TotalHints)
             {
-                Output = $"💡 PISTA {_currentHintIndex + 1}/{CurrentPuzzle.Hints.Count}:\n\n" +
-                        $"{CurrentPuzzle.Hints[_currentHintIndex]}\n\n" +
-                        $"Presiona 'Mostrar Pista' nuevamente para ver más pistas.";
                 _currentHintIndex++;
+                Output = $@"
+💡 PISTA {_currentHintIndex}/{TotalHints}
+
+{hint}
+
+{(_currentHintIndex < TotalHints ? "Presiona PISTA nuevamente para ver más pistas." : "No hay más pistas disponibles.")}
+";
+                this.RaisePropertyChanged(nameof(HintsUsed));
             }
             else
             {
-                Output = "⚠️ No hay más pistas disponibles\n\n" +
-                        "¡Ya has visto todas las pistas! Intenta resolver el puzzle.";
+                Output = $@"
+⚠️ NO HAY MÁS PISTAS
+
+Ya has usado todas las {TotalHints} pistas disponibles.
+¡Ahora depende de ti resolverlo!
+
+Recuerda:
+{BuildWelcomeMessage()}
+";
+            }
+        }
+
+        private void OnResetCode()
+        {
+            if (CurrentPuzzle != null)
+            {
+                Code = CurrentPuzzle.StarterCode ?? "";
+                Output = "🔄 Código reiniciado al estado inicial.\n\n" + BuildWelcomeMessage();
+                Console.WriteLine("🔄 Código reiniciado");
             }
         }
         
         private void OnClose()
         {
-            _gameViewModel.ResumeGameLoop();
+            Console.WriteLine("💻 Terminal cerrada");
+            _gameViewModel.ReturnFromSubView();
             _navigate(_gameViewModel);
         }
     }
