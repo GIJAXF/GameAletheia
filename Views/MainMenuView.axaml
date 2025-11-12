@@ -1,0 +1,45 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:vm="using:GameAletheiaCross.ViewModels"
+             x:Class="GameAletheiaCross.Views.MainMenuView"
+             x:DataType="vm:MainMenuViewModel">
+    
+    <Grid Background="#1a1a2e">
+        <StackPanel HorizontalAlignment="Center" 
+                    VerticalAlignment="Center" 
+                    Spacing="20">
+            
+            <TextBlock Text="GAME ALETHEIA CROSS" 
+                       FontSize="48" 
+                       FontWeight="Bold"
+                       HorizontalAlignment="Center"
+                       Foreground="White"/>
+            
+            <Button Content="Nueva Partida" 
+                    Command="{Binding NewGameCommand}"
+                    Width="200" 
+                    Height="50"
+                    FontSize="18"/>
+            
+            <Button Content="Cargar Partida" 
+                    Command="{Binding LoadGameCommand}"
+                    Width="200" 
+                    Height="50"
+                    FontSize="18"/>
+            
+            <Button Content="Ranking" 
+                    Command="{Binding ShowRankingCommand}"
+                    Width="200" 
+                    Height="50"
+                    FontSize="18"/>
+            
+            <Button Content="Salir" 
+                    Command="{Binding ExitCommand}"
+                    Width="200" 
+                    Height="50"
+                    FontSize="18"/>
+            
+        </StackPanel>
+    </Grid>
+    
+</UserControl>

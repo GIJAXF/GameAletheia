@@ -1,0 +1,169 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:vm="using:GameAletheiaCross.ViewModels"
+             x:Class="GameAletheiaCross.Views.GameView"
+             x:DataType="vm:GameViewModel">
+    
+    <Design.DataContext>
+        <vm:GameViewModel />
+    </Design.DataContext>
+    
+    <Grid>
+        <!-- Canvas principal del juego -->
+        <Canvas Width="1280" Height="720" Background="#1a1a2e" ClipToBounds="True">
+            
+            <!-- Plataformas del nivel -->
+            <ItemsControl ItemsSource="{Binding CurrentLevel.Platforms}">
+                <ItemsControl.ItemsPanel>
+                    <ItemsPanelTemplate>
+                        <Canvas />
+                    </ItemsPanelTemplate>
+                </ItemsControl.ItemsPanel>
+                <ItemsControl.ItemTemplate>
+                    <DataTemplate>
+                        <Rectangle Fill="#16213e" 
+                                 Stroke="#0f3460"
+                                 StrokeThickness="2"
+                                 Width="{Binding Width}" 
+                                 Height="{Binding Height}"
+                                 Canvas.Left="{Binding X}"
+                                 Canvas.Top="{Binding Y}" />
+                    </DataTemplate>
+                </ItemsControl.ItemTemplate>
+            </ItemsControl>
+            
+            <!-- NPCs -->
+            <ItemsControl ItemsSource="{Binding CurrentLevel.NPCs}">
+                <ItemsControl.ItemsPanel>
+                    <ItemsPanelTemplate>
+                        <Canvas />
+                    </ItemsPanelTemplate>
+                </ItemsControl.ItemsPanel>
+                <ItemsControl.ItemTemplate>
+                    <DataTemplate>
+                        <Ellipse Fill="#00d9ff" 
+                               Width="40" 
+                               Height="40"
+                               Canvas.Left="{Binding PositionX}"
+                               Canvas.Top="{Binding PositionY}">
+                            <Ellipse.RenderTransform>
+                                <TranslateTransform X="-20" Y="-20" />
+                            </Ellipse.RenderTransform>
+                        </Ellipse>
+                    </DataTemplate>
+                </ItemsControl.ItemTemplate>
+            </ItemsControl>
+            
+            <!-- Jugador -->
+            <Rectangle Fill="#e94560" 
+                     Width="40" 
+                     Height="60"
+                     Canvas.Left="{Binding Player.Position.X}"
+                     Canvas.Top="{Binding Player.Position.Y}">
+                <Rectangle.RenderTransform>
+                    <TranslateTransform X="-20" Y="-60" />
+                </Rectangle.RenderTransform>
+            </Rectangle>
+            
+            <!-- Zona de salida (Portal) -->
+            <Ellipse Fill="#00ff88" 
+                   Opacity="0.5"
+                   Width="60" 
+                   Height="80"
+                   Canvas.Left="700"
+                   Canvas.Top="420">
+                <Ellipse.RenderTransform>
+                    <TranslateTransform X="-30" Y="-80" />
+                </Ellipse.RenderTransform>
+            </Ellipse>
+        </Canvas>
+        
+        <!-- UI Overlay -->
+        <Grid>
+            <!-- Info del nivel (arriba izquierda) -->
+            <StackPanel HorizontalAlignment="Left" 
+                       VerticalAlignment="Top" 
+                       Margin="20">
+                <TextBlock Text="{Binding LevelInfo}" 
+                         FontSize="18" 
+                         FontWeight="Bold"
+                         Foreground="#00d9ff" />
+                <TextBlock Text="{Binding Player.Name}" 
+                         FontSize="14" 
+                         Foreground="White" 
+                         Margin="0,5,0,0" />
+                <TextBlock FontSize="14" 
+                         Foreground="#e94560" 
+                         Margin="0,5,0,0">
+                    <Run Text="❤️ HP: "/><Run Text="{Binding Player.Health}"/>
+                </TextBlock>
+                <TextBlock FontSize="14" 
+                         Foreground="#ffd700" 
+                         Margin="0,5,0,0">
+                    <Run Text="⭐ Score: "/><Run Text="{Binding Player.TotalScore}"/>
+                </TextBlock>
+            </StackPanel>
+            
+            <!-- Hint de interacción (centro abajo) -->
+            <Border Background="#000000AA" 
+                   Padding="15,10" 
+                   CornerRadius="5"
+                   HorizontalAlignment="Center" 
+                   VerticalAlignment="Bottom" 
+                   Margin="0,0,0,80"
+                   IsVisible="{Binding InteractionHint, Converter={x:Static StringConverters.IsNotNullOrEmpty}}">
+                <TextBlock Text="{Binding InteractionHint}" 
+                         FontSize="16" 
+                         Foreground="#00ff88" 
+                         TextAlignment="Center" />
+            </Border>
+            
+            <!-- Controles (abajo derecha) -->
+            <StackPanel HorizontalAlignment="Right" 
+                       VerticalAlignment="Bottom" 
+                       Margin="20" 
+                       Spacing="10">
+                <Button Content="📟 Terminal (T)" 
+                       Command="{Binding OpenTerminalCommand}"
+                       Background="#0f3460"
+                       Foreground="White"
+                       Padding="15,8" />
+                <Button Content="⏸️ Pausa (ESC)" 
+                       Command="{Binding PauseCommand}"
+                       Background="#533483"
+                       Foreground="White"
+                       Padding="15,8" />
+            </StackPanel>
+            
+            <!-- Controles de movimiento (abajo izquierda) -->
+            <Border Background="#000000AA" 
+                   Padding="15" 
+                   CornerRadius="5"
+                   HorizontalAlignment="Left" 
+                   VerticalAlignment="Bottom" 
+                   Margin="20">
+                <StackPanel Spacing="5">
+                    <TextBlock Text="Controles:" 
+                             FontSize="14" 
+                             FontWeight="Bold"
+                             Foreground="#00d9ff" />
+                    <TextBlock Text="← → : Mover" 
+                             FontSize="12" 
+                             Foreground="White" />
+                    <TextBlock Text="↑ : Saltar" 
+                             FontSize="12" 
+                             Foreground="White" />
+                    <TextBlock Text="ESPACIO : Interactuar" 
+                             FontSize="12" 
+                             Foreground="White" />
+                    <TextBlock Text="T : Terminal" 
+                             FontSize="12" 
+                             Foreground="White" />
+                    <TextBlock Text="ESC : Pausa" 
+                             FontSize="12" 
+                             Foreground="White" />
+                </StackPanel>
+            </Border>
+        </Grid>
+    </Grid>
+</UserControl>

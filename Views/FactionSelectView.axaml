@@ -1,0 +1,43 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:vm="clr-namespace:GameAletheiaCross.ViewModels"
+             x:Class="GameAletheiaCross.Views.FactionSelectView"
+             x:DataType="vm:FactionSelectViewModel">
+
+    <StackPanel Margin="40"
+                Spacing="20"
+                HorizontalAlignment="Center"
+                VerticalAlignment="Center">
+
+        <TextBlock Text="SELECCIONA TU FACCIÓN"
+                   FontSize="26"
+                   FontWeight="Bold"
+                   HorizontalAlignment="Center"/>
+
+        <!-- Aquí mostramos las facciones desde la base de datos -->
+        <ItemsControl ItemsSource="{Binding Factions}">
+            <ItemsControl.ItemTemplate>
+                <DataTemplate>
+                    <Button Content="{Binding Name}"
+                            Width="180"
+                            Height="80"
+                            Margin="10"
+                            Command="{Binding $parent[ItemsControl].DataContext.SelectFactionCommand}"
+                            CommandParameter="{Binding .}"/>
+                </DataTemplate>
+            </ItemsControl.ItemTemplate>
+
+            <ItemsControl.ItemsPanel>
+                <ItemsPanelTemplate>
+                    <WrapPanel HorizontalAlignment="Center" />
+                </ItemsPanelTemplate>
+            </ItemsControl.ItemsPanel>
+        </ItemsControl>
+
+        <Button Content="Volver"
+                Width="200"
+                Margin="0,20,0,0"
+                Command="{Binding BackCommand}"
+                HorizontalAlignment="Center"/>
+    </StackPanel>
+</UserControl>

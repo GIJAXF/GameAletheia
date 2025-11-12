@@ -1,0 +1,11 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:vm="clr-namespace:GameAletheiaCross.ViewModels"
+             x:Class="GameAletheiaCross.Views.DialogueView">
+    <Grid>
+        <TextBlock Text="Dialogue Scene"
+                   HorizontalAlignment="Center"
+                   VerticalAlignment="Center"
+                   FontSize="20"/>
+    </Grid>
+</UserControl>

@@ -1,0 +1,39 @@
+<Application xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:vm="using:GameAletheiaCross.ViewModels"
+             xmlns:views="using:GameAletheiaCross.Views"
+             x:Class="GameAletheiaCross.App"
+             RequestedThemeVariant="Dark">
+    <Application.Styles>
+        <FluentTheme />
+    </Application.Styles>
+
+    <Application.Resources>
+        <!-- Estilos globales -->
+        <SolidColorBrush x:Key="PrimaryBrush" Color="#00FF00"/>
+        <SolidColorBrush x:Key="SecondaryBrush" Color="#0080FF"/>
+        <SolidColorBrush x:Key="DangerBrush" Color="#FF0000"/>
+    </Application.Resources>
+
+    <Application.DataTemplates>
+        <DataTemplate DataType="vm:MainMenuViewModel">
+            <views:MainMenuView/>
+        </DataTemplate>
+        
+        <DataTemplate DataType="vm:CharacterSelectViewModel">
+            <views:CharacterSelectView/>
+        </DataTemplate>
+        
+        <DataTemplate DataType="vm:FactionSelectViewModel">
+            <views:FactionSelectView/>
+        </DataTemplate>
+        
+        <DataTemplate DataType="vm:GameViewModel">
+            <views:GameView/>
+        </DataTemplate>
+        
+        <DataTemplate DataType="vm:TerminalViewModel">
+            <views:TerminalView/>
+        </DataTemplate>
+    </Application.DataTemplates>
+</Application>

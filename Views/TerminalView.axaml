@@ -1,0 +1,17 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:vm="clr-namespace:GameAletheiaCross.ViewModels"
+             x:Class="GameAletheiaCross.Views.TerminalView"
+             x:DataType="vm:TerminalViewModel">
+    <Grid>
+        <ScrollViewer VerticalScrollBarVisibility="Auto">
+            <TextBox AcceptsReturn="True"
+                     Text="{Binding Output}"
+                     FontFamily="Consolas"
+                     FontSize="14"
+                     IsReadOnly="True"
+                     Background="#1E1E1E"
+                     Foreground="LimeGreen"/>
+        </ScrollViewer>
+    </Grid>
+</UserControl>

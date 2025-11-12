@@ -1,0 +1,366 @@
+using ReactiveUI;
+using System;
+using System.Reactive;
+using System.Threading;
+using System.Threading.Tasks;
+using Avalonia.Threading;
+using GameAletheiaCross.Models;
+using GameAletheiaCross.Services;
+using GameAletheiaCross.Services.Database;
+using GameAletheiaCross.Services.Database.Repositories;
+
+namespace GameAletheiaCross.ViewModels
+{
+    public class GameViewModel : ViewModelBase
+    {
+        private readonly Action<ViewModelBase> _navigate;
+        private readonly string _playerId;
+        private readonly string _playerName;
+        
+        private Player _player;
+        private Level _currentLevel;
+        private readonly PhysicsEngine _physics;
+        private readonly CollisionManager _collision;
+        private readonly LevelManager _levelManager;
+        private readonly NPCInteractionManager _npcManager;
+        
+        private CancellationTokenSource _gameLoopCts;
+        private bool _isRunning;
+        
+        private bool _keyLeft, _keyRight, _keyUp, _keySpace;
+        private bool _spacePressed = false;
+        
+        private const float PLAYER_SPEED = 5f;
+        private const float JUMP_FORCE = -15f;
+        private const float EXIT_DETECTION_DISTANCE = 50f;
+        
+        private string _levelInfo = "";
+        private string _interactionHint = "";
+        
+        public GameViewModel(Action<ViewModelBase> navigate, string playerId, string playerName)
+        {
+            _navigate = navigate;
+            _playerId = playerId;
+            _playerName = playerName;
+            
+            var dbService = new MongoDbService();
+            _physics = new PhysicsEngine();
+            _collision = new CollisionManager();
+            _levelManager = new LevelManager(dbService);
+            _npcManager = new NPCInteractionManager();
+            
+            OpenTerminalCommand = ReactiveCommand.Create(OnOpenTerminal);
+            PauseCommand = ReactiveCommand.Create(OnPause);
+            
+            InitializeGame();
+        }
+        
+        public Player Player
+        {
+            get => _player;
+            set => this.RaiseAndSetIfChanged(ref _player, value);
+        }
+        
+        public Level CurrentLevel
+        {
+            get => _currentLevel;
+            set => this.RaiseAndSetIfChanged(ref _currentLevel, value);
+        }
+        
+        public string LevelInfo
+        {
+            get => _levelInfo;
+            set => this.RaiseAndSetIfChanged(ref _levelInfo, value);
+        }
+        
+        public string InteractionHint
+        {
+            get => _interactionHint;
+            set => this.RaiseAndSetIfChanged(ref _interactionHint, value);
+        }
+        
+        public bool KeyLeft
+        {
+            get => _keyLeft;
+            set => this.RaiseAndSetIfChanged(ref _keyLeft, value);
+        }
+        
+        public bool KeyRight
+        {
+            get => _keyRight;
+            set => this.RaiseAndSetIfChanged(ref _keyRight, value);
+        }
+        
+        public bool KeyUp
+        {
+            get => _keyUp;
+            set => this.RaiseAndSetIfChanged(ref _keyUp, value);
+        }
+        
+        public bool KeySpace
+        {
+            get => _keySpace;
+            set
+            {
+                this.RaiseAndSetIfChanged(ref _keySpace, value);
+                if (value && !_spacePressed)
+                {
+                    _spacePressed = true;
+                    CheckInteractions();
+                }
+                else if (!value)
+                {
+                    _spacePressed = false;
+                }
+            }
+        }
+        
+        public ReactiveCommand<Unit, Unit> OpenTerminalCommand { get; }
+        public ReactiveCommand<Unit, Unit> PauseCommand { get; }
+        
+        private async void InitializeGame()
+        {
+            try
+            {
+                var dbService = new MongoDbService();
+                var playerRepo = new PlayerRepository(dbService);
+                
+                Player = await playerRepo.GetByIdAsync(_playerId);
+                if (Player == null)
+                {
+                    Console.WriteLine("✗ Jugador no encontrado");
+                    return;
+                }
+                
+                await LoadCurrentLevel();
+                StartGameLoop();
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"✗ Error iniciando juego: {ex.Message}");
+            }
+        }
+        
+        private async Task LoadCurrentLevel()
+        {
+            CurrentLevel = await _levelManager.GetCurrentLevelAsync(_playerId);
+            
+            if (CurrentLevel == null)
+            {
+                Console.WriteLine("✗ Nivel no encontrado");
+                return;
+            }
+            
+            // Reiniciar posición del jugador al inicio del nivel
+            Player.Position.X = 100;
+            Player.Position.Y = 400;
+            Player.Velocity.X = 0;
+            Player.Velocity.Y = 0;
+            Player.IsJumping = false;
+            
+            LevelInfo = $"Nivel {Player.CurrentLevel}: {CurrentLevel.Name}";
+            Console.WriteLine($"✓ {LevelInfo}");
+        }
+        
+        private void StartGameLoop()
+        {
+            _gameLoopCts = new CancellationTokenSource();
+            _isRunning = true;
+            
+            Task.Run(async () =>
+            {
+                while (_isRunning && !_gameLoopCts.Token.IsCancellationRequested)
+                {
+                    GameLoop();
+                    await Task.Delay(16); // ~60 FPS
+                }
+            }, _gameLoopCts.Token);
+        }
+        
+        private void GameLoop()
+        {
+            if (Player == null || CurrentLevel == null) return;
+            
+            UpdatePlayerMovement();
+            _physics.ApplyGravity(Player);
+            _physics.UpdatePosition(Player);
+            _collision.CheckPlatformCollisions(Player, CurrentLevel.Platforms);
+            
+            // Límites del mundo
+            if (Player.Position.X < 0) Player.Position.X = 0;
+            if (Player.Position.X > 1240) Player.Position.X = 1240;
+            
+            // Caída fuera del mapa
+            if (Player.Position.Y > 800)
+            {
+                Player.Position.X = 100;
+                Player.Position.Y = 400;
+                Player.Velocity.Y = 0;
+                Player.Velocity.X = 0;
+            }
+
+            // Verificar interacciones cercanas
+            CheckNearbyInteractions();
+            
+            // Verificar si llegó a la salida
+            CheckLevelExit();
+            
+            this.RaisePropertyChanged(nameof(Player));
+        }
+        
+        private void UpdatePlayerMovement()
+        {
+            if (KeyLeft)
+            {
+                Player.Velocity.X = -PLAYER_SPEED;
+                Player.IsFacingRight = false;
+            }
+            else if (KeyRight)
+            {
+                Player.Velocity.X = PLAYER_SPEED;
+                Player.IsFacingRight = true;
+            }
+            else
+            {
+                Player.Velocity.X = 0;
+            }
+            
+            if (KeyUp && !Player.IsJumping)
+            {
+                Player.Velocity.Y = JUMP_FORCE;
+                Player.IsJumping = true;
+            }
+        }
+
+        private void CheckNearbyInteractions()
+        {
+            if (CurrentLevel?.NPCs == null || CurrentLevel.NPCs.Count == 0)
+            {
+                InteractionHint = "";
+                return;
+            }
+
+            var nearestNPC = _npcManager.FindNearestNPC(Player, CurrentLevel.NPCs);
+            
+            if (nearestNPC != null)
+            {
+                InteractionHint = $"Presiona ESPACIO para hablar con {nearestNPC.Name}";
+            }
+            else
+            {
+                InteractionHint = "";
+            }
+        }
+
+        private void CheckInteractions()
+        {
+            if (CurrentLevel?.NPCs == null) return;
+
+            var nearestNPC = _npcManager.FindNearestNPC(Player, CurrentLevel.NPCs);
+            
+            if (nearestNPC != null)
+            {
+                Console.WriteLine($"Interactuando con {nearestNPC.Name}");
+                _npcManager.MarkAsInteracted(nearestNPC);
+                
+                StopGameLoop();
+                Dispatcher.UIThread.Post(() =>
+                {
+                    _navigate(new DialogueViewModel(_navigate, nearestNPC, this));
+                });
+            }
+        }
+
+        private void CheckLevelExit()
+        {
+            float exitX = 700f;
+            float distance = Math.Abs(Player.Position.X - exitX);
+
+            if (distance < EXIT_DETECTION_DISTANCE)
+            {
+                OnLevelComplete();
+            }
+        }
+
+        private async void OnLevelComplete()
+        {
+            StopGameLoop();
+            
+            Console.WriteLine("🎉 ¡Nivel completado!");
+            
+            bool canAdvance = await _levelManager.CanAdvanceAsync(_playerId, CurrentLevel.Id);
+            
+            if (canAdvance)
+            {
+                bool advanced = await _levelManager.AdvanceToNextLevelAsync(_playerId);
+                
+                if (advanced)
+                {
+                    await LoadCurrentLevel();
+                    StartGameLoop();
+                }
+                else
+                {
+                    Dispatcher.UIThread.Post(() =>
+                    {
+                        Console.WriteLine("🏆 ¡Has completado todos los niveles!");
+                        _navigate(new MainMenuViewModel(_navigate));
+                    });
+                }
+            }
+        }
+        
+        private void OnOpenTerminal()
+        {
+            StopGameLoop();
+            Dispatcher.UIThread.Post(() =>
+            {
+                _navigate(new TerminalViewModel(_navigate, _playerId, CurrentLevel.Id, this));
+            });
+        }
+        
+        private void OnPause()
+        {
+            StopGameLoop();
+            Dispatcher.UIThread.Post(() =>
+            {
+                _navigate(new MainMenuViewModel(_navigate));
+            });
+        }
+
+        // 🔥 NUEVOS MÉTODOS para GameView.axaml.cs
+        public void OnPauseRequested()
+        {
+            Console.WriteLine("⏸️ Pausa solicitada (ESC presionado)");
+            OnPause();
+        }
+
+        public void OnToggleTerminal()
+        {
+            Console.WriteLine("💻 Alternar terminal (T presionada)");
+            OnOpenTerminal();
+        }
+
+        public void ReturnFromSubView()
+        {
+            Dispatcher.UIThread.Post(() =>
+            {
+                ResumeGameLoop();
+            });
+        }
+        
+        public void ResumeGameLoop()
+        {
+            if (!_isRunning)
+            {
+                StartGameLoop();
+            }
+        }
+        
+        private void StopGameLoop()
+        {
+            _isRunning = false;
+            _gameLoopCts?.Cancel();
+        }
+    }
+}
