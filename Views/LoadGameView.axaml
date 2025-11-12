@@ -14,7 +14,7 @@
                    FontWeight="Bold"
                    HorizontalAlignment="Center"
                    Foreground="#00D9FF"
-                   FontFamily="avares://GameAletheiaCross/Assets/Fonts/JetBrainsMono-Regular.ttf#JetBrains Mono"/>
+                   FontFamily=" "/>
 
         <!-- Mostrar partidas guardadas -->
         <Border Background="#1a1a2e" 
@@ -63,7 +63,7 @@
                    FontSize="12"
                    Foreground="#AAAAAA"
                    HorizontalAlignment="Center"
-                   FontFamily="avares://GameAletheiaCross/Assets/Fonts/JetBrainsMono-Regular.ttf#JetBrains Mono"/>
+                   FontFamily=" "/>
 
         <Button Content="🔙 Volver"
                 Command="{Binding BackCommand}"
@@ -73,6 +73,6 @@
                 HorizontalAlignment="Center"
                 Background="#533483"
                 Foreground="White"
-                FontFamily="avares://GameAletheiaCross/Assets/Fonts/JetBrainsMono-Regular.ttf#JetBrains Mono"/>
+                FontFamily=" "/>
     </StackPanel>
 </UserControl>

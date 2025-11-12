@@ -36,6 +36,7 @@ namespace GameAletheiaCross.ViewModels
         
         private string _levelInfo = "";
         private string _interactionHint = "";
+        private bool _isPaused = false;
         
         public GameViewModel(Action<ViewModelBase> navigate, string playerId, string playerName)
         {
@@ -54,6 +55,8 @@ namespace GameAletheiaCross.ViewModels
             
             InitializeGame();
         }
+        
+        // ============= PROPIEDADES PÚBLICAS =============
         
         public Player Player
         {
@@ -103,7 +106,7 @@ namespace GameAletheiaCross.ViewModels
             set
             {
                 this.RaiseAndSetIfChanged(ref _keySpace, value);
-                if (value && !_spacePressed)
+                if (value && !_spacePressed && !_isPaused)
                 {
                     _spacePressed = true;
                     CheckInteractions();
@@ -117,6 +120,8 @@ namespace GameAletheiaCross.ViewModels
         
         public ReactiveCommand<Unit, Unit> OpenTerminalCommand { get; }
         public ReactiveCommand<Unit, Unit> PauseCommand { get; }
+        
+        // ============= MÉTODOS PRIVADOS =============
         
         private async void InitializeGame()
         {
@@ -132,7 +137,12 @@ namespace GameAletheiaCross.ViewModels
                     return;
                 }
                 
+                Console.WriteLine($"✓ Jugador cargado: {Player.Name}");
+                
+                // ✅ ESPERAR a que el nivel cargue completamente
                 await LoadCurrentLevel();
+                
+                // ✅ SOLO después, iniciar el loop
                 StartGameLoop();
             }
             catch (Exception ex)
@@ -143,29 +153,45 @@ namespace GameAletheiaCross.ViewModels
         
         private async Task LoadCurrentLevel()
         {
-            CurrentLevel = await _levelManager.GetCurrentLevelAsync(_playerId);
-            
-            if (CurrentLevel == null)
+            try
             {
-                Console.WriteLine("✗ Nivel no encontrado");
-                return;
+                CurrentLevel = await _levelManager.GetCurrentLevelAsync(_playerId);
+                
+                if (CurrentLevel == null)
+                {
+                    Console.WriteLine("✗ Nivel no encontrado");
+                    return;
+                }
+                
+                // Reiniciar posición del jugador al inicio del nivel
+                Player.Position.X = 100;
+                Player.Position.Y = 400;
+                Player.Velocity.X = 0;
+                Player.Velocity.Y = 0;
+                Player.IsJumping = false;
+                
+                LevelInfo = $"Nivel {Player.CurrentLevel}: {CurrentLevel.Name}";
+                Console.WriteLine($"✓ {LevelInfo}");
+                Console.WriteLine($"✓ Plataformas: {CurrentLevel.Platforms?.Count ?? 0}");
+                Console.WriteLine($"✓ NPCs: {CurrentLevel.NPCs?.Count ?? 0}");
+                
+                // ✅ CRÍTICO: Notificar que CurrentLevel cambió
+                this.RaisePropertyChanged(nameof(CurrentLevel));
+                this.RaisePropertyChanged(nameof(Player));
             }
-            
-            // Reiniciar posición del jugador al inicio del nivel
-            Player.Position.X = 100;
-            Player.Position.Y = 400;
-            Player.Velocity.X = 0;
-            Player.Velocity.Y = 0;
-            Player.IsJumping = false;
-            
-            LevelInfo = $"Nivel {Player.CurrentLevel}: {CurrentLevel.Name}";
-            Console.WriteLine($"✓ {LevelInfo}");
+            catch (Exception ex)
+            {
+                Console.WriteLine($"✗ Error cargando nivel: {ex.Message}");
+            }
         }
         
         private void StartGameLoop()
         {
             _gameLoopCts = new CancellationTokenSource();
             _isRunning = true;
+            _isPaused = false;
+            
+            Console.WriteLine("▶️ Game loop iniciado");
             
             Task.Run(async () =>
             {
@@ -179,7 +205,7 @@ namespace GameAletheiaCross.ViewModels
         
         private void GameLoop()
         {
-            if (Player == null || CurrentLevel == null) return;
+            if (Player == null || CurrentLevel == null || _isPaused) return;
             
             UpdatePlayerMovement();
             _physics.ApplyGravity(Player);
@@ -205,6 +231,7 @@ namespace GameAletheiaCross.ViewModels
             // Verificar si llegó a la salida
             CheckLevelExit();
             
+            // ✅ Notificar cambios
             this.RaisePropertyChanged(nameof(Player));
         }
         
@@ -263,7 +290,7 @@ namespace GameAletheiaCross.ViewModels
                 Console.WriteLine($"Interactuando con {nearestNPC.Name}");
                 _npcManager.MarkAsInteracted(nearestNPC);
                 
-                StopGameLoop();
+                PauseGameLoop();
                 Dispatcher.UIThread.Post(() =>
                 {
                     _navigate(new DialogueViewModel(_navigate, nearestNPC, this));
@@ -284,7 +311,7 @@ namespace GameAletheiaCross.ViewModels
 
         private async void OnLevelComplete()
         {
-            StopGameLoop();
+            PauseGameLoop();
             
             Console.WriteLine("🎉 ¡Nivel completado!");
             
@@ -297,11 +324,11 @@ namespace GameAletheiaCross.ViewModels
                 if (advanced)
                 {
                     await LoadCurrentLevel();
-                    StartGameLoop();
+                    ResumeGameLoop();
                 }
                 else
                 {
-                    Dispatcher.UIThread.Post(() =>
+                    await Dispatcher.UIThread.InvokeAsync(() =>
                     {
                         Console.WriteLine("🏆 ¡Has completado todos los niveles!");
                         _navigate(new MainMenuViewModel(_navigate));
@@ -312,8 +339,11 @@ namespace GameAletheiaCross.ViewModels
         
         private void OnOpenTerminal()
         {
-            StopGameLoop();
+            if (_isPaused) return;
+            
+            PauseGameLoop();
             Console.WriteLine("💻 Terminal abierta");
+            
             Dispatcher.UIThread.Post(() =>
             {
                 _navigate(new TerminalViewModel(_navigate, _playerId, CurrentLevel.Id, this));
@@ -322,9 +352,8 @@ namespace GameAletheiaCross.ViewModels
         
         private async void OnPause()
         {
-            StopGameLoop();
+            PauseGameLoop();
             
-            // ✅ GUARDAR POSICIÓN DEL JUGADOR
             try
             {
                 var dbService = new MongoDbService();
@@ -337,14 +366,15 @@ namespace GameAletheiaCross.ViewModels
                 Console.WriteLine($"✗ Error guardando: {ex.Message}");
             }
             
-            Dispatcher.UIThread.Post(() =>
+            await Dispatcher.UIThread.InvokeAsync(() =>
             {
                 Console.WriteLine("⏸️ Juego pausado - Volviendo al menú");
                 _navigate(new MainMenuViewModel(_navigate));
             });
         }
 
-        // 🔥 NUEVOS MÉTODOS para GameView.axaml.cs
+        // ============= MÉTODOS PÚBLICOS =============
+        
         public void OnPauseRequested()
         {
             Console.WriteLine("⏸️ Pausa solicitada (ESC presionado)");
@@ -354,14 +384,19 @@ namespace GameAletheiaCross.ViewModels
         public void OnToggleTerminal()
         {
             Console.WriteLine("💻 Alternar terminal (T presionada)");
-            OnOpenTerminal();
+            if (!_isPaused)
+            {
+                OnOpenTerminal();
+            }
         }
 
         public void ReturnFromSubView()
         {
             Dispatcher.UIThread.Post(() =>
             {
+                _isPaused = false;
                 ResumeGameLoop();
+                this.RaisePropertyChanged(nameof(Player));
             });
         }
         
@@ -371,8 +406,17 @@ namespace GameAletheiaCross.ViewModels
             {
                 StartGameLoop();
             }
+            else
+            {
+                _isPaused = false;
+            }
         }
         
+        private void PauseGameLoop()
+        {
+            _isPaused = true;
+        }
+
         private void StopGameLoop()
         {
             _isRunning = false;

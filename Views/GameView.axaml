@@ -12,17 +12,18 @@
         <!-- Canvas principal del juego -->
         <Canvas Width="1280" Height="720" Background="#1a1a2e" ClipToBounds="True">
             
-            <!-- Plataformas del nivel -->
+            <!-- 🔹 PLATAFORMAS SIN ITEMSCONTROL (Renderizado directo) -->
             <ItemsControl ItemsSource="{Binding CurrentLevel.Platforms}">
                 <ItemsControl.ItemsPanel>
                     <ItemsPanelTemplate>
                         <Canvas />
                     </ItemsPanelTemplate>
                 </ItemsControl.ItemsPanel>
+                
                 <ItemsControl.ItemTemplate>
                     <DataTemplate>
-                        <Rectangle Fill="#16213e" 
-                                 Stroke="#0f3460"
+                        <Rectangle Fill="#0f3460" 
+                                 Stroke="#00ff88"
                                  StrokeThickness="2"
                                  Width="{Binding Width}" 
                                  Height="{Binding Height}"
@@ -32,16 +33,19 @@
                 </ItemsControl.ItemTemplate>
             </ItemsControl>
             
-            <!-- NPCs -->
+            <!-- 🔹 NPCs -->
             <ItemsControl ItemsSource="{Binding CurrentLevel.NPCs}">
                 <ItemsControl.ItemsPanel>
                     <ItemsPanelTemplate>
                         <Canvas />
                     </ItemsPanelTemplate>
                 </ItemsControl.ItemsPanel>
+                
                 <ItemsControl.ItemTemplate>
                     <DataTemplate>
                         <Ellipse Fill="#00d9ff" 
+                               Stroke="#0080FF"
+                               StrokeThickness="1"
                                Width="40" 
                                Height="40"
                                Canvas.Left="{Binding PositionX}"
@@ -54,8 +58,10 @@
                 </ItemsControl.ItemTemplate>
             </ItemsControl>
             
-            <!-- Jugador -->
+            <!-- 🔹 JUGADOR -->
             <Rectangle Fill="#e94560" 
+                     Stroke="#ff0080"
+                     StrokeThickness="2"
                      Width="40" 
                      Height="60"
                      Canvas.Left="{Binding Player.Position.X}"
@@ -65,9 +71,11 @@
                 </Rectangle.RenderTransform>
             </Rectangle>
             
-            <!-- Zona de salida (Portal) -->
+            <!-- 🔹 ZONA DE SALIDA (Portal) -->
             <Ellipse Fill="#00ff88" 
-                   Opacity="0.5"
+                   Opacity="0.6"
+                   Stroke="#00ff00"
+                   StrokeThickness="2"
                    Width="60" 
                    Height="80"
                    Canvas.Left="700"
@@ -78,7 +86,7 @@
             </Ellipse>
         </Canvas>
         
-        <!-- UI Overlay -->
+        <!-- 🔹 UI OVERLAY -->
         <Grid>
             <!-- Info del nivel (arriba izquierda) -->
             <StackPanel HorizontalAlignment="Left" 
@@ -87,24 +95,28 @@
                 <TextBlock Text="{Binding LevelInfo}" 
                          FontSize="18" 
                          FontWeight="Bold"
-                         Foreground="#00d9ff" />
+                         Foreground="#00d9ff"
+                         FontFamily="monospace" />
                 <TextBlock Text="{Binding Player.Name}" 
                          FontSize="14" 
                          Foreground="White" 
-                         Margin="0,5,0,0" />
+                         Margin="0,5,0,0"
+                         FontFamily="monospace" />
                 <TextBlock FontSize="14" 
                          Foreground="#e94560" 
-                         Margin="0,5,0,0">
+                         Margin="0,5,0,0"
+                         FontFamily="monospace">
                     <Run Text="❤️ HP: "/><Run Text="{Binding Player.Health}"/>
                 </TextBlock>
                 <TextBlock FontSize="14" 
                          Foreground="#ffd700" 
-                         Margin="0,5,0,0">
+                         Margin="0,5,0,0"
+                         FontFamily="monospace">
                     <Run Text="⭐ Score: "/><Run Text="{Binding Player.TotalScore}"/>
                 </TextBlock>
             </StackPanel>
             
-            <!-- Hint de interacción (centro abajo) -->
+            <!-- Hint de interacción -->
             <Border Background="#000000AA" 
                    Padding="15,10" 
                    CornerRadius="5"
@@ -114,28 +126,31 @@
                    IsVisible="{Binding InteractionHint, Converter={x:Static StringConverters.IsNotNullOrEmpty}}">
                 <TextBlock Text="{Binding InteractionHint}" 
                          FontSize="16" 
-                         Foreground="#00ff88" 
+                         Foreground="#00ff88"
+                         FontFamily="monospace"
                          TextAlignment="Center" />
             </Border>
             
-            <!-- Controles (abajo derecha) -->
+            <!-- Botones (arriba derecha) -->
             <StackPanel HorizontalAlignment="Right" 
-                       VerticalAlignment="Bottom" 
+                       VerticalAlignment="Top" 
                        Margin="20" 
                        Spacing="10">
                 <Button Content="📟 Terminal (T)" 
                        Command="{Binding OpenTerminalCommand}"
                        Background="#0f3460"
                        Foreground="White"
-                       Padding="15,8" />
+                       Padding="15,8"
+                       FontFamily="monospace" />
                 <Button Content="⏸️ Pausa (ESC)" 
                        Command="{Binding PauseCommand}"
                        Background="#533483"
                        Foreground="White"
-                       Padding="15,8" />
+                       Padding="15,8"
+                       FontFamily="monospace" />
             </StackPanel>
             
-            <!-- Controles de movimiento (abajo izquierda) -->
+            <!-- Controles (abajo izquierda) -->
             <Border Background="#000000AA" 
                    Padding="15" 
                    CornerRadius="5"
@@ -146,22 +161,28 @@
                     <TextBlock Text="Controles:" 
                              FontSize="14" 
                              FontWeight="Bold"
-                             Foreground="#00d9ff" />
+                             Foreground="#00d9ff"
+                             FontFamily="monospace" />
                     <TextBlock Text="← → : Mover" 
                              FontSize="12" 
-                             Foreground="White" />
+                             Foreground="White"
+                             FontFamily="monospace" />
                     <TextBlock Text="↑ : Saltar" 
                              FontSize="12" 
-                             Foreground="White" />
+                             Foreground="White"
+                             FontFamily="monospace" />
                     <TextBlock Text="ESPACIO : Interactuar" 
                              FontSize="12" 
-                             Foreground="White" />
+                             Foreground="White"
+                             FontFamily="monospace" />
                     <TextBlock Text="T : Terminal" 
                              FontSize="12" 
-                             Foreground="White" />
+                             Foreground="White"
+                             FontFamily="monospace" />
                     <TextBlock Text="ESC : Pausa" 
                              FontSize="12" 
-                             Foreground="White" />
+                             Foreground="White"
+                             FontFamily="monospace" />
                 </StackPanel>
             </Border>
         </Grid>

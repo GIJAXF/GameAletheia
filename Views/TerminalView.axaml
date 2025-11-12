@@ -23,18 +23,18 @@
                              FontSize="16" 
                              FontWeight="Bold"
                              Foreground="#00FF00"
-                             FontFamily="avares://GameAletheiaCross/Assets/Fonts/JetBrainsMono-Regular.ttf#JetBrains Mono"/>
+                             FontFamily=" "/>
                     <TextBlock Text="{Binding CurrentPuzzle.Name, StringFormat=' - {0}'}" 
                              FontSize="12" 
                              Foreground="#AAAAAA"
                              Margin="10,0,0,0"
-                             FontFamily="avares://GameAletheiaCross/Assets/Fonts/JetBrainsMono-Regular.ttf#JetBrains Mono"/>
+                             FontFamily=" "/>
                 </StackPanel>
                 
                 <!-- Área de Output (arriba) -->
                 <ScrollViewer Grid.Row="1" VerticalScrollBarVisibility="Auto" Margin="0,0,0,10">
                     <TextBlock Text="{Binding Output}" 
-                             FontFamily="avares://GameAletheiaCross/Assets/Fonts/JetBrainsMono-Regular.ttf#JetBrains Mono"
+                             FontFamily=" "
                              FontSize="11"
                              Foreground="#00FF00"
                              TextWrapping="Wrap"
@@ -45,7 +45,7 @@
                 <Border Grid.Row="2" Background="#0F0F0F" BorderBrush="#00AA00" BorderThickness="1" Margin="0,10,0,10">
                     <TextBox Text="{Binding Code, Mode=TwoWay}"
                            AcceptsReturn="True"
-                           FontFamily="avares://GameAletheiaCross/Assets/Fonts/JetBrainsMono-Regular.ttf#JetBrains Mono"
+                           FontFamily=" "
                            FontSize="10"
                            Foreground="#00FF00"
                            Background="#0F0F0F"
@@ -61,21 +61,21 @@
                            Background="#00AA00"
                            Foreground="#000000"
                            Padding="15,8"
-                           FontFamily="avares://GameAletheiaCross/Assets/Fonts/JetBrainsMono-Regular.ttf#JetBrains Mono"
+                           FontFamily=" "
                            FontWeight="Bold"/>
                     <Button Content="💡 PISTA" 
                            Command="{Binding ShowHintCommand}"
                            Background="#0080FF"
                            Foreground="White"
                            Padding="15,8"
-                           FontFamily="avares://GameAletheiaCross/Assets/Fonts/JetBrainsMono-Regular.ttf#JetBrains Mono"
+                           FontFamily=" "
                            FontWeight="Bold"/>
                     <Button Content="✕ CERRAR" 
                            Command="{Binding CloseCommand}"
                            Background="#AA0000"
                            Foreground="White"
                            Padding="15,8"
-                           FontFamily="avares://GameAletheiaCross/Assets/Fonts/JetBrainsMono-Regular.ttf#JetBrains Mono"
+                           FontFamily=" "
                            FontWeight="Bold"/>
                 </StackPanel>
             </Grid>
