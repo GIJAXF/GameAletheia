@@ -9,7 +9,7 @@
             
             <!-- Título -->
             <TextBlock Grid.Row="0"
-                       Text="🏆 RANKING GLOBAL"
+                       Text="RANKING GLOBAL"
                        FontSize="26"
                        FontWeight="Bold"
                        HorizontalAlignment="Center"
@@ -79,7 +79,7 @@
 
             <!-- Botón Volver -->
             <Button Grid.Row="2"
-                    Content="🔙 Volver"
+                    Content="Volver"
                     Command="{Binding BackCommand}"
                     Width="200"
                     Height="50"

@@ -26,7 +26,7 @@
                        Margin="0,0,0,15"
                        CornerRadius="5">
                     <StackPanel Orientation="Horizontal" Spacing="10">
-                        <TextBlock Text="💻 TERMINAL ALETHEIA" 
+                        <TextBlock Text="TERMINAL ALETHEIA" 
                                  FontSize="18" 
                                  FontWeight="Bold"
                                  Foreground="#00FF00"
@@ -47,13 +47,13 @@
                        CornerRadius="5">
                     <StackPanel Orientation="Horizontal" Spacing="30">
                         <TextBlock FontSize="12" Foreground="White">
-                            <Run Text="💡 Pistas: "/>
+                            <Run Text="Pistas: "/>
                             <Run Text="{Binding HintsUsed}" FontWeight="Bold" Foreground="#FFD700"/>
                             <Run Text="/"/>
                             <Run Text="{Binding TotalHints}" FontWeight="Bold"/>
                         </TextBlock>
                         <TextBlock FontSize="12" Foreground="#FFD700" FontWeight="Bold">
-                            <Run Text="⭐ Puntos: "/>
+                            <Run Text="Puntos: "/>
                             <Run Text="{Binding CurrentPuzzle.Points}"/>
                         </TextBlock>
                     </StackPanel>
@@ -75,7 +75,7 @@
                                    Padding="10,6"
                                    BorderBrush="#00AA00"
                                    BorderThickness="0,0,0,1">
-                                <TextBlock Text="📝 EDITOR DE CÓDIGO" 
+                                <TextBlock Text="EDITOR DE CÓDIGO" 
                                          FontSize="11" 
                                          FontWeight="Bold"
                                          Foreground="#00FF88"/>
@@ -109,7 +109,7 @@
                                    Padding="10,6"
                                    BorderBrush="#0080FF"
                                    BorderThickness="0,0,0,1">
-                                <TextBlock Text="📊 CONSOLA" 
+                                <TextBlock Text="CONSOLA" 
                                          FontSize="11" 
                                          FontWeight="Bold"
                                          Foreground="#0080FF"/>
@@ -119,7 +119,7 @@
                                         VerticalScrollBarVisibility="Auto"
                                         Padding="12">
                                 <TextBlock Text="{Binding Output}" 
-                                         FontSize="10"
+                                         FontSize="14"
                                          Foreground="#00D9FF"
                                          TextWrapping="Wrap"
                                          LineHeight="18"/>
@@ -143,7 +143,7 @@
                            HorizontalContentAlignment="Center"/>
                     
                     <Button Grid.Column="1"
-                           Content="💡 PISTA" 
+                           Content="PISTA" 
                            Command="{Binding ShowHintCommand}"
                            Background="#0080FF"
                            Foreground="White"
@@ -155,7 +155,7 @@
                            HorizontalContentAlignment="Center"/>
                     
                     <Button Grid.Column="2"
-                           Content="🔄 RESET" 
+                           Content="RESET" 
                            Command="{Binding ResetCodeCommand}"
                            Background="#FF8800"
                            Foreground="White"

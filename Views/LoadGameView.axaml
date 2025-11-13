@@ -38,17 +38,17 @@
                                    HorizontalContentAlignment="Left">
                                 <StackPanel Spacing="5">
                                     <TextBlock>
-                                        <Run Text="👤 " FontSize="14"/>
+                                        <Run Text="User: " FontSize="14"/>
                                         <Run Text="{Binding Name}" FontSize="16" FontWeight="Bold"/>
                                         <Run Text=" (Nivel " FontSize="12"/>
                                         <Run Text="{Binding CurrentLevel}" FontSize="12" FontWeight="Bold"/>
                                         <Run Text=")" FontSize="12"/>
                                     </TextBlock>
                                     <TextBlock>
-                                        <Run Text="⭐ " FontSize="12"/>
+                                        <Run Text="Puntos: " FontSize="12"/>
                                         <Run Text="Score: " FontSize="11"/>
                                         <Run Text="{Binding TotalScore}" FontSize="11" FontWeight="Bold"/>
-                                        <Run Text=" | 🏘️ " FontSize="12"/>
+                                        <Run Text=" | Faction: " FontSize="12"/>
                                         <Run Text="{Binding Faction}" FontSize="11"/>
                                     </TextBlock>
                                 </StackPanel>
@@ -59,13 +59,13 @@
             </ScrollViewer>
         </Border>
 
-        <TextBlock Text="{Binding Players.Count, StringFormat='📊 Total de partidas: {0}'}"
+        <TextBlock Text="{Binding Players.Count, StringFormat='Total de partidas: {0}'}"
                    FontSize="12"
                    Foreground="#AAAAAA"
                    HorizontalAlignment="Center"
                    FontFamily=" "/>
 
-        <Button Content="🔙 Volver"
+        <Button Content="Volver"
                 Command="{Binding BackCommand}"
                 Width="200"
                 Height="50"
