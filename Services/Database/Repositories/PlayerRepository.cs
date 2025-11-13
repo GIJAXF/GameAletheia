@@ -2,6 +2,7 @@ using MongoDB.Driver;
 using GameAletheiaCross.Models;
 using System.Threading.Tasks;
 using System.Collections.Generic;
+using System;
 
 namespace GameAletheiaCross.Services.Database.Repositories
 {
@@ -16,7 +17,16 @@ namespace GameAletheiaCross.Services.Database.Repositories
 
         public async Task<Player?> GetByIdAsync(string id)
         {
-            return await _players.Find(p => p.Id == id).FirstOrDefaultAsync();
+            var player = await _players.Find(p => p.Id == id).FirstOrDefaultAsync();
+            if (player != null)
+            {
+                Console.WriteLine($"🔍 GetByIdAsync: Jugador '{player.Name}' encontrado (Nivel {player.CurrentLevel})");
+            }
+            else
+            {
+                Console.WriteLine($"❌ GetByIdAsync: Jugador con ID {id} no encontrado");
+            }
+            return player;
         }
 
         public async Task<Player?> GetByNameAsync(string name)
@@ -40,12 +50,30 @@ namespace GameAletheiaCross.Services.Database.Repositories
         public async Task<Player> CreateAsync(Player player)
         {
             await _players.InsertOneAsync(player);
+            Console.WriteLine($"✅ CreateAsync: Jugador '{player.Name}' creado con ID {player.Id}");
             return player;
         }
 
         public async Task<bool> UpdateAsync(string id, Player player)
         {
+            player.LastPlayed = DateTime.UtcNow;
+            
+            Console.WriteLine($"🔄 UpdateAsync ANTES: Jugador '{player.Name}' en nivel {player.CurrentLevel}");
+            
             var result = await _players.ReplaceOneAsync(p => p.Id == id, player);
+            
+            Console.WriteLine($"🔄 UpdateAsync DESPUÉS: MatchedCount={result.MatchedCount}, ModifiedCount={result.ModifiedCount}");
+            
+            // Verificar que se actualizó correctamente
+            if (result.ModifiedCount > 0)
+            {
+                var verificacion = await GetByIdAsync(id);
+                if (verificacion != null)
+                {
+                    Console.WriteLine($"✅ Verificación: Jugador ahora está en nivel {verificacion.CurrentLevel}");
+                }
+            }
+            
             return result.ModifiedCount > 0;
         }
 

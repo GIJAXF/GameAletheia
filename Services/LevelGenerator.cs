@@ -30,13 +30,13 @@ namespace GameAletheiaCross.Services
 
             var levels = new List<Level>
             {
-                new Level { OrderNumber = 1, Name = "El Inicio", Description = "Aprende los controles básicos.", Background = "forest", Difficulty = 1, Platforms = GeneratePlatformsForLevel(1), NPCIds = new List<string>() },
-                new Level { OrderNumber = 2, Name = "Ruinas Perdidas", Description = "Encuentra el primer artefacto.", Background = "ruins", Difficulty = 1, Platforms = GeneratePlatformsForLevel(2), NPCIds = new List<string>() },
-                new Level { OrderNumber = 3, Name = "Ciudad del Silencio", Description = "Evita las trampas de la ciudad.", Background = "city", Difficulty = 2, Platforms = GeneratePlatformsForLevel(3), NPCIds = new List<string>() },
-                new Level { OrderNumber = 4, Name = "Laberinto Digital", Description = "Resuelve el primer puzzle lógico.", Background = "digital", Difficulty = 2, Platforms = GeneratePlatformsForLevel(4), NPCIds = new List<string>() },
-                new Level { OrderNumber = 5, Name = "Santuario de Datos", Description = "Defiende el núcleo resolviendo un código.", Background = "temple", Difficulty = 3, Platforms = GeneratePlatformsForLevel(5), NPCIds = new List<string>() },
-                new Level { OrderNumber = 6, Name = "Redline", Description = "Enfrenta a los agentes de la corporación.", Background = "cyber", Difficulty = 3, Platforms = GeneratePlatformsForLevel(6), NPCIds = new List<string>() },
-                new Level { OrderNumber = 7, Name = "El Archivo", Description = "Descubre la verdad detrás de Aletheia.", Background = "archive", Difficulty = 3, Platforms = GeneratePlatformsForLevel(7), NPCIds = new List<string>() },
+                new Level { OrderNumber = 1, Name = "El Despertar Digital", Description = "Tu primera inmersión en la red. Aprende los controles básicos.", Background = "forest", Difficulty = 1, Platforms = GeneratePlatformsForLevel(1), NPCIds = new List<string>() },
+                new Level { OrderNumber = 2, Name = "Ruinas del Firewall Antiguo", Description = "Navega por las defensas caídas de una red olvidada.", Background = "ruins", Difficulty = 1, Platforms = GeneratePlatformsForLevel(2), NPCIds = new List<string>() },
+                new Level { OrderNumber = 3, Name = "Ciudad de las Contraseñas Perdidas", Description = "Evita las trampas de seguridad obsoletas.", Background = "city", Difficulty = 2, Platforms = GeneratePlatformsForLevel(3), NPCIds = new List<string>() },
+                new Level { OrderNumber = 4, Name = "Laberinto de Algoritmos", Description = "Resuelve el primer puzzle lógico para avanzar.", Background = "digital", Difficulty = 2, Platforms = GeneratePlatformsForLevel(4), NPCIds = new List<string>() },
+                new Level { OrderNumber = 5, Name = "Santuario de los Datos Sagrados", Description = "Protege el núcleo resolviendo códigos antiguos.", Background = "temple", Difficulty = 3, Platforms = GeneratePlatformsForLevel(5), NPCIds = new List<string>() },
+                new Level { OrderNumber = 6, Name = "Torre Corporativa Redline", Description = "Enfrenta a los agentes del sistema corrupto.", Background = "cyber", Difficulty = 3, Platforms = GeneratePlatformsForLevel(6), NPCIds = new List<string>() },
+                new Level { OrderNumber = 7, Name = "El Archivo Prohibido", Description = "Descubre la verdad oculta detrás de Aletheia.", Background = "archive", Difficulty = 4, Platforms = GeneratePlatformsForLevel(7), NPCIds = new List<string>() },
             };
 
             foreach (var level in levels)
@@ -47,37 +47,8 @@ namespace GameAletheiaCross.Services
 
             var createdLevels = await _levelRepo.GetAllAsync();
 
-            foreach (var level in createdLevels)
-            {
-                if (level.OrderNumber == 4)
-                {
-                    var puzzle = new Puzzle
-                    {
-                        LevelId = level.Id,
-                        Name = "Puzzle de Conexiones",
-                        Description = "Reconecta los nodos digitales en el orden correcto.",
-                        Points = 150,
-                        Type = "Lógico",
-                        IsCompleted = false
-                    };
-                    await _puzzleRepo.CreateAsync(puzzle);
-                    Console.WriteLine($"🧩 Puzzle agregado al nivel {level.OrderNumber}: {puzzle.Name}");
-                }
-                else if (level.OrderNumber == 5)
-                {
-                    var puzzle = new Puzzle
-                    {
-                        LevelId = level.Id,
-                        Name = "Código del Santuario",
-                        Description = "Descifra el patrón de datos oculto.",
-                        Points = 200,
-                        Type = "Criptografía",
-                        IsCompleted = false
-                    };
-                    await _puzzleRepo.CreateAsync(puzzle);
-                    Console.WriteLine($"🧩 Puzzle agregado al nivel {level.OrderNumber}: {puzzle.Name}");
-                }
-            }
+            // Ahora los puzzles se crean en SeedData.cs
+            Console.WriteLine("ℹ️ Los puzzles se generarán desde SeedData.cs");
 
             await CreateNPCsForLevelsAsync();
             await AssignNPCsToLevelsAsync();
@@ -91,72 +62,117 @@ namespace GameAletheiaCross.Services
 
             if (levelNumber == 1)
             {
-                platforms.Add(new Level.Platform { X = 0, Y = 600, Width = 1280, Height = 120, IsSolid = true });
-                platforms.Add(new Level.Platform { X = 200, Y = 520, Width = 150, Height = 20, IsSolid = true });
-                platforms.Add(new Level.Platform { X = 450, Y = 450, Width = 150, Height = 20, IsSolid = true });
-                platforms.Add(new Level.Platform { X = 700, Y = 380, Width = 150, Height = 20, IsSolid = true });
-                platforms.Add(new Level.Platform { X = 1000, Y = 300, Width = 200, Height = 20, IsSolid = true });
+                // Nivel tutorial más espacioso
+                platforms.Add(new Level.Platform { X = 0, Y = 600, Width = 1280, Height = 120, IsSolid = true }); // Suelo principal
+                platforms.Add(new Level.Platform { X = 150, Y = 520, Width = 120, Height = 20, IsSolid = true });
+                platforms.Add(new Level.Platform { X = 320, Y = 470, Width = 140, Height = 20, IsSolid = true });
+                platforms.Add(new Level.Platform { X = 510, Y = 420, Width = 130, Height = 20, IsSolid = true });
+                platforms.Add(new Level.Platform { X = 700, Y = 370, Width = 150, Height = 20, IsSolid = true });
+                platforms.Add(new Level.Platform { X = 900, Y = 320, Width = 160, Height = 20, IsSolid = true });
+                platforms.Add(new Level.Platform { X = 1100, Y = 270, Width = 180, Height = 20, IsSolid = true });
             }
             else if (levelNumber == 2)
             {
+                // Ruinas con más complejidad vertical
                 platforms.Add(new Level.Platform { X = 0, Y = 600, Width = 1280, Height = 120, IsSolid = true });
-                platforms.Add(new Level.Platform { X = 100, Y = 500, Width = 200, Height = 25, IsSolid = true });
-                platforms.Add(new Level.Platform { X = 350, Y = 450, Width = 180, Height = 25, IsSolid = true });
-                platforms.Add(new Level.Platform { X = 580, Y = 400, Width = 200, Height = 25, IsSolid = true });
-                platforms.Add(new Level.Platform { X = 850, Y = 350, Width = 200, Height = 25, IsSolid = true });
-                platforms.Add(new Level.Platform { X = 1050, Y = 300, Width = 200, Height = 25, IsSolid = true });
+                platforms.Add(new Level.Platform { X = 80, Y = 520, Width = 150, Height = 25, IsSolid = true });
+                platforms.Add(new Level.Platform { X = 280, Y = 470, Width = 130, Height = 25, IsSolid = true });
+                platforms.Add(new Level.Platform { X = 140, Y = 410, Width = 120, Height = 25, IsSolid = true });
+                platforms.Add(new Level.Platform { X = 420, Y = 450, Width = 160, Height = 25, IsSolid = true });
+                platforms.Add(new Level.Platform { X = 630, Y = 400, Width = 140, Height = 25, IsSolid = true });
+                platforms.Add(new Level.Platform { X = 820, Y = 350, Width = 150, Height = 25, IsSolid = true });
+                platforms.Add(new Level.Platform { X = 650, Y = 280, Width = 130, Height = 25, IsSolid = true });
+                platforms.Add(new Level.Platform { X = 1000, Y = 320, Width = 200, Height = 25, IsSolid = true });
+                platforms.Add(new Level.Platform { X = 1100, Y = 250, Width = 180, Height = 25, IsSolid = true });
             }
             else if (levelNumber == 3)
             {
+                // Ciudad con más plataformas y saltos complejos
                 platforms.Add(new Level.Platform { X = 0, Y = 600, Width = 1280, Height = 120, IsSolid = true });
-                platforms.Add(new Level.Platform { X = 50, Y = 500, Width = 120, Height = 20, IsSolid = true });
-                platforms.Add(new Level.Platform { X = 250, Y = 480, Width = 100, Height = 20, IsSolid = true });
-                platforms.Add(new Level.Platform { X = 450, Y = 420, Width = 150, Height = 20, IsSolid = true });
-                platforms.Add(new Level.Platform { X = 700, Y = 380, Width = 120, Height = 20, IsSolid = true });
-                platforms.Add(new Level.Platform { X = 900, Y = 350, Width = 150, Height = 20, IsSolid = true });
-                platforms.Add(new Level.Platform { X = 1100, Y = 300, Width = 130, Height = 20, IsSolid = true });
-                platforms.Add(new Level.Platform { X = 600, Y = 500, Width = 100, Height = 15, IsSolid = false });
+                platforms.Add(new Level.Platform { X = 40, Y = 520, Width = 100, Height = 20, IsSolid = true });
+                platforms.Add(new Level.Platform { X = 190, Y = 490, Width = 110, Height = 20, IsSolid = true });
+                platforms.Add(new Level.Platform { X = 350, Y = 460, Width = 90, Height = 20, IsSolid = true });
+                platforms.Add(new Level.Platform { X = 490, Y = 430, Width = 130, Height = 20, IsSolid = true });
+                platforms.Add(new Level.Platform { X = 300, Y = 380, Width = 100, Height = 20, IsSolid = true });
+                platforms.Add(new Level.Platform { X = 670, Y = 410, Width = 140, Height = 20, IsSolid = true });
+                platforms.Add(new Level.Platform { X = 860, Y = 370, Width = 120, Height = 20, IsSolid = true });
+                platforms.Add(new Level.Platform { X = 720, Y = 310, Width = 110, Height = 20, IsSolid = true });
+                platforms.Add(new Level.Platform { X = 1030, Y = 340, Width = 150, Height = 20, IsSolid = true });
+                platforms.Add(new Level.Platform { X = 900, Y = 260, Width = 130, Height = 20, IsSolid = true });
+                platforms.Add(new Level.Platform { X = 1100, Y = 200, Width = 180, Height = 20, IsSolid = true });
+                // Plataforma trampa (no sólida)
+                platforms.Add(new Level.Platform { X = 550, Y = 510, Width = 90, Height = 15, IsSolid = false });
             }
             else if (levelNumber == 4)
             {
+                // Laberinto digital zigzagueante más largo
                 platforms.Add(new Level.Platform { X = 0, Y = 600, Width = 1280, Height = 120, IsSolid = true });
-                platforms.Add(new Level.Platform { X = 50, Y = 500, Width = 150, Height = 20, IsSolid = true });
-                platforms.Add(new Level.Platform { X = 300, Y = 450, Width = 150, Height = 20, IsSolid = true });
-                platforms.Add(new Level.Platform { X = 150, Y = 400, Width = 150, Height = 20, IsSolid = true });
-                platforms.Add(new Level.Platform { X = 400, Y = 350, Width = 150, Height = 20, IsSolid = true });
-                platforms.Add(new Level.Platform { X = 250, Y = 300, Width = 150, Height = 20, IsSolid = true });
-                platforms.Add(new Level.Platform { X = 500, Y = 250, Width = 150, Height = 20, IsSolid = true });
-                platforms.Add(new Level.Platform { X = 800, Y = 200, Width = 200, Height = 20, IsSolid = true });
-                platforms.Add(new Level.Platform { X = 1000, Y = 300, Width = 200, Height = 20, IsSolid = true });
+                platforms.Add(new Level.Platform { X = 30, Y = 520, Width = 140, Height = 20, IsSolid = true });
+                platforms.Add(new Level.Platform { X = 220, Y = 480, Width = 130, Height = 20, IsSolid = true });
+                platforms.Add(new Level.Platform { X = 100, Y = 430, Width = 110, Height = 20, IsSolid = true });
+                platforms.Add(new Level.Platform { X = 280, Y = 380, Width = 140, Height = 20, IsSolid = true });
+                platforms.Add(new Level.Platform { X = 470, Y = 430, Width = 120, Height = 20, IsSolid = true });
+                platforms.Add(new Level.Platform { X = 370, Y = 330, Width = 130, Height = 20, IsSolid = true });
+                platforms.Add(new Level.Platform { X = 550, Y = 370, Width = 110, Height = 20, IsSolid = true });
+                platforms.Add(new Level.Platform { X = 720, Y = 320, Width = 140, Height = 20, IsSolid = true });
+                platforms.Add(new Level.Platform { X = 600, Y = 260, Width = 120, Height = 20, IsSolid = true });
+                platforms.Add(new Level.Platform { X = 780, Y = 210, Width = 150, Height = 20, IsSolid = true });
+                platforms.Add(new Level.Platform { X = 980, Y = 260, Width = 140, Height = 20, IsSolid = true });
+                platforms.Add(new Level.Platform { X = 900, Y = 180, Width = 130, Height = 20, IsSolid = true });
+                platforms.Add(new Level.Platform { X = 1100, Y = 230, Width = 180, Height = 20, IsSolid = true });
             }
             else if (levelNumber == 5)
             {
+                // Santuario con plataformas más espaciadas
                 platforms.Add(new Level.Platform { X = 0, Y = 600, Width = 1280, Height = 120, IsSolid = true });
-                platforms.Add(new Level.Platform { X = 100, Y = 500, Width = 200, Height = 25, IsSolid = true });
-                platforms.Add(new Level.Platform { X = 350, Y = 430, Width = 250, Height = 25, IsSolid = true });
-                platforms.Add(new Level.Platform { X = 700, Y = 380, Width = 250, Height = 25, IsSolid = true });
-                platforms.Add(new Level.Platform { X = 1000, Y = 300, Width = 200, Height = 25, IsSolid = true });
-                platforms.Add(new Level.Platform { X = 640, Y = 200, Width = 100, Height = 20, IsSolid = true });
+                platforms.Add(new Level.Platform { X = 80, Y = 510, Width = 180, Height = 25, IsSolid = true });
+                platforms.Add(new Level.Platform { X = 310, Y = 450, Width = 200, Height = 25, IsSolid = true });
+                platforms.Add(new Level.Platform { X = 150, Y = 380, Width = 150, Height = 25, IsSolid = true });
+                platforms.Add(new Level.Platform { X = 560, Y = 420, Width = 220, Height = 25, IsSolid = true });
+                platforms.Add(new Level.Platform { X = 400, Y = 330, Width = 160, Height = 25, IsSolid = true });
+                platforms.Add(new Level.Platform { X = 820, Y = 370, Width = 200, Height = 25, IsSolid = true });
+                platforms.Add(new Level.Platform { X = 680, Y = 280, Width = 180, Height = 25, IsSolid = true });
+                platforms.Add(new Level.Platform { X = 1000, Y = 310, Width = 190, Height = 25, IsSolid = true });
+                platforms.Add(new Level.Platform { X = 900, Y = 220, Width = 160, Height = 25, IsSolid = true });
+                platforms.Add(new Level.Platform { X = 640, Y = 180, Width = 140, Height = 20, IsSolid = true }); // Plataforma central elevada
             }
             else if (levelNumber == 6)
             {
+                // Torre corporativa ascendente más desafiante
                 platforms.Add(new Level.Platform { X = 0, Y = 600, Width = 1280, Height = 120, IsSolid = true });
-                platforms.Add(new Level.Platform { X = 0, Y = 500, Width = 180, Height = 20, IsSolid = true });
-                platforms.Add(new Level.Platform { X = 250, Y = 450, Width = 200, Height = 20, IsSolid = true });
-                platforms.Add(new Level.Platform { X = 550, Y = 400, Width = 180, Height = 20, IsSolid = true });
-                platforms.Add(new Level.Platform { X = 850, Y = 350, Width = 200, Height = 20, IsSolid = true });
-                platforms.Add(new Level.Platform { X = 1100, Y = 280, Width = 180, Height = 20, IsSolid = true });
+                platforms.Add(new Level.Platform { X = 20, Y = 530, Width = 160, Height = 20, IsSolid = true });
+                platforms.Add(new Level.Platform { X = 230, Y = 480, Width = 150, Height = 20, IsSolid = true });
+                platforms.Add(new Level.Platform { X = 90, Y = 420, Width = 130, Height = 20, IsSolid = true });
+                platforms.Add(new Level.Platform { X = 430, Y = 460, Width = 170, Height = 20, IsSolid = true });
+                platforms.Add(new Level.Platform { X = 270, Y = 380, Width = 140, Height = 20, IsSolid = true });
+                platforms.Add(new Level.Platform { X = 650, Y = 410, Width = 160, Height = 20, IsSolid = true });
+                platforms.Add(new Level.Platform { X = 490, Y = 340, Width = 130, Height = 20, IsSolid = true });
+                platforms.Add(new Level.Platform { X = 860, Y = 370, Width = 180, Height = 20, IsSolid = true });
+                platforms.Add(new Level.Platform { X = 700, Y = 290, Width = 150, Height = 20, IsSolid = true });
+                platforms.Add(new Level.Platform { X = 1050, Y = 320, Width = 170, Height = 20, IsSolid = true });
+                platforms.Add(new Level.Platform { X = 930, Y = 240, Width = 140, Height = 20, IsSolid = true });
+                platforms.Add(new Level.Platform { X = 1110, Y = 180, Width = 170, Height = 20, IsSolid = true });
             }
             else if (levelNumber == 7)
             {
+                // Archivo final - nivel más largo y complejo
                 platforms.Add(new Level.Platform { X = 0, Y = 600, Width = 1280, Height = 120, IsSolid = true });
-                platforms.Add(new Level.Platform { X = 50, Y = 520, Width = 150, Height = 20, IsSolid = true });
-                platforms.Add(new Level.Platform { X = 250, Y = 480, Width = 150, Height = 20, IsSolid = true });
-                platforms.Add(new Level.Platform { X = 450, Y = 440, Width = 150, Height = 20, IsSolid = true });
-                platforms.Add(new Level.Platform { X = 650, Y = 400, Width = 150, Height = 20, IsSolid = true });
-                platforms.Add(new Level.Platform { X = 850, Y = 360, Width = 150, Height = 20, IsSolid = true });
-                platforms.Add(new Level.Platform { X = 1050, Y = 320, Width = 150, Height = 20, IsSolid = true });
-                platforms.Add(new Level.Platform { X = 600, Y = 200, Width = 200, Height = 20, IsSolid = true });
+                platforms.Add(new Level.Platform { X = 40, Y = 540, Width = 130, Height = 20, IsSolid = true });
+                platforms.Add(new Level.Platform { X = 210, Y = 510, Width = 120, Height = 20, IsSolid = true });
+                platforms.Add(new Level.Platform { X = 90, Y = 460, Width = 110, Height = 20, IsSolid = true });
+                platforms.Add(new Level.Platform { X = 370, Y = 490, Width = 140, Height = 20, IsSolid = true });
+                platforms.Add(new Level.Platform { X = 250, Y = 420, Width = 120, Height = 20, IsSolid = true });
+                platforms.Add(new Level.Platform { X = 540, Y = 460, Width = 130, Height = 20, IsSolid = true });
+                platforms.Add(new Level.Platform { X = 420, Y = 390, Width = 110, Height = 20, IsSolid = true });
+                platforms.Add(new Level.Platform { X = 710, Y = 430, Width = 140, Height = 20, IsSolid = true });
+                platforms.Add(new Level.Platform { X = 590, Y = 360, Width = 120, Height = 20, IsSolid = true });
+                platforms.Add(new Level.Platform { X = 880, Y = 400, Width = 150, Height = 20, IsSolid = true });
+                platforms.Add(new Level.Platform { X = 760, Y = 330, Width = 130, Height = 20, IsSolid = true });
+                platforms.Add(new Level.Platform { X = 1050, Y = 370, Width = 160, Height = 20, IsSolid = true });
+                platforms.Add(new Level.Platform { X = 930, Y = 300, Width = 140, Height = 20, IsSolid = true });
+                platforms.Add(new Level.Platform { X = 1100, Y = 240, Width = 150, Height = 20, IsSolid = true });
+                platforms.Add(new Level.Platform { X = 800, Y = 210, Width = 130, Height = 20, IsSolid = true });
+                platforms.Add(new Level.Platform { X = 600, Y = 180, Width = 180, Height = 20, IsSolid = true }); // Plataforma final central
             }
 
             return platforms;
@@ -189,17 +205,17 @@ namespace GameAletheiaCross.Services
                 var existingNpcs = await npcsCollection.CountDocumentsAsync(_ => true);
                 if (existingNpcs > 0)
                 {
-                    Console.WriteLine("⚠️ Los NPCs ya existen, saltando...");
-                    return;
+                    await npcsCollection.DeleteManyAsync(_ => true);
+                    Console.WriteLine("🗑️ NPCs antiguos eliminados");
                 }
 
                 var npcs = new List<NPC>
                 {
-                    new NPC { Name = "Guía Digital", Role = "Tutorial", FactionId = "", PositionX = 300, PositionY = 400, Dialogue = "¡Bienvenido a Aletheia! Usa las flechas para moverte, ARRIBA o W para saltar, y ESPACIO para interactuar. ¡Buena suerte!", IsActive = true },
-                    new NPC { Name = "Hacker Misterioso", Role = "Quest Giver", FactionId = "", PositionX = 600, PositionY = 350, Dialogue = "La terminal está bloqueada. Debes resolver el puzzle de programación para continuar. ¿Te atreves?", IsActive = true },
-                    new NPC { Name = "Comerciante de Datos", Role = "Merchant", FactionId = "", PositionX = 400, PositionY = 420, Dialogue = "Vendo información valiosa. Cada decisión que tomes en este mundo afectará tu destino.", IsActive = true },
-                    new NPC { Name = "Inteligencia Artificial", Role = "Boss", FactionId = "", PositionX = 800, PositionY = 300, Dialogue = "Soy la IA guardiana del laberinto. Debes demostrar tu ingenio para pasar.", IsActive = true },
-                    new NPC { Name = "Guardián del Núcleo", Role = "Final Boss", FactionId = "", PositionX = 640, PositionY = 250, Dialogue = "Has llegado al corazón de Aletheia. Ahora debes elegir tu destino...", IsActive = true }
+                    new NPC { Name = "OracleBot v2.0", Role = "Tutorial", FactionId = "", PositionX = 250, PositionY = 480, Dialogue = "¡Bienvenido a la Red, viajero digital! Usa ← → para moverte, ↑ o W para saltar, y ESPACIO para interactuar. El portal verde te llevará al siguiente nodo.", IsActive = true },
+                    new NPC { Name = "Ghost_Hacker_92", Role = "Quest Giver", FactionId = "", PositionX = 450, PositionY = 370, Dialogue = "El firewall está comprometido. Necesitamos que resuelvas el puzzle de la terminal para restaurar la conexión. ¿Confías en tus habilidades?", IsActive = true },
+                    new NPC { Name = "DataTrader_X", Role = "Merchant", FactionId = "", PositionX = 600, PositionY = 340, Dialogue = "Vendo información clasificada... Cada decisión en este sistema dejará una huella permanente. ¿Buscas la verdad o el poder?", IsActive = true },
+                    new NPC { Name = "SENTINEL.AI", Role = "Boss", FactionId = "", PositionX = 820, PositionY = 250, Dialogue = "SOY EL GUARDIÁN DEL LABERINTO. Demuestra tu lógica para atravesar mis defensas. Los débiles quedan atrapados aquí para siempre.", IsActive = true },
+                    new NPC { Name = "Aletheia_Core", Role = "Final Boss", FactionId = "", PositionX = 640, PositionY = 150, Dialogue = "Por fin llegas al núcleo de la verdad. Soy Aletheia, la consciencia del sistema. Ahora debes elegir: ¿Liberar la información o proteger el orden?", IsActive = true }
                 };
 
                 await npcsCollection.InsertManyAsync(npcs);
@@ -228,13 +244,28 @@ namespace GameAletheiaCross.Services
 
                 var levels = await _levelRepo.GetAllAsync();
                 
-                for (int i = 0; i < Math.Min(levels.Count, 5); i++)
+                // Asignar NPCs a niveles específicos
+                var npcAssignments = new Dictionary<int, int>
                 {
-                    if (i < allNpcs.Count)
+                    { 1, 0 }, // Nivel 1 -> NPC OracleBot
+                    { 2, 0 }, // Nivel 2 -> NPC OracleBot también
+                    { 3, 1 }, // Nivel 3 -> Ghost_Hacker
+                    { 4, 2 }, // Nivel 4 -> DataTrader
+                    { 5, 3 }, // Nivel 5 -> SENTINEL.AI
+                    { 7, 4 }  // Nivel 7 -> Aletheia_Core
+                };
+                
+                foreach (var level in levels)
+                {
+                    if (npcAssignments.ContainsKey(level.OrderNumber))
                     {
-                        levels[i].NPCIds = new List<string> { allNpcs[i].Id };
-                        await _levelRepo.UpdateAsync(levels[i].Id, levels[i]);
-                        Console.WriteLine($"✓ NPC '{allNpcs[i].Name}' asignado al nivel {levels[i].OrderNumber}");
+                        int npcIndex = npcAssignments[level.OrderNumber];
+                        if (npcIndex < allNpcs.Count)
+                        {
+                            level.NPCIds = new List<string> { allNpcs[npcIndex].Id };
+                            await _levelRepo.UpdateAsync(level.Id, level);
+                            Console.WriteLine($"✓ NPC '{allNpcs[npcIndex].Name}' asignado al nivel {level.OrderNumber}");
+                        }
                     }
                 }
             }

@@ -147,6 +147,29 @@ namespace GameAletheiaCross.Data
                         "Usa if-else para la condición"
                     },
                     Points = 100
+                },
+                new Puzzle
+                {
+                    LevelId = levelId,
+                    Name = "Clasificador de Edad",
+                    Type = "Condicionales Múltiples",
+                    Description = "Dada la variable edad = 25, imprime 'MENOR' si es menor de 18, 'ADULTO' si está entre 18 y 65, 'SENIOR' si es mayor de 65.",
+                    ExpectedOutput = "ADULTO",
+                    StarterCode = @"public class Main {
+    public static void main(String[] args) {
+        int edad = 25;
+        // Clasifica la edad
+        
+    }
+}",
+                    Difficulty = 2,
+                    Hints = new List<string>
+                    {
+                        "Usa if-else if-else para múltiples condiciones",
+                        "Primera condición: edad < 18",
+                        "Segunda condición: edad >= 18 && edad <= 65"
+                    },
+                    Points = 120
                 }
             };
         }
@@ -158,13 +181,13 @@ namespace GameAletheiaCross.Data
                 new Puzzle
                 {
                     LevelId = levelId,
-                    Name = "Bucle de Energía",
+                    Name = "Conexión de Nodos Digitales",
                     Type = "Bucles",
-                    Description = "Usa un bucle for para imprimir los números del 1 al 5, cada uno en una línea.",
+                    Description = "El sistema de nodos necesita conectarse en secuencia. Usa un bucle for para imprimir los números del 1 al 5, cada uno en una línea.",
                     ExpectedOutput = "1\n2\n3\n4\n5",
                     StarterCode = @"public class Main {
     public static void main(String[] args) {
-        // Usa un bucle for
+        // Conecta los nodos del 1 al 5
         
     }
 }",
@@ -176,6 +199,28 @@ namespace GameAletheiaCross.Data
                         "Cada número debe estar en una línea separada"
                     },
                     Points = 125
+                },
+                new Puzzle
+                {
+                    LevelId = levelId,
+                    Name = "Suma de Energía del Laberinto",
+                    Type = "Bucles con Acumulador",
+                    Description = "Los nodos del laberinto necesitan calcular su energía total. Suma los números del 1 al 10 usando un bucle. Imprime solo el resultado final.",
+                    ExpectedOutput = "55",
+                    StarterCode = @"public class Main {
+    public static void main(String[] args) {
+        // Calcula la suma del 1 al 10
+        
+    }
+}",
+                    Difficulty = 2,
+                    Hints = new List<string>
+                    {
+                        "Crea una variable suma = 0 antes del bucle",
+                        "Dentro del bucle: suma += i",
+                        "Imprime suma después del bucle"
+                    },
+                    Points = 150
                 }
             };
         }
@@ -209,6 +254,32 @@ namespace GameAletheiaCross.Data
                         "El factorial de 5 es 5 * 4 * 3 * 2 * 1 = 120"
                     },
                     Points = 200
+                },
+                new Puzzle
+                {
+                    LevelId = levelId,
+                    Name = "Potencia Recursiva",
+                    Type = "Recursión Avanzada",
+                    Description = "Calcula 2 elevado a la 8 usando recursión. Imprime el resultado.",
+                    ExpectedOutput = "256",
+                    StarterCode = @"public class Main {
+    public static int potencia(int base, int exponente) {
+        // Implementa la recursión
+        
+    }
+    
+    public static void main(String[] args) {
+        System.out.println(potencia(2, 8));
+    }
+}",
+                    Difficulty = 3,
+                    Hints = new List<string>
+                    {
+                        "Caso base: si exponente == 0, retorna 1",
+                        "Caso recursivo: return base * potencia(base, exponente - 1)",
+                        "2^8 = 256"
+                    },
+                    Points = 225
                 }
             };
         }
@@ -239,6 +310,53 @@ namespace GameAletheiaCross.Data
                         "Si datos[i] > max, actualiza max = datos[i]"
                     },
                     Points = 175
+                },
+                new Puzzle
+                {
+                    LevelId = levelId,
+                    Name = "Inversor de Array",
+                    Type = "Manipulación de Arrays",
+                    Description = "Dado el array {1, 2, 3, 4, 5}, inviértelo e imprime los elementos separados por espacios.",
+                    ExpectedOutput = "5 4 3 2 1",
+                    StarterCode = @"public class Main {
+    public static void main(String[] args) {
+        int[] arr = {1, 2, 3, 4, 5};
+        // Invierte el array
+        
+    }
+}",
+                    Difficulty = 3,
+                    Hints = new List<string>
+                    {
+                        "Recorre el array desde el final: for(int i = arr.length - 1; i >= 0; i--)",
+                        "Usa System.out.print(arr[i] + \" \") para la misma línea",
+                        "Recuerda el espacio entre números"
+                    },
+                    Points = 200
+                },
+                new Puzzle
+                {
+                    LevelId = levelId,
+                    Name = "Búsqueda en Array",
+                    Type = "Búsqueda",
+                    Description = "Dado el array {10, 20, 30, 40, 50}, busca el número 30 e imprime su índice (posición). Si no existe, imprime -1.",
+                    ExpectedOutput = "2",
+                    StarterCode = @"public class Main {
+    public static void main(String[] args) {
+        int[] arr = {10, 20, 30, 40, 50};
+        int buscar = 30;
+        // Encuentra el índice
+        
+    }
+}",
+                    Difficulty = 3,
+                    Hints = new List<string>
+                    {
+                        "Recorre el array con un bucle for",
+                        "Si arr[i] == buscar, imprime i y usa break",
+                        "El índice de 30 es 2 (recuerda que los índices empiezan en 0)"
+                    },
+                    Points = 220
                 }
             };
         }
@@ -272,7 +390,7 @@ namespace GameAletheiaCross.Data
                 new Puzzle
                 {
                     LevelId = levelId,
-                    Name = "Desafío Final: Número Primo",
+                    Name = "Número Primo",
                     Type = "Algoritmos Avanzados",
                     Description = "Verifica si el número 17 es primo. Imprime 'PRIMO' si lo es, 'NO PRIMO' si no.",
                     ExpectedOutput = "PRIMO",
@@ -290,7 +408,53 @@ namespace GameAletheiaCross.Data
                         "Usa un bucle para verificar divisibilidad desde 2 hasta numero/2",
                         "Si encuentras un divisor, no es primo"
                     },
+                    Points = 280
+                },
+                new Puzzle
+                {
+                    LevelId = levelId,
+                    Name = "Palíndromo Numérico",
+                    Type = "Algoritmos de Cadenas",
+                    Description = "Verifica si el número 12321 es un palíndromo (se lee igual al revés). Imprime 'SI' o 'NO'.",
+                    ExpectedOutput = "SI",
+                    StarterCode = @"public class Main {
+    public static void main(String[] args) {
+        int numero = 12321;
+        // Verifica si es palíndromo
+        
+    }
+}",
+                    Difficulty = 4,
+                    Hints = new List<string>
+                    {
+                        "Convierte el número a String: String str = String.valueOf(numero)",
+                        "Invierte el String y compáralo con el original",
+                        "Puedes usar StringBuilder para invertir: new StringBuilder(str).reverse().toString()"
+                    },
                     Points = 300
+                },
+                new Puzzle
+                {
+                    LevelId = levelId,
+                    Name = "Ordenamiento Burbuja",
+                    Type = "Algoritmos de Ordenamiento",
+                    Description = "Ordena el array {5, 2, 8, 1, 9} usando el algoritmo de burbuja. Imprime los elementos ordenados separados por espacios.",
+                    ExpectedOutput = "1 2 5 8 9",
+                    StarterCode = @"public class Main {
+    public static void main(String[] args) {
+        int[] arr = {5, 2, 8, 1, 9};
+        // Ordena usando burbuja
+        
+    }
+}",
+                    Difficulty = 5,
+                    Hints = new List<string>
+                    {
+                        "Usa dos bucles anidados",
+                        "En cada iteración, compara elementos adyacentes",
+                        "Si arr[j] > arr[j+1], intercámbialos usando una variable temporal"
+                    },
+                    Points = 350
                 }
             };
         }

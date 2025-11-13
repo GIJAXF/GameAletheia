@@ -35,9 +35,14 @@ namespace GameAletheiaCross.Services
             try
             {
                 var player = await _playerRepo.GetByIdAsync(playerId);
-                if (player == null) return false;
+                if (player == null)
+                {
+                    Console.WriteLine("❌ Jugador no encontrado");
+                    return false;
+                }
 
                 var totalLevels = await _levelRepo.GetTotalLevelsAsync();
+                Console.WriteLine($"🔍 Nivel actual: {player.CurrentLevel}, Total niveles: {totalLevels}");
 
                 if (player.CurrentLevel >= totalLevels)
                 {
@@ -46,43 +51,25 @@ namespace GameAletheiaCross.Services
                 }
 
                 player.CurrentLevel++;
-                await _playerRepo.UpdateAsync(playerId, player);
-
-                Console.WriteLine($"✓ Jugador avanzó al nivel {player.CurrentLevel}");
-                return true;
-            }
-            catch (Exception ex)
-            {
-                Console.WriteLine($"✗ Error avanzando nivel: {ex.Message}");
-                return false;
-            }
-        }
-
-        /// <summary>
-        /// Verifica si el jugador cumple los requisitos para avanzar de nivel.
-        /// </summary>
-        /// <param name="playerId">ID del jugador.</param>
-        /// <param name="levelId">ID del nivel actual.</param>
-        /// <returns>True si puede avanzar; False si no.</returns>
-        public async Task<bool> CanAdvanceAsync(string playerId, string levelId)
-        {
-            try
-            {
-                var level = await _levelRepo.GetByIdAsync(levelId);
-                if (level == null) return false;
-
-                var puzzle = await _puzzleRepo.GetByLevelIdAsync(levelId);
-                if (puzzle != null)
+                player.LastPlayed = DateTime.UtcNow;
+                
+                bool updated = await _playerRepo.UpdateAsync(playerId, player);
+                
+                if (updated)
                 {
-                    // Aquí podrías verificar si el puzzle fue completado.
+                    Console.WriteLine($"✅ Jugador avanzó al nivel {player.CurrentLevel}");
                     return true;
                 }
-
-                return true;
+                else
+                {
+                    Console.WriteLine("❌ No se pudo actualizar el jugador en la base de datos");
+                    return false;
+                }
             }
             catch (Exception ex)
             {
-                Console.WriteLine($"✗ Error verificando progreso: {ex.Message}");
+                Console.WriteLine($"❌ Error avanzando nivel: {ex.Message}");
+                Console.WriteLine($"   Stack: {ex.StackTrace}");
                 return false;
             }
         }
@@ -97,13 +84,29 @@ namespace GameAletheiaCross.Services
             try
             {
                 var player = await _playerRepo.GetByIdAsync(playerId);
-                if (player == null) return null;
+                if (player == null)
+                {
+                    Console.WriteLine("❌ Jugador no encontrado al obtener nivel");
+                    return null;
+                }
 
-                return await _levelRepo.GetByOrderNumberAsync(player.CurrentLevel);
+                Console.WriteLine($"🔍 Buscando nivel {player.CurrentLevel}...");
+                var level = await _levelRepo.GetByOrderNumberAsync(player.CurrentLevel);
+                
+                if (level == null)
+                {
+                    Console.WriteLine($"❌ No se encontró el nivel {player.CurrentLevel}");
+                }
+                else
+                {
+                    Console.WriteLine($"✅ Nivel encontrado: {level.Name}");
+                }
+                
+                return level;
             }
             catch (Exception ex)
             {
-                Console.WriteLine($"✗ Error obteniendo nivel actual: {ex.Message}");
+                Console.WriteLine($"❌ Error obteniendo nivel actual: {ex.Message}");
                 return null;
             }
         }
