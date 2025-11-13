@@ -28,6 +28,10 @@ namespace GameAletheiaCross.Services
                 await DeleteAllLevelsAsync();
             }
 
+            // PRIMERO: Crear y guardar NPCs
+            Console.WriteLine("👾 Creando NPCs...");
+            await CreateNPCsAsync();
+
             var levels = new List<Level>
             {
                 new Level { OrderNumber = 1, Name = "El Despertar Digital", Description = "Tu primera inmersión en la red. Aprende los controles básicos.", Background = "forest", Difficulty = 1, Platforms = GeneratePlatformsForLevel(1), NPCIds = new List<string>() },
@@ -39,21 +43,20 @@ namespace GameAletheiaCross.Services
                 new Level { OrderNumber = 7, Name = "El Archivo Prohibido", Description = "Descubre la verdad oculta detrás de Aletheia.", Background = "archive", Difficulty = 4, Platforms = GeneratePlatformsForLevel(7), NPCIds = new List<string>() },
             };
 
+            // SEGUNDO: Crear niveles
+            Console.WriteLine("🗺️ Creando niveles...");
             foreach (var level in levels)
             {
                 await _levelRepo.CreateAsync(level);
-                Console.WriteLine($"✓ Nivel creado: {level.Name} (Orden: {level.OrderNumber}, Plataformas: {level.Platforms.Count})");
+                Console.WriteLine($"  ✓ Nivel creado: {level.Name} (Orden: {level.OrderNumber}, Plataformas: {level.Platforms.Count})");
             }
 
-            var createdLevels = await _levelRepo.GetAllAsync();
-
-            // Ahora los puzzles se crean en SeedData.cs
-            Console.WriteLine("ℹ️ Los puzzles se generarán desde SeedData.cs");
-
-            await CreateNPCsForLevelsAsync();
+            // TERCERO: Asignar NPCs a niveles
+            Console.WriteLine("🔗 Asignando NPCs a niveles...");
             await AssignNPCsToLevelsAsync();
 
-            Console.WriteLine("✅ Todos los niveles, NPCs y puzzles han sido generados correctamente.");
+            Console.WriteLine("ℹ️ Los puzzles se generarán desde SeedData.cs");
+            Console.WriteLine("✅ Todos los niveles y NPCs han sido generados correctamente.");
         }
 
         private List<Level.Platform> GeneratePlatformsForLevel(int levelNumber)
@@ -195,35 +198,92 @@ namespace GameAletheiaCross.Services
             }
         }
 
-        private async Task CreateNPCsForLevelsAsync()
+        private async Task CreateNPCsAsync()
         {
             try
             {
                 var dbService = new MongoDbService();
                 var npcsCollection = dbService.GetCollection<NPC>("npcs");
                 
-                var existingNpcs = await npcsCollection.CountDocumentsAsync(_ => true);
-                if (existingNpcs > 0)
+                // Eliminar NPCs existentes
+                var existingCount = await npcsCollection.CountDocumentsAsync(_ => true);
+                if (existingCount > 0)
                 {
                     await npcsCollection.DeleteManyAsync(_ => true);
-                    Console.WriteLine("🗑️ NPCs antiguos eliminados");
+                    Console.WriteLine($"🗑️ {existingCount} NPCs antiguos eliminados");
                 }
 
-                var npcs = new List<NPC>
-                {
-                    new NPC { Name = "OracleBot v2.0", Role = "Tutorial", FactionId = "", PositionX = 250, PositionY = 480, Dialogue = "¡Bienvenido a la Red, viajero digital! Usa ← → para moverte, ↑ o W para saltar, y ESPACIO para interactuar. El portal verde te llevará al siguiente nodo.", IsActive = true },
-                    new NPC { Name = "Ghost_Hacker_92", Role = "Quest Giver", FactionId = "", PositionX = 450, PositionY = 370, Dialogue = "El firewall está comprometido. Necesitamos que resuelvas el puzzle de la terminal para restaurar la conexión. ¿Confías en tus habilidades?", IsActive = true },
-                    new NPC { Name = "DataTrader_X", Role = "Merchant", FactionId = "", PositionX = 600, PositionY = 340, Dialogue = "Vendo información clasificada... Cada decisión en este sistema dejará una huella permanente. ¿Buscas la verdad o el poder?", IsActive = true },
-                    new NPC { Name = "SENTINEL.AI", Role = "Boss", FactionId = "", PositionX = 820, PositionY = 250, Dialogue = "SOY EL GUARDIÁN DEL LABERINTO. Demuestra tu lógica para atravesar mis defensas. Los débiles quedan atrapados aquí para siempre.", IsActive = true },
-                    new NPC { Name = "Aletheia_Core", Role = "Final Boss", FactionId = "", PositionX = 640, PositionY = 150, Dialogue = "Por fin llegas al núcleo de la verdad. Soy Aletheia, la consciencia del sistema. Ahora debes elegir: ¿Liberar la información o proteger el orden?", IsActive = true }
-                };
+                // Crear NPCs con posiciones ajustadas a las plataformas de cada nivel
+var npcs = new List<NPC>
+{
+    new NPC 
+    { 
+        Name = "OracleBot v2.0", 
+        Role = "Tutorial", 
+        FactionId = null, 
+        PositionX = 550, 
+        PositionY = 400, 
+        Dialogue = "¡Bienvenido a la Red, viajero digital! Usa ← → o A D para moverte, ↑ o W para saltar, y ESPACIO para interactuar. El portal verde te llevará al siguiente nodo.", 
+        IsActive = true 
+    },
+    
+    new NPC 
+    { 
+        Name = "Ghost_Hacker_92", 
+        Role = "Quest Giver", 
+        FactionId = null, 
+        PositionX = 520, 
+        PositionY = 410, 
+        Dialogue = "El firewall está comprometido. Las contraseñas se han perdido en el sistema. Explora con cuidado... algunas plataformas son trampas.", 
+        IsActive = true 
+    },
+    
+    new NPC 
+    { 
+        Name = "DataTrader_X", 
+        Role = "Merchant", 
+        FactionId = null, 
+        PositionX = 400, 
+        PositionY = 310, 
+        Dialogue = "Vendo información clasificada... Este laberinto guarda puzzles lógicos. Resuelve el código para desbloquear el siguiente nodo. Presiona T para la terminal.", 
+        IsActive = true 
+    },
+    
+    new NPC 
+    { 
+        Name = "SENTINEL.AI", 
+        Role = "Boss", 
+        FactionId = null, 
+        PositionX = 640, 
+        PositionY = 160, 
+        Dialogue = "SOY EL GUARDIÁN DEL SANTUARIO. Los datos sagrados están protegidos por algoritmos recursivos. Demuestra tu dominio de la recursión para avanzar.", 
+        IsActive = true 
+    },
+    
+    new NPC 
+    { 
+        Name = "Aletheia_Core", 
+        Role = "Final Boss", 
+        FactionId = null, 
+        PositionX = 680, 
+        PositionY = 160, 
+        Dialogue = "Por fin llegas al núcleo de la verdad. Soy Aletheia, la consciencia del sistema. Has superado todos los desafíos. El conocimiento ahora es tuyo.", 
+        IsActive = true 
+    }
+};
+
 
                 await npcsCollection.InsertManyAsync(npcs);
-                Console.WriteLine($"✓ {npcs.Count} NPCs creados");
+                Console.WriteLine($"✅ {npcs.Count} NPCs creados con éxito");
+                
+                // Verificar que se guardaron
+                var verifyCount = await npcsCollection.CountDocumentsAsync(_ => true);
+                Console.WriteLine($"🔍 Verificación: {verifyCount} NPCs en la base de datos");
             }
             catch (Exception ex)
             {
                 Console.WriteLine($"❌ Error creando NPCs: {ex.Message}");
+                Console.WriteLine($"   Stack: {ex.StackTrace}");
             }
         }
 
@@ -236,21 +296,27 @@ namespace GameAletheiaCross.Services
                 
                 var allNpcs = await npcsCollection.Find(_ => true).ToListAsync();
                 
-                if (allNpcs.Count < 5)
+                if (allNpcs.Count == 0)
                 {
-                    Console.WriteLine("⚠️ No hay suficientes NPCs para asignar");
+                    Console.WriteLine("❌ No hay NPCs para asignar");
                     return;
                 }
 
+                Console.WriteLine($"📋 NPCs disponibles para asignar: {allNpcs.Count}");
+                foreach (var npc in allNpcs)
+                {
+                    Console.WriteLine($"   - {npc.Name} (ID: {npc.Id})");
+                }
+
                 var levels = await _levelRepo.GetAllAsync();
+                Console.WriteLine($"📋 Niveles disponibles: {levels.Count}");
                 
                 // Asignar NPCs a niveles específicos
                 var npcAssignments = new Dictionary<int, int>
                 {
-                    { 1, 0 }, // Nivel 1 -> NPC OracleBot
-                    { 2, 0 }, // Nivel 2 -> NPC OracleBot también
-                    { 3, 1 }, // Nivel 3 -> Ghost_Hacker
-                    { 4, 2 }, // Nivel 4 -> DataTrader
+                    { 1, 0 }, // Nivel 1 -> OracleBot v2.0
+                    { 3, 1 }, // Nivel 3 -> Ghost_Hacker_92
+                    { 4, 2 }, // Nivel 4 -> DataTrader_X
                     { 5, 3 }, // Nivel 5 -> SENTINEL.AI
                     { 7, 4 }  // Nivel 7 -> Aletheia_Core
                 };
@@ -263,15 +329,36 @@ namespace GameAletheiaCross.Services
                         if (npcIndex < allNpcs.Count)
                         {
                             level.NPCIds = new List<string> { allNpcs[npcIndex].Id };
-                            await _levelRepo.UpdateAsync(level.Id, level);
-                            Console.WriteLine($"✓ NPC '{allNpcs[npcIndex].Name}' asignado al nivel {level.OrderNumber}");
+                            bool updated = await _levelRepo.UpdateAsync(level.Id, level);
+                            
+                            if (updated)
+                            {
+                                Console.WriteLine($"✅ NPC '{allNpcs[npcIndex].Name}' asignado al nivel {level.OrderNumber} ({level.Name})");
+                            }
+                            else
+                            {
+                                Console.WriteLine($"❌ Error al asignar NPC al nivel {level.OrderNumber}");
+                            }
                         }
                     }
+                    else
+                    {
+                        Console.WriteLine($"ℹ️ Nivel {level.OrderNumber} no tiene NPC asignado");
+                    }
+                }
+                
+                // Verificar la asignación
+                Console.WriteLine("\n🔍 Verificando asignación de NPCs:");
+                var verifyLevels = await _levelRepo.GetAllAsync();
+                foreach (var level in verifyLevels)
+                {
+                    Console.WriteLine($"   Nivel {level.OrderNumber}: {level.NPCIds?.Count ?? 0} NPCs, {level.NPCs?.Count ?? 0} NPCs cargados");
                 }
             }
             catch (Exception ex)
             {
                 Console.WriteLine($"❌ Error asignando NPCs: {ex.Message}");
+                Console.WriteLine($"   Stack: {ex.StackTrace}");
             }
         }
     }
