@@ -13,8 +13,7 @@
                    FontSize="26"
                    FontWeight="Bold"
                    HorizontalAlignment="Center"
-                   Foreground="#00D9FF"
-                   FontFamily=" "/>
+                   Foreground="#00D9FF" />
 
         <!-- Mostrar partidas guardadas -->
         <Border Background="#1a1a2e" 
@@ -62,8 +61,7 @@
         <TextBlock Text="{Binding Players.Count, StringFormat='Total de partidas: {0}'}"
                    FontSize="12"
                    Foreground="#AAAAAA"
-                   HorizontalAlignment="Center"
-                   FontFamily=" "/>
+                   HorizontalAlignment="Center" />
 
         <Button Content="Volver"
                 Command="{Binding BackCommand}"
@@ -72,7 +70,6 @@
                 Margin="0,20,0,0"
                 HorizontalAlignment="Center"
                 Background="#533483"
-                Foreground="White"
-                FontFamily=" "/>
+                Foreground="White" />
     </StackPanel>
 </UserControl>

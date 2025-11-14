@@ -25,12 +25,12 @@ namespace GameAletheiaCross.Services.Database
             try
             {
                 _database.RunCommandAsync((Command<MongoDB.Bson.BsonDocument>)"{ping:1}").Wait();
-                Console.WriteLine("✓ Conexión a MongoDB exitosa");
+                Console.WriteLine("  Conexión a MongoDB exitosa");
                 return true;
             }
             catch (Exception ex)
             {
-                Console.WriteLine($"✗ Error de conexión: {ex.Message}");
+                Console.WriteLine($"  Error de conexión: {ex.Message}");
                 return false;
             }
         }

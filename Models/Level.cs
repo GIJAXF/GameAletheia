@@ -44,7 +44,7 @@ namespace GameAletheiaCross.Models
         [BsonIgnore]
         public List<NPC> NPCs { get; set; } = new();
 
-        // 👇 ESTAS CLASES ANIDADAS SON IMPORTANTES
+        //   ESTAS CLASES ANIDADAS SON IMPORTANTES
         public class Platform
         {
             [BsonElement("x")]

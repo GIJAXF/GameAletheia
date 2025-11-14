@@ -20,7 +20,7 @@ namespace GameAletheiaCross.Services
             // Crear un directorio temporal único para cada sesión
             _tempDirectory = Path.Combine(Path.GetTempPath(), $"HackerFantasma_{Guid.NewGuid()}");
             Directory.CreateDirectory(_tempDirectory);
-            Console.WriteLine($"📁 Directorio temporal creado: {_tempDirectory}");
+            Console.WriteLine($"  Directorio temporal creado: {_tempDirectory}");
         }
         
         public async Task<CompilationResult> CompileAndRunAsync(string code, string expectedOutput)
@@ -29,7 +29,7 @@ namespace GameAletheiaCross.Services
             
             try
             {
-                // ⚠️ IMPORTANTE: Limpiar archivos anteriores ANTES de compilar
+                //  ️ IMPORTANTE: Limpiar archivos anteriores ANTES de compilar
                 CleanupTempFiles();
                 
                 // Recrear el directorio temporal
@@ -50,27 +50,27 @@ namespace GameAletheiaCross.Services
                 
                 // Escribir el código en el archivo
                 await File.WriteAllTextAsync(sourceFile, code);
-                Console.WriteLine($"✍️ Código escrito en: {sourceFile}");
+                Console.WriteLine($" ️ Código escrito en: {sourceFile}");
                 
                 // Compilar
                 var compileResult = await CompileAsync(sourceFile, className);
                 if (!compileResult.Success)
                 {
-                    Console.WriteLine($"❌ Compilación falló");
+                    Console.WriteLine($"  Compilación falló");
                     return compileResult;
                 }
                 
-                Console.WriteLine($"✓ Compilación exitosa");
+                Console.WriteLine($"  Compilación exitosa");
                 
                 // Ejecutar
                 var executeResult = await ExecuteAsync(className);
                 if (!executeResult.Success)
                 {
-                    Console.WriteLine($"❌ Ejecución falló");
+                    Console.WriteLine($"  Ejecución falló");
                     return executeResult;
                 }
                 
-                Console.WriteLine($"✓ Ejecución exitosa");
+                Console.WriteLine($"  Ejecución exitosa");
                 
                 // Comparar salida
                 result.Output = executeResult.Output;
@@ -82,14 +82,14 @@ namespace GameAletheiaCross.Services
                 }
                 else
                 {
-                    Console.WriteLine($"✓ Salida correcta");
+                    Console.WriteLine($"  Salida correcta");
                 }
             }
             catch (Exception ex)
             {
                 result.Success = false;
                 result.ErrorMessage = $"Error: {ex.Message}";
-                Console.WriteLine($"❌ Error en CompileAndRunAsync: {ex.Message}");
+                Console.WriteLine($"  Error en CompileAndRunAsync: {ex.Message}");
             }
             finally
             {
@@ -119,11 +119,11 @@ namespace GameAletheiaCross.Services
                     try
                     {
                         File.Delete(file);
-                        Console.WriteLine($"🗑️ Eliminado: {Path.GetFileName(file)}");
+                        Console.WriteLine($" ️ Eliminado: {Path.GetFileName(file)}");
                     }
                     catch (Exception ex)
                     {
-                        Console.WriteLine($"⚠️ No se pudo eliminar {file}: {ex.Message}");
+                        Console.WriteLine($" ️ No se pudo eliminar {file}: {ex.Message}");
                     }
                 }
                 
@@ -156,7 +156,7 @@ namespace GameAletheiaCross.Services
                     {
                         result.Success = false;
                         result.ErrorMessage = $"Error de compilación:\n{error}";
-                        Console.WriteLine($"❌ javac ExitCode: {process.ExitCode}");
+                        Console.WriteLine($"  javac ExitCode: {process.ExitCode}");
                         Console.WriteLine($"   Error: {error}");
                     }
                     else
@@ -167,11 +167,11 @@ namespace GameAletheiaCross.Services
                         string classFile = Path.Combine(_tempDirectory, $"{className}.class");
                         if (File.Exists(classFile))
                         {
-                            Console.WriteLine($"✓ Archivo .class creado: {classFile}");
+                            Console.WriteLine($"  Archivo .class creado: {classFile}");
                         }
                         else
                         {
-                            Console.WriteLine($"⚠️ Advertencia: archivo .class no encontrado");
+                            Console.WriteLine($" ️ Advertencia: archivo .class no encontrado");
                         }
                     }
                 }
@@ -180,7 +180,7 @@ namespace GameAletheiaCross.Services
             {
                 result.Success = false;
                 result.ErrorMessage = $"Error ejecutando javac: {ex.Message}";
-                Console.WriteLine($"❌ Excepción en CompileAsync: {ex.Message}");
+                Console.WriteLine($"  Excepción en CompileAsync: {ex.Message}");
             }
             
             return result;
@@ -221,13 +221,13 @@ namespace GameAletheiaCross.Services
                     {
                         result.Success = false;
                         result.ErrorMessage = $"Error de ejecución:\n{error}";
-                        Console.WriteLine($"❌ java error: {error}");
+                        Console.WriteLine($"  java error: {error}");
                     }
                     else
                     {
                         result.Success = true;
                         result.Output = output.Trim();
-                        Console.WriteLine($"✓ Output: '{result.Output}'");
+                        Console.WriteLine($"  Output: '{result.Output}'");
                     }
                 }
             }
@@ -235,7 +235,7 @@ namespace GameAletheiaCross.Services
             {
                 result.Success = false;
                 result.ErrorMessage = $"Error ejecutando java: {ex.Message}";
-                Console.WriteLine($"❌ Excepción en ExecuteAsync: {ex.Message}");
+                Console.WriteLine($"  Excepción en ExecuteAsync: {ex.Message}");
             }
             
             return result;
@@ -248,7 +248,7 @@ namespace GameAletheiaCross.Services
             
             bool matches = actual.Equals(expected, StringComparison.Ordinal);
             
-            Console.WriteLine($"🔍 Comparación de salida:");
+            Console.WriteLine($"  Comparación de salida:");
             Console.WriteLine($"   Esperado: '{expected}'");
             Console.WriteLine($"   Obtenido: '{actual}'");
             Console.WriteLine($"   Coincide: {matches}");
@@ -272,7 +272,7 @@ namespace GameAletheiaCross.Services
                         }
                         catch (Exception ex)
                         {
-                            Console.WriteLine($"⚠️ No se pudo eliminar {Path.GetFileName(file)}: {ex.Message}");
+                            Console.WriteLine($" ️ No se pudo eliminar {Path.GetFileName(file)}: {ex.Message}");
                         }
                     }
                     
@@ -282,7 +282,7 @@ namespace GameAletheiaCross.Services
                         if (Directory.GetFiles(_tempDirectory).Length == 0)
                         {
                             Directory.Delete(_tempDirectory, false);
-                            Console.WriteLine($"🗑️ Directorio temporal eliminado");
+                            Console.WriteLine($" ️ Directorio temporal eliminado");
                             
                             // Crear uno nuevo para la próxima compilación
                             CreateNewTempDirectory();
@@ -296,7 +296,7 @@ namespace GameAletheiaCross.Services
             }
             catch (Exception ex)
             {
-                Console.WriteLine($"⚠️ Error limpiando archivos temporales: {ex.Message}");
+                Console.WriteLine($" ️ Error limpiando archivos temporales: {ex.Message}");
             }
         }
         

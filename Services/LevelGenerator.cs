@@ -24,12 +24,12 @@ namespace GameAletheiaCross.Services
             var existingCount = await _levelRepo.GetTotalLevelsAsync();
             if (existingCount > 0)
             {
-                Console.WriteLine($"⚠️ Ya existen {existingCount} niveles. Eliminando para regenerar...");
+                Console.WriteLine($" ️ Ya existen {existingCount} niveles. Eliminando para regenerar...");
                 await DeleteAllLevelsAsync();
             }
 
             // PRIMERO: Crear y guardar NPCs
-            Console.WriteLine("👾 Creando NPCs...");
+            Console.WriteLine("  Creando NPCs...");
             await CreateNPCsAsync();
 
             var levels = new List<Level>
@@ -44,15 +44,15 @@ namespace GameAletheiaCross.Services
             };
 
             // SEGUNDO: Crear niveles
-            Console.WriteLine("🗺️ Creando niveles...");
+            Console.WriteLine(" ️ Creando niveles...");
             foreach (var level in levels)
             {
                 await _levelRepo.CreateAsync(level);
-                Console.WriteLine($"  ✓ Nivel creado: {level.Name} (Orden: {level.OrderNumber}, Plataformas: {level.Platforms.Count})");
+                Console.WriteLine($"    Nivel creado: {level.Name} (Orden: {level.OrderNumber}, Plataformas: {level.Platforms.Count})");
             }
 
             // TERCERO: Asignar NPCs a niveles
-            Console.WriteLine("🔗 Asignando NPCs a niveles...");
+            Console.WriteLine("  Asignando NPCs a niveles...");
             await AssignNPCsToLevelsAsync();
 
             Console.WriteLine(" Los puzzles se generarán desde SeedData.cs");
@@ -190,11 +190,11 @@ namespace GameAletheiaCross.Services
                 {
                     await _levelRepo.DeleteAsync(level.Id);
                 }
-                Console.WriteLine($"🗑️ {allLevels.Count} niveles antiguos eliminados");
+                Console.WriteLine($" ️ {allLevels.Count} niveles antiguos eliminados");
             }
             catch (Exception ex)
             {
-                Console.WriteLine($"⚠️ Error al eliminar niveles: {ex.Message}");
+                Console.WriteLine($" ️ Error al eliminar niveles: {ex.Message}");
             }
         }
 
@@ -216,7 +216,7 @@ private async Task CreateNPCsAsync()
         if (existingCount > 0)
         {
             await npcsCollection.DeleteManyAsync(_ => true);
-            Console.WriteLine($"🗑️ {existingCount} NPCs antiguos eliminados");
+            Console.WriteLine($" ️ {existingCount} NPCs antiguos eliminados");
         }
 
         // ============================
@@ -415,14 +415,14 @@ private async Task CreateNPCsAsync()
 
         // Insertar
         await npcsCollection.InsertManyAsync(npcs);
-        Console.WriteLine($"✅ {npcs.Count} NPCs creados con posiciones ajustadas");
+        Console.WriteLine($"  {npcs.Count} NPCs creados con posiciones ajustadas");
 
         // Verificar
         var verifyCount = await npcsCollection.CountDocumentsAsync(_ => true);
-        Console.WriteLine($"✅ Verificación: {verifyCount} NPCs en la base de datos");
+        Console.WriteLine($"  Verificación: {verifyCount} NPCs en la base de datos");
         
         // Mostrar posiciones
-        Console.WriteLine("\n📍 Posiciones de NPCs:");
+        Console.WriteLine("\n  Posiciones de NPCs:");
         foreach (var npc in npcs)
         {
             Console.WriteLine($"   {npc.Name.Split('—')[0].Trim()}: X={npc.PositionX}, Y={npc.PositionY}");
@@ -430,7 +430,7 @@ private async Task CreateNPCsAsync()
     }
     catch (Exception ex)
     {
-        Console.WriteLine($"❌ Error creando NPCs: {ex.Message}");
+        Console.WriteLine($"  Error creando NPCs: {ex.Message}");
         Console.WriteLine($"   Stack: {ex.StackTrace}");
     }
 }
@@ -447,16 +447,16 @@ private async Task AssignNPCsToLevelsAsync()
 
         if (allNpcs.Count == 0)
         {
-            Console.WriteLine("❌ No hay NPCs para asignar");
+            Console.WriteLine("  No hay NPCs para asignar");
             return;
         }
 
-        Console.WriteLine($"📋 NPCs disponibles para asignar: {allNpcs.Count}");
+        Console.WriteLine($"  NPCs disponibles para asignar: {allNpcs.Count}");
         foreach (var npc in allNpcs)
             Console.WriteLine($"   - {npc.Name} (ID: {npc.Id})");
 
         var levels = await _levelRepo.GetAllAsync();
-        Console.WriteLine($"📋 Niveles disponibles: {levels.Count}");
+        Console.WriteLine($"  Niveles disponibles: {levels.Count}");
 
         // =============================================================
         // ASIGNACIÓN DEFINITIVA BASADA EN LOS COMENTARIOS DEL PROYECTO
@@ -517,24 +517,24 @@ private async Task AssignNPCsToLevelsAsync()
                 if (updated)
                 {
                     Console.WriteLine(
-                        $"✅ Nivel {level.OrderNumber} → NPCs asignados: {string.Join(", ", npcIds)}"
+                        $"  Nivel {level.OrderNumber} → NPCs asignados: {string.Join(", ", npcIds)}"
                     );
                 }
                 else
                 {
-                    Console.WriteLine($"❌ No se pudo actualizar el nivel {level.OrderNumber}");
+                    Console.WriteLine($"  No se pudo actualizar el nivel {level.OrderNumber}");
                 }
             }
             else
             {
-                Console.WriteLine($"ℹ️ Nivel {level.OrderNumber} sin NPC asignado");
+                Console.WriteLine($"Nivel {level.OrderNumber} sin NPC asignado");
             }
         }
 
         // =============================================================
         // VERIFICACIÓN FINAL
         // =============================================================
-        Console.WriteLine("\n🔍 Verificando asignación de NPCs:");
+        Console.WriteLine("\n  Verificando asignación de NPCs:");
         var verifyLevels = await _levelRepo.GetAllAsync();
 
         foreach (var level in verifyLevels)
@@ -546,7 +546,7 @@ private async Task AssignNPCsToLevelsAsync()
     }
     catch (Exception ex)
     {
-        Console.WriteLine($"❌ Error asignando NPCs: {ex.Message}");
+        Console.WriteLine($"  Error asignando NPCs: {ex.Message}");
         Console.WriteLine($"   Stack: {ex.StackTrace}");
     }
 }

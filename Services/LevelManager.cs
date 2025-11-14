@@ -46,7 +46,7 @@ namespace GameAletheiaCross.Services
 
                 if (player.CurrentLevel >= totalLevels)
                 {
-                    Console.WriteLine("🏆 ¡El jugador ha completado todos los niveles!");
+                    Console.WriteLine("  ¡El jugador ha completado todos los niveles!");
                     return false;
                 }
 
@@ -130,12 +130,12 @@ namespace GameAletheiaCross.Services
                 player.TotalScore += puzzle.Points;
                 await _playerRepo.UpdateAsync(playerId, player);
 
-                Console.WriteLine($"✓ Puzzle completado: +{puzzle.Points} puntos");
+                Console.WriteLine($"  Puzzle completado: +{puzzle.Points} puntos");
                 return true;
             }
             catch (Exception ex)
             {
-                Console.WriteLine($"✗ Error completando puzzle: {ex.Message}");
+                Console.WriteLine($"  Error completando puzzle: {ex.Message}");
                 return false;
             }
         }
@@ -161,12 +161,12 @@ namespace GameAletheiaCross.Services
 
                 await _playerRepo.UpdateAsync(playerId, player);
 
-                Console.WriteLine("✓ Nivel reiniciado");
+                Console.WriteLine("  Nivel reiniciado");
                 return true;
             }
             catch (Exception ex)
             {
-                Console.WriteLine($"✗ Error reiniciando nivel: {ex.Message}");
+                Console.WriteLine($"  Error reiniciando nivel: {ex.Message}");
                 return false;
             }
         }

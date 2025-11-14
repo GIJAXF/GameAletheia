@@ -33,7 +33,7 @@ namespace GameAletheiaCross.Views
         public GameView()
         {
             InitializeComponent();
-            Console.WriteLine("🎮 GameView inicializado");
+            Console.WriteLine("  GameView inicializado");
             
             LoadImages();
             
@@ -43,14 +43,14 @@ namespace GameAletheiaCross.Views
 
         private void LoadImages()
         {
-            Console.WriteLine("🎨 Intentando cargar sprites...");
-            Console.WriteLine($"📂 Directorio actual: {Directory.GetCurrentDirectory()}");
+            Console.WriteLine("  Intentando cargar sprites...");
+            Console.WriteLine($"  Directorio actual: {Directory.GetCurrentDirectory()}");
             
             // Verificar si Assets/Images existe físicamente
             var assetsPath = Path.Combine(Directory.GetCurrentDirectory(), "Assets", "Images");
             if (Directory.Exists(assetsPath))
             {
-                Console.WriteLine($"✓ Directorio físico encontrado: {assetsPath}");
+                Console.WriteLine($"  Directorio físico encontrado: {assetsPath}");
                 var files = Directory.GetFiles(assetsPath);
                 Console.WriteLine($"  Archivos encontrados: {files.Length}");
                 foreach (var file in files)
@@ -60,13 +60,13 @@ namespace GameAletheiaCross.Views
             }
             else
             {
-                Console.WriteLine($"⚠️ Directorio físico NO encontrado: {assetsPath}");
+                Console.WriteLine($" ️ Directorio físico NO encontrado: {assetsPath}");
             }
             
             try
             {
                 // Intentar cargar jugador
-                _playerBitmap = LoadBitmap("player.png");
+                _playerBitmap = LoadBitmap("playerH.png");
                 
                 // Intentar cargar NPCs (3 variaciones)
                 _npcBitmaps.Add(LoadBitmap("npc1.png"));
@@ -88,21 +88,21 @@ namespace GameAletheiaCross.Views
                 // Verificar si al menos el jugador se cargó
                 _spritesLoaded = _playerBitmap != null;
                 
-                Console.WriteLine("✅ Resumen de carga de sprites:");
-                Console.WriteLine($"   - Jugador: {(_playerBitmap != null ? "✓ Cargado" : "✗ Usando fallback")}");
+                Console.WriteLine("  Resumen de carga de sprites:");
+                Console.WriteLine($"   - Jugador: {(_playerBitmap != null ? "  Cargado" : "  Usando fallback")}");
                 Console.WriteLine($"   - NPCs cargados: {_npcBitmaps.Count(b => b != null)}/3");
                 Console.WriteLine($"   - Plataformas cargadas: {_platformBitmaps.Count(b => b != null)}/7");
-                Console.WriteLine($"   - Portal: {(_portalBitmap != null ? "✓ Cargado" : "✗ Usando fallback")}");
+                Console.WriteLine($"   - Portal: {(_portalBitmap != null ? "  Cargado" : "  Usando fallback")}");
                 
                 if (!_spritesLoaded)
                 {
-                    Console.WriteLine("⚠️ No se cargaron sprites. Se usarán figuras geométricas.");
+                    Console.WriteLine(" ️ No se cargaron sprites. Se usarán figuras geométricas.");
                     Console.WriteLine("   Para usar sprites, coloca archivos PNG en Assets/Images/");
                 }
             }
             catch (Exception ex)
             {
-                Console.WriteLine($"⚠️ Error cargando sprites: {ex.Message}");
+                Console.WriteLine($" ️ Error cargando sprites: {ex.Message}");
                 Console.WriteLine("   Se usarán figuras geométricas como fallback");
                 _spritesLoaded = false;
             }
@@ -118,19 +118,19 @@ namespace GameAletheiaCross.Views
                 var stream = AssetLoader.Open(uri);
                 var bitmap = new Bitmap(stream);
                 
-                Console.WriteLine($"   ✓ {filename} cargado correctamente");
+                Console.WriteLine($"     {filename} cargado correctamente");
                 return bitmap;
             }
             catch (Exception ex)
             {
-                Console.WriteLine($"   ✗ No se pudo cargar {filename}: {ex.Message}");
+                Console.WriteLine($"     No se pudo cargar {filename}: {ex.Message}");
                 return null;
             }
         }
 
         private void GameView_AttachedToVisualTree(object? sender, VisualTreeAttachmentEventArgs e)
         {
-            Console.WriteLine("🎮 GameView attached to visual tree");
+            Console.WriteLine("  GameView attached to visual tree");
             
             Focus();
             
@@ -150,7 +150,7 @@ namespace GameAletheiaCross.Views
             
             if (_gameCanvas == null)
             {
-                Console.WriteLine("❌ CRÍTICO: No se pudo encontrar ningún Canvas");
+                Console.WriteLine("  CRÍTICO: No se pudo encontrar ningún Canvas");
                 return;
             }
             
@@ -158,7 +158,7 @@ namespace GameAletheiaCross.Views
             
             if (_viewModel == null)
             {
-                Console.WriteLine("❌ ERROR: ViewModel es null");
+                Console.WriteLine("  ERROR: ViewModel es null");
                 return;
             }
             
@@ -187,21 +187,21 @@ namespace GameAletheiaCross.Views
 
         private void RenderLevel()
         {
-            Console.WriteLine("🎨 === RENDERIZANDO NIVEL ===");
+            Console.WriteLine("  === RENDERIZANDO NIVEL ===");
             
             if (_gameCanvas == null || _viewModel?.CurrentLevel == null)
             {
-                Console.WriteLine("❌ ERROR: Canvas o CurrentLevel es null");
+                Console.WriteLine("  ERROR: Canvas o CurrentLevel es null");
                 return;
             }
 
             var level = _viewModel.CurrentLevel;
             _gameCanvas.Children.Clear();
 
-            // 🏗️ RENDERIZAR PLATAFORMAS
+            //  ️ RENDERIZAR PLATAFORMAS
             if (level.Platforms != null && level.Platforms.Count > 0)
             {
-                Console.WriteLine($"🏗️ Renderizando {level.Platforms.Count} plataformas...");
+                Console.WriteLine($" ️ Renderizando {level.Platforms.Count} plataformas...");
                 
                 for (int i = 0; i < level.Platforms.Count; i++)
                 {
@@ -244,10 +244,10 @@ namespace GameAletheiaCross.Views
                 }
             }
 
-            // 👾 RENDERIZAR NPCs
+            //   RENDERIZAR NPCs
             if (level.NPCs != null && level.NPCs.Count > 0)
             {
-                Console.WriteLine($"👾 Renderizando {level.NPCs.Count} NPCs...");
+                Console.WriteLine($"  Renderizando {level.NPCs.Count} NPCs...");
                 
                 for (int i = 0; i < level.NPCs.Count; i++)
                 {
@@ -303,7 +303,7 @@ namespace GameAletheiaCross.Views
                 }
             }
 
-            // 🎮 RENDERIZAR JUGADOR
+            //   RENDERIZAR JUGADOR
             if (_viewModel.Player != null)
             {
                 if (_playerBitmap != null)
@@ -345,7 +345,7 @@ namespace GameAletheiaCross.Views
                 }
             }
 
-            // 🌀 RENDERIZAR PORTAL (VERTICAL)
+            //   RENDERIZAR PORTAL (VERTICAL)
             if (_portalBitmap != null)
             {
                 var img = new Image
@@ -380,7 +380,7 @@ namespace GameAletheiaCross.Views
                 _gameCanvas.Children.Add(portal);
             }
 
-            Console.WriteLine($"✅ Nivel renderizado. Total: {_gameCanvas.Children.Count} elementos");
+            Console.WriteLine($"  Nivel renderizado. Total: {_gameCanvas.Children.Count} elementos");
         }
 
         private Bitmap? GetPlatformSprite(int levelNumber, int platformIndex)

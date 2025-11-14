@@ -95,7 +95,7 @@ namespace GameAletheiaCross.Services
                 var levels = await GetAllLevelsWithNPCsAsync();
 
                 Console.WriteLine("\n" + new string('=', 80));
-                Console.WriteLine("📊 REPORTE DE NIVELES CON NPCs".PadLeft(50));
+                Console.WriteLine("  REPORTE DE NIVELES CON NPCs".PadLeft(50));
                 Console.WriteLine(new string('=', 80) + "\n");
 
                 foreach (var level in levels)
@@ -120,11 +120,11 @@ namespace GameAletheiaCross.Services
         {
             var difficulty = level.Difficulty switch
             {
-                1 => "⭐ Fácil",
-                2 => "⭐⭐ Normal",
-                3 => "⭐⭐⭐ Difícil",
-                4 => "⭐⭐⭐⭐ Muy Difícil",
-                5 => "⭐⭐⭐⭐⭐ Extremo",
+                1 => "  Fácil",
+                2 => "   Normal",
+                3 => "    Difícil",
+                4 => "     Muy Difícil",
+                5 => "      Extremo",
                 _ => "Desconocido"
             };
 
@@ -145,7 +145,7 @@ namespace GameAletheiaCross.Services
                 {
 // Dentro del foreach NPC:
 
-Console.WriteLine($"│   👤 {npc.Name.PadRight(62)} │");
+Console.WriteLine($"│     {npc.Name.PadRight(62)} │");
 Console.WriteLine($"│      Rol: {npc.Role.PadRight(59)} │");
 Console.WriteLine($"│      Pos: ({npc.PositionX}, {npc.PositionY})".PadRight(68) + "│");
 
@@ -168,7 +168,7 @@ Console.WriteLine($"│      Diálogo: {preview.PadRight(51)} │");
             }
             else
             {
-                Console.WriteLine($"│ ⚠️ No hay NPCs asignados a este nivel                              │");
+                Console.WriteLine($"│  ️ No hay NPCs asignados a este nivel                              │");
             }
 
             Console.WriteLine($"└─────────────────────────────────────────────────────────────────────┘\n");

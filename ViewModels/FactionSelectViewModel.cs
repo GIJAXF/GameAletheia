@@ -62,11 +62,11 @@ namespace GameAletheiaCross.ViewModels
                     }
                 });
                 
-                Console.WriteLine($"✓ {factions.Count} facciones cargadas");
+                Console.WriteLine($"  {factions.Count} facciones cargadas");
             }
             catch (Exception ex)
             {
-                Console.WriteLine($"✗ Error cargando facciones: {ex.Message}");
+                Console.WriteLine($"  Error cargando facciones: {ex.Message}");
             }
         }
         
@@ -82,7 +82,7 @@ namespace GameAletheiaCross.ViewModels
                 var playerRepo = new PlayerRepository(dbService);
                 await playerRepo.UpdateFactionAsync(_playerId, faction.Name);
                 
-                Console.WriteLine($"✓ Facción seleccionada: {faction.Name}");
+                Console.WriteLine($"  Facción seleccionada: {faction.Name}");
                 
                 await Task.Delay(400);
                 
@@ -93,7 +93,7 @@ namespace GameAletheiaCross.ViewModels
             }
             catch (Exception ex)
             {
-                Console.WriteLine($"✗ Error seleccionando facción: {ex.Message}");
+                Console.WriteLine($"  Error seleccionando facción: {ex.Message}");
             }
         }
         

@@ -41,7 +41,7 @@ namespace GameAletheiaCross.ViewModels
         {
             if (string.IsNullOrWhiteSpace(PlayerName))
             {
-                Console.WriteLine("⚠️ Debes ingresar un nombre");
+                Console.WriteLine(" ️ Debes ingresar un nombre");
                 return;
             }
 
@@ -59,7 +59,7 @@ namespace GameAletheiaCross.ViewModels
                 };
 
                 await playerRepo.CreateAsync(player);
-                Console.WriteLine($"✓ Jugador creado: {player.Name} (ID: {player.Id})");
+                Console.WriteLine($"  Jugador creado: {player.Name} (ID: {player.Id})");
 
                 await Dispatcher.UIThread.InvokeAsync(() =>
                 {
@@ -68,7 +68,7 @@ namespace GameAletheiaCross.ViewModels
             }
             catch (Exception ex)
             {
-                Console.WriteLine($"✗ Error creando jugador: {ex.Message}");
+                Console.WriteLine($"  Error creando jugador: {ex.Message}");
             }
         }
         

@@ -23,7 +23,7 @@ namespace GameAletheiaCross.Data
 
         public async Task SeedAdvancedPuzzlesAsync()
         {
-            Console.WriteLine("🧩 Generando puzzles de programación avanzados...");
+            Console.WriteLine("  Generando puzzles de programación avanzados...");
 
             var levels = await _levelRepo.GetAllAsync();
             
@@ -40,7 +40,7 @@ namespace GameAletheiaCross.Data
             var existingPuzzles = await _puzzleRepo.GetAllByLevelIdAsync(level.Id);
             if (existingPuzzles.Count > 0)
             {
-                Console.WriteLine($"⚠️ Puzzles ya existen para nivel {level.OrderNumber}");
+                Console.WriteLine($" ️ Puzzles ya existen para nivel {level.OrderNumber}");
                 return;
             }
 
@@ -59,7 +59,7 @@ namespace GameAletheiaCross.Data
             foreach (var puzzle in puzzles)
             {
                 await _puzzleRepo.CreateAsync(puzzle);
-                Console.WriteLine($"  ✓ Puzzle creado: {puzzle.Name}");
+                Console.WriteLine($"    Puzzle creado: {puzzle.Name}");
             }
         }
 

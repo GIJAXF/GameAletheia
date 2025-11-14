@@ -54,7 +54,7 @@ namespace GameAletheiaCross.Services.Database.Repositories
                 {
                     foreach (var npc in level.NPCs)
                     {
-                        Console.WriteLine($"      ✓ {npc.Name} en ({npc.PositionX}, {npc.PositionY})");
+                        Console.WriteLine($"        {npc.Name} en ({npc.PositionX}, {npc.PositionY})");
                     }
                 }
             }
@@ -82,14 +82,14 @@ namespace GameAletheiaCross.Services.Database.Repositories
             {
                 if (level.NPCIds != null && level.NPCIds.Count > 0)
                 {
-                    Console.WriteLine($"📂 Cargando NPCs para nivel {level.OrderNumber}...");
+                    Console.WriteLine($"  Cargando NPCs para nivel {level.OrderNumber}...");
                     
                     var filter = Builders<NPC>.Filter.In(npc => npc.Id, level.NPCIds);
                     level.NPCs = await _npcs.Find(filter).ToListAsync();
                     
                     if (level.NPCs == null || level.NPCs.Count == 0)
                     {
-                        Console.WriteLine($"⚠️ No se encontraron NPCs con los IDs proporcionados");
+                        Console.WriteLine($" ️ No se encontraron NPCs con los IDs proporcionados");
                         level.NPCs = new List<NPC>();
                     }
                     else
@@ -119,7 +119,7 @@ namespace GameAletheiaCross.Services.Database.Repositories
 
         public async Task<bool> UpdateAsync(string id, Level level)
         {
-            Console.WriteLine($"🔄 Actualizando nivel {level.OrderNumber}...");
+            Console.WriteLine($"  Actualizando nivel {level.OrderNumber}...");
             Console.WriteLine($"   NPCIds a guardar: {level.NPCIds?.Count ?? 0}");
             
             var result = await _levels.ReplaceOneAsync(l => l.Id == id, level);

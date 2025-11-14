@@ -62,16 +62,16 @@ namespace GameAletheiaCross.ViewModels
                 
                 if (sortedPlayers.Count == 0)
                 {
-                    Console.WriteLine("⚠️ No hay jugadores guardados");
+                    Console.WriteLine(" ️ No hay jugadores guardados");
                 }
                 else
                 {
-                    Console.WriteLine($"✓ {sortedPlayers.Count} jugadores cargados");
+                    Console.WriteLine($"  {sortedPlayers.Count} jugadores cargados");
                 }
             }
             catch (Exception ex)
             {
-                Console.WriteLine($"✗ Error cargando jugadores: {ex.Message}");
+                Console.WriteLine($"  Error cargando jugadores: {ex.Message}");
             }
         }
         
@@ -90,7 +90,7 @@ namespace GameAletheiaCross.ViewModels
                 player.LastPlayed = DateTime.UtcNow;
                 await playerRepo.UpdateAsync(player.Id, player);
                 
-                Console.WriteLine($"✓ Cargando jugador: {player.Name} (Nivel {player.CurrentLevel})");
+                Console.WriteLine($"  Cargando jugador: {player.Name} (Nivel {player.CurrentLevel})");
                 
                 await Task.Delay(400);
                 
@@ -101,7 +101,7 @@ namespace GameAletheiaCross.ViewModels
             }
             catch (Exception ex)
             {
-                Console.WriteLine($"✗ Error cargando jugador: {ex.Message}");
+                Console.WriteLine($"  Error cargando jugador: {ex.Message}");
             }
         }
         

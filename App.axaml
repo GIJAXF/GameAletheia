@@ -6,6 +6,23 @@
              RequestedThemeVariant="Dark">
     <Application.Styles>
         <FluentTheme />
+        
+        <!-- Estilo global para toda la aplicación -->
+        <Style Selector="TextBlock">
+            <Setter Property="FontFamily" Value="JetBrains Mono" />
+        </Style>
+        
+        <Style Selector="TextBox">
+            <Setter Property="FontFamily" Value="JetBrains Mono" />
+        </Style>
+        
+        <Style Selector="Button">
+            <Setter Property="FontFamily" Value="JetBrains Mono" />
+        </Style>
+        
+        <Style Selector="RadioButton">
+            <Setter Property="FontFamily" Value="JetBrains Mono" />
+        </Style>
     </Application.Styles>
 
     <Application.Resources>
@@ -14,8 +31,8 @@
         <SolidColorBrush x:Key="SecondaryBrush" Color="#0080FF"/>
         <SolidColorBrush x:Key="DangerBrush" Color="#FF0000"/>
         
-        <!-- 🔤 Fuente Global JetBrainsMono -->
-        <FontFamily x:Key="MonoFont">JetBrainsMono</FontFamily>
+        <!--   Fuente Global JetBrainsMono -->
+        <FontFamily x:Key="MonoFont">JetBrains Mono</FontFamily>
     </Application.Resources>
 
     <Application.DataTemplates>

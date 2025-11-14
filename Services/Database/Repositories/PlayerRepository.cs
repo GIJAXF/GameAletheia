@@ -58,11 +58,11 @@ namespace GameAletheiaCross.Services.Database.Repositories
         {
             player.LastPlayed = DateTime.UtcNow;
             
-            Console.WriteLine($"🔄 UpdateAsync ANTES: Jugador '{player.Name}' en nivel {player.CurrentLevel}");
+            Console.WriteLine($"  UpdateAsync ANTES: Jugador '{player.Name}' en nivel {player.CurrentLevel}");
             
             var result = await _players.ReplaceOneAsync(p => p.Id == id, player);
             
-            Console.WriteLine($"🔄 UpdateAsync DESPUÉS: MatchedCount={result.MatchedCount}, ModifiedCount={result.ModifiedCount}");
+            Console.WriteLine($"  UpdateAsync DESPUÉS: MatchedCount={result.MatchedCount}, ModifiedCount={result.ModifiedCount}");
             
             // Verificar que se actualizó correctamente
             if (result.ModifiedCount > 0)

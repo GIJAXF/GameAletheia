@@ -46,9 +46,9 @@ namespace GameAletheiaCross.ViewModels
                     {
                         var medal = position switch
                         {
-                            1 => "🥇",
-                            2 => "🥈",
-                            3 => "🥉",
+                            1 => " ",
+                            2 => " ",
+                            3 => " ",
                             _ => $"{position:D2}."
                         };
                         
@@ -66,11 +66,11 @@ namespace GameAletheiaCross.ViewModels
                     }
                 });
                 
-                Console.WriteLine($"✓ Ranking cargado: {topPlayers.Count} jugadores");
+                Console.WriteLine($"  Ranking cargado: {topPlayers.Count} jugadores");
             }
             catch (Exception ex)
             {
-                Console.WriteLine($"✗ Error cargando ranking: {ex.Message}");
+                Console.WriteLine($"  Error cargando ranking: {ex.Message}");
             }
         }
         

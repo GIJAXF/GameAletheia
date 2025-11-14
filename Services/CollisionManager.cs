@@ -40,7 +40,7 @@ namespace GameAletheiaCross.Services
 
         private bool IsCollidingWithPlatform(Player player, Level.Platform platform)
         {
-            // 🎮 Dimensiones del jugador (rectángulo de colisión)
+            //   Dimensiones del jugador (rectángulo de colisión)
             // El jugador se dibuja con X-20 a X+20 (ancho 40)
             // Y con Y-60 a Y (alto 60)
             float playerLeft = player.Position.X - 20;
@@ -48,7 +48,7 @@ namespace GameAletheiaCross.Services
             float playerTop = player.Position.Y - 60;
             float playerBottom = player.Position.Y;
 
-            // 🏗️ Dimensiones de la plataforma
+            //  ️ Dimensiones de la plataforma
             float platformLeft = platform.X;
             float platformRight = platform.X + platform.Width;
             float platformTop = platform.Y;

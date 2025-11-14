@@ -30,7 +30,7 @@ namespace GameAletheiaCross.Services
             try
             {
                 var puzzles = await _puzzleRepo.GetAllByLevelIdAsync(levelId);
-                Console.WriteLine($"🧩 GetAllPuzzlesForLevelAsync: {puzzles?.Count ?? 0} puzzles encontrados para nivel {levelId}");
+                Console.WriteLine($"  GetAllPuzzlesForLevelAsync: {puzzles?.Count ?? 0} puzzles encontrados para nivel {levelId}");
                 return puzzles ?? new List<Puzzle>();
             }
             catch (Exception ex)
@@ -172,7 +172,7 @@ namespace GameAletheiaCross.Services
                     puzzle.IsCompleted = false;
                     await _puzzleRepo.UpdateAsync(puzzle.Id, puzzle);
                 }
-                Console.WriteLine($"🔄 {puzzles.Count} puzzles reseteados");
+                Console.WriteLine($"  {puzzles.Count} puzzles reseteados");
                 return true;
             }
             catch (Exception ex)
