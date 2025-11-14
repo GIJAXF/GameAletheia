@@ -59,7 +59,8 @@ namespace GameAletheiaCross.Services
 
         public string GetDialogueText(NPC npc, Player player)
         {
-            return npc.Dialogue;
+            string CurrentDialogue = string.Join("\n", npc.DialogueList);
+            return CurrentDialogue;
         }
 
         public bool HasAvailableQuest(NPC npc)

@@ -143,15 +143,27 @@ namespace GameAletheiaCross.Services
                 
                 foreach (var npc in level.NPCs)
                 {
-                    Console.WriteLine($"│   👤 {npc.Name.PadRight(62)} │");
-                    Console.WriteLine($"│      Rol: {npc.Role.PadRight(59)} │");
-                    Console.WriteLine($"│      Pos: ({npc.PositionX}, {npc.PositionY})".PadRight(68) + "│");
-                    Console.WriteLine($"│      Diálogo: {npc.Dialogue.Substring(0, Math.Min(50, npc.Dialogue.Length)).PadRight(51)} │");
-                    
-                    if (npc != level.NPCs[level.NPCs.Count - 1])
-                    {
-                        Console.WriteLine($"│   ─────────────────────────────────────────────────────   │");
-                    }
+// Dentro del foreach NPC:
+
+Console.WriteLine($"│   👤 {npc.Name.PadRight(62)} │");
+Console.WriteLine($"│      Rol: {npc.Role.PadRight(59)} │");
+Console.WriteLine($"│      Pos: ({npc.PositionX}, {npc.PositionY})".PadRight(68) + "│");
+
+// CORRECCIÓN: manejo adecuado de DialogueList
+string preview;
+
+if (npc.DialogueList != null && npc.DialogueList.Count > 0)
+{
+    var first = npc.DialogueList[0];
+    preview = first.Length > 50 ? first.Substring(0, 50) + "…" : first;
+}
+else
+{
+    preview = "…";
+}
+
+Console.WriteLine($"│      Diálogo: {preview.PadRight(51)} │");
+
                 }
             }
             else

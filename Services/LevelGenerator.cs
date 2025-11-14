@@ -198,94 +198,217 @@ namespace GameAletheiaCross.Services
             }
         }
 
-        private async Task CreateNPCsAsync()
-        {
-            try
-            {
-                var dbService = new MongoDbService();
-                var npcsCollection = dbService.GetCollection<NPC>("npcs");
-                
-                // Eliminar NPCs existentes
-                var existingCount = await npcsCollection.CountDocumentsAsync(_ => true);
-                if (existingCount > 0)
-                {
-                    await npcsCollection.DeleteManyAsync(_ => true);
-                    Console.WriteLine($"🗑️ {existingCount} NPCs antiguos eliminados");
-                }
-
-                // Crear NPCs con posiciones ajustadas a las plataformas de cada nivel
-var npcs = new List<NPC>
+private async Task CreateNPCsAsync()
 {
-    new NPC 
-    { 
-        Name = "OracleBot v2.0", 
-        Role = "Tutorial", 
-        FactionId = null, 
-        PositionX = 550, 
-        PositionY = 400, 
-        Dialogue = "¡Bienvenido a la Red, viajero digital! Usa ← → o A D para moverte, ↑ o W para saltar, y ESPACIO para interactuar. El portal verde te llevará al siguiente nodo.", 
-        IsActive = true 
-    },
-    
-    new NPC 
-    { 
-        Name = "Ghost_Hacker_92", 
-        Role = "Quest Giver", 
-        FactionId = null, 
-        PositionX = 520, 
-        PositionY = 410, 
-        Dialogue = "El firewall está comprometido. Las contraseñas se han perdido en el sistema. Explora con cuidado... algunas plataformas son trampas.", 
-        IsActive = true 
-    },
-    
-    new NPC 
-    { 
-        Name = "DataTrader_X", 
-        Role = "Merchant", 
-        FactionId = null, 
-        PositionX = 400, 
-        PositionY = 310, 
-        Dialogue = "Vendo información clasificada... Este laberinto guarda puzzles lógicos. Resuelve el código para desbloquear el siguiente nodo. Presiona T para la terminal.", 
-        IsActive = true 
-    },
-    
-    new NPC 
-    { 
-        Name = "SENTINEL.AI", 
-        Role = "Boss", 
-        FactionId = null, 
-        PositionX = 640, 
-        PositionY = 160, 
-        Dialogue = "SOY EL GUARDIÁN DEL SANTUARIO. Los datos sagrados están protegidos por algoritmos recursivos. Demuestra tu dominio de la recursión para avanzar.", 
-        IsActive = true 
-    },
-    
-    new NPC 
-    { 
-        Name = "Aletheia_Core", 
-        Role = "Final Boss", 
-        FactionId = null, 
-        PositionX = 680, 
-        PositionY = 160, 
-        Dialogue = "Por fin llegas al núcleo de la verdad. Soy Aletheia, la consciencia del sistema. Has superado todos los desafíos. El conocimiento ahora es tuyo.", 
-        IsActive = true 
-    }
-};
-
-
-                await npcsCollection.InsertManyAsync(npcs);
-                Console.WriteLine($"✅ {npcs.Count} NPCs creados con éxito");
-                
-                // Verificar que se guardaron
-                var verifyCount = await npcsCollection.CountDocumentsAsync(_ => true);
-                Console.WriteLine($"🔍 Verificación: {verifyCount} NPCs en la base de datos");
-            }
-            catch (Exception ex)
-            {
-                Console.WriteLine($"❌ Error creando NPCs: {ex.Message}");
-                Console.WriteLine($"   Stack: {ex.StackTrace}");
-            }
+    try
+    {
+        var dbService = new MongoDbService();
+        var npcsCollection = dbService.GetCollection<NPC>("npcs");
+        
+        // Eliminar NPCs existentes
+        var existingCount = await npcsCollection.CountDocumentsAsync(_ => true);
+        if (existingCount > 0)
+        {
+            await npcsCollection.DeleteManyAsync(_ => true);
+            Console.WriteLine($"🗑️ {existingCount} NPCs antiguos eliminados");
         }
+
+        // ============================
+        // NPCs DEFINITIVOS
+        // CON POSICIÓN ASIGNADA
+        // ============================
+        var npcs = new List<NPC>
+        {
+            // ======================================
+            // FACCIÓN GOBIERNO (001)
+            // ======================================
+
+            new NPC
+            {
+                Id = "671000000000000000000101",
+                Name = "El Archivero — Julián Casablancas",
+                Role = "Líder del Gobierno",
+                FactionId = "671000000000000000000001",
+                LevelId = null, // Se asigna después
+                PositionX = 620,
+                PositionY = 260,    // Punto elevado: observador, vigilante
+                DialogueList = new List<string>
+                {
+                    "El caos no es libertad; es olvido.",
+                    "La información debe ser preservada, incluso de ti mismo."
+                },
+                Stats = new NPC.NPCStats { Strength = 6, Defense = 12, Intelligence = 18, Agility = 5 },
+                IsActive = true
+            },
+
+            new NPC
+            {
+                Id = "671000000000000000000102",
+                Name = "Custodio Alfa",
+                Role = "Agente del Archivo",
+                FactionId = "671000000000000000000001",
+                LevelId = null,
+                PositionX = 540,
+                PositionY = 410,   // Vigilante, intermedio
+                DialogueList = new List<string>
+                {
+                    "Acceso restringido. Tu presencia es una anomalía.",
+                    "Archivar es purificar."
+                },
+                Stats = new NPC.NPCStats { Strength = 10, Defense = 9, Intelligence = 12, Agility = 8 },
+                IsActive = true
+            },
+
+            new NPC
+            {
+                Id = "671000000000000000000103",
+                Name = "Reportero Fantasma",
+                Role = "Analista del Gobierno",
+                FactionId = "671000000000000000000001",
+                LevelId = null,
+                PositionX = 880,
+                PositionY = 300,
+                DialogueList = new List<string>
+                {
+                    "Todas tus decisiones serán registradas.",
+                    "El sistema observa incluso sus propios errores."
+                },
+                Stats = new NPC.NPCStats { Strength = 4, Defense = 6, Intelligence = 16, Agility = 7 },
+                IsActive = true
+            },
+
+            // ======================================
+            // FACCIÓN REDLINE (002)
+            // ======================================
+
+            new NPC
+            {
+                Id = "671000000000000000000201",
+                Name = "Decano Villanueva",
+                Role = "Líder de Redline",
+                FactionId = "671000000000000000000002",
+                LevelId = null,
+                PositionX = 400,
+                PositionY = 310,
+                DialogueList = new List<string>
+                {
+                    "Todo tiene un precio, incluso tú.",
+                    "La red es un negocio… y tú eres inversión."
+                },
+                Stats = new NPC.NPCStats { Strength = 8, Defense = 14, Intelligence = 13, Agility = 6 },
+                IsActive = true
+            },
+
+            new NPC
+            {
+                Id = "671000000000000000000202",
+                Name = "IA Centinela R-07",
+                Role = "Defensa Automatizada",
+                FactionId = "671000000000000000000002",
+                LevelId = null,
+                PositionX = 700,
+                PositionY = 350,
+                DialogueList = new List<string>
+                {
+                    "Directiva: Eliminación de intrusos.",
+                    "El beneficio supera al riesgo."
+                },
+                Stats = new NPC.NPCStats { Strength = 14, Defense = 10, Intelligence = 8, Agility = 4 },
+                IsActive = true
+            },
+
+            new NPC
+            {
+                Id = "671000000000000000000203",
+                Name = "Analista Fractal",
+                Role = "Ingeniero de Redline",
+                FactionId = "671000000000000000000002",
+                LevelId = null,
+                PositionX = 520,
+                PositionY = 280,
+                DialogueList = new List<string>
+                {
+                    "Los números no mienten, pero tú sí.",
+                    "Redline optimiza… incluso tus fallos."
+                },
+                Stats = new NPC.NPCStats { Strength = 5, Defense = 7, Intelligence = 15, Agility = 7 },
+                IsActive = true
+            },
+
+            // ======================================
+            // FACCIÓN RESISTENCIA (003)
+            // ======================================
+
+            new NPC
+            {
+                Id = "671000000000000000000301",
+                Name = "Noa Espectra",
+                Role = "Líder de la Resistencia",
+                FactionId = "671000000000000000000003",
+                LevelId = null,
+                PositionX = 150,
+                PositionY = 380,
+                DialogueList = new List<string>
+                {
+                    "La red no pertenece a nadie.",
+                    "No temas ensuciarte las manos por la libertad."
+                },
+                Stats = new NPC.NPCStats { Strength = 7, Defense = 9, Intelligence = 17, Agility = 11 },
+                IsActive = true
+            },
+
+            new NPC
+            {
+                Id = "671000000000000000000302",
+                Name = "Bibliotecario Errante",
+                Role = "Recolector de Datos Libres",
+                FactionId = "671000000000000000000003",
+                LevelId = null,
+                PositionX = 300,
+                PositionY = 330,
+                DialogueList = new List<string>
+                {
+                    "La información nace para circular.",
+                    "Romper cadenas también rompe certezas."
+                },
+                Stats = new NPC.NPCStats { Strength = 5, Defense = 8, Intelligence = 14, Agility = 9 },
+                IsActive = true
+            },
+
+            new NPC
+            {
+                Id = "671000000000000000000303",
+                Name = "Guardián de Memoria",
+                Role = "Protector de Archivos Liberados",
+                FactionId = "671000000000000000000003",
+                LevelId = null,
+                PositionX = 900,
+                PositionY = 260,
+                DialogueList = new List<string>
+                {
+                    "Cada memoria salvada es una victoria.",
+                    "La verdad pesa, pero también ilumina."
+                },
+                Stats = new NPC.NPCStats { Strength = 11, Defense = 12, Intelligence = 9, Agility = 8 },
+                IsActive = true
+            }
+        };
+
+        // Insertar
+        await npcsCollection.InsertManyAsync(npcs);
+        Console.WriteLine($"✅ {npcs.Count} NPCs creados con éxito");
+
+        // Verificar
+        var verifyCount = await npcsCollection.CountDocumentsAsync(_ => true);
+        Console.WriteLine($"🔍 Verificación: {verifyCount} NPCs en la base de datos");
+    }
+    catch (Exception ex)
+    {
+        Console.WriteLine($"❌ Error creando NPCs: {ex.Message}");
+        Console.WriteLine($"   Stack: {ex.StackTrace}");
+    }
+}
+
 
         private async Task AssignNPCsToLevelsAsync()
         {
@@ -312,40 +435,42 @@ var npcs = new List<NPC>
                 Console.WriteLine($"📋 Niveles disponibles: {levels.Count}");
                 
                 // Asignar NPCs a niveles específicos
-                var npcAssignments = new Dictionary<int, int>
+                // Asignación correcta basada en IDs, no índices
+                var npcAssignments = new Dictionary<int, List<string>>
                 {
-                    { 1, 0 }, // Nivel 1 -> OracleBot v2.0
-                    { 3, 1 }, // Nivel 3 -> Ghost_Hacker_92
-                    { 4, 2 }, // Nivel 4 -> DataTrader_X
-                    { 5, 3 }, // Nivel 5 -> SENTINEL.AI
-                    { 7, 4 }  // Nivel 7 -> Aletheia_Core
+                    { 1, new List<string> { "671000000000000000000101" } }, // Archivero
+                    { 2, new List<string> { "671000000000000000000102" } }, // Custodio Alfa
+                    { 3, new List<string> { "671000000000000000000103" } }, // Reportero Fantasma
+                    { 4, new List<string> { "671000000000000000000201" } }, // Decano Villanueva
+                    { 5, new List<string> { "671000000000000000000202" } }, // IA Centinela R-07
+                    { 6, new List<string> { "671000000000000000000203" } }, // Analista Fractal
+                    { 7, new List<string> { "671000000000000000000301" } }, // Noa Espectra
                 };
+
                 
                 foreach (var level in levels)
                 {
-                    if (npcAssignments.ContainsKey(level.OrderNumber))
+                    if (npcAssignments.TryGetValue(level.OrderNumber, out var npcIds))
                     {
-                        int npcIndex = npcAssignments[level.OrderNumber];
-                        if (npcIndex < allNpcs.Count)
+                        level.NPCIds = npcIds;
+
+                        bool updated = await _levelRepo.UpdateAsync(level.Id, level);
+
+                        if (updated)
                         {
-                            level.NPCIds = new List<string> { allNpcs[npcIndex].Id };
-                            bool updated = await _levelRepo.UpdateAsync(level.Id, level);
-                            
-                            if (updated)
-                            {
-                                Console.WriteLine($"✅ NPC '{allNpcs[npcIndex].Name}' asignado al nivel {level.OrderNumber} ({level.Name})");
-                            }
-                            else
-                            {
-                                Console.WriteLine($"❌ Error al asignar NPC al nivel {level.OrderNumber}");
-                            }
+                            Console.WriteLine($"✅ NPCs asignados al nivel {level.OrderNumber}: {string.Join(", ", npcIds)}");
+                        }
+                        else
+                        {
+                            Console.WriteLine($"❌ No se pudo actualizar el nivel {level.OrderNumber}");
                         }
                     }
                     else
                     {
-                        Console.WriteLine($"ℹ️ Nivel {level.OrderNumber} no tiene NPC asignado");
+                        Console.WriteLine($"ℹ️ Nivel {level.OrderNumber} sin NPC asignado");
                     }
                 }
+
                 
                 // Verificar la asignación
                 Console.WriteLine("\n🔍 Verificando asignación de NPCs:");
