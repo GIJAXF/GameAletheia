@@ -44,11 +44,11 @@ namespace GameAletheiaCross.Services
             };
 
             // SEGUNDO: Crear niveles
-            Console.WriteLine(" ️ Creando niveles...");
+            Console.WriteLine("Creando niveles...");
             foreach (var level in levels)
             {
                 await _levelRepo.CreateAsync(level);
-                Console.WriteLine($"    Nivel creado: {level.Name} (Orden: {level.OrderNumber}, Plataformas: {level.Platforms.Count})");
+                Console.WriteLine($"Nivel creado: {level.Name} (Orden: {level.OrderNumber}, Plataformas: {level.Platforms.Count})");
             }
 
             // TERCERO: Asignar NPCs a niveles

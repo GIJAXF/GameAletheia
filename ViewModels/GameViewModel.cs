@@ -239,7 +239,7 @@ namespace GameAletheiaCross.ViewModels
             _isPaused = false;
             _isCompletingLevel = false;
             
-            Console.WriteLine("▶️ Game loop iniciado");
+            Console.WriteLine("Game loop iniciado");
             
             Task.Run(async () =>
             {
@@ -346,7 +346,7 @@ namespace GameAletheiaCross.ViewModels
         {
             if (_isCompletingLevel) return; // Evitar múltiples llamadas
             
-            // Verificar si el jugador está cerca del portal de salida
+            // Verificar si el jugador está cerca del portal de salida un dolor :P
             float exitX = 700f;
             float exitY = 420f;
             
@@ -357,7 +357,7 @@ namespace GameAletheiaCross.ViewModels
 
             if (distance < EXIT_DETECTION_DISTANCE)
             {
-                Console.WriteLine($"  Jugador cerca del portal (distancia: {distance:F1})");
+                Console.WriteLine($"Jugador cerca del portal (distancia: {distance:F1})");
                 
                 // Verificar si se pueden completar los puzzles antes de avanzar
                 if (_levelRequiresPuzzle)
@@ -365,13 +365,13 @@ namespace GameAletheiaCross.ViewModels
                     // Verificar de nuevo el estado de los puzzles
                     _puzzlesCompleted = await _puzzleService.AreLevelPuzzlesCompletedAsync(CurrentLevel.Id);
                     
-                    Console.WriteLine($"  Verificación de puzzles: Requerido={_levelRequiresPuzzle}, Completado={_puzzlesCompleted}");
+                    Console.WriteLine($"Verificación de puzzles: Requerido={_levelRequiresPuzzle}, Completado={_puzzlesCompleted}");
                     
                     if (!_puzzlesCompleted)
                     {
                         if (string.IsNullOrEmpty(StatusMessage) || !StatusMessage.Contains(" "))
                         {
-                            StatusMessage = "  Debes resolver el puzzle de programación antes de continuar. Presiona T para abrir la terminal.";
+                            StatusMessage = "Debes resolver el puzzle de programación antes de continuar. Presiona T para abrir la terminal.";
                         }
                         return;
                     }
@@ -406,7 +406,7 @@ namespace GameAletheiaCross.ViewModels
                 await Task.Delay(2000);
                 
                 // Avanzar al siguiente nivel
-                Console.WriteLine("⏭️ Intentando avanzar al siguiente nivel...");
+                Console.WriteLine("Intentando avanzar al siguiente nivel...");
                 bool advanced = await _levelManager.AdvanceToNextLevelAsync(_playerId);
                 
                 if (advanced)
@@ -475,7 +475,7 @@ namespace GameAletheiaCross.ViewModels
             
             await Dispatcher.UIThread.InvokeAsync(() =>
             {
-                Console.WriteLine("⏸️ Juego pausado - Volviendo al menú");
+                Console.WriteLine("Juego pausado - Volviendo al menú");
                 _navigate(new MainMenuViewModel(_navigate));
             });
         }
@@ -484,7 +484,7 @@ namespace GameAletheiaCross.ViewModels
         
         public void OnPauseRequested()
         {
-            Console.WriteLine("⏸️ Pausa solicitada (ESC presionado)");
+            Console.WriteLine("Pausa solicitada (ESC presionado)");
             OnPause();
         }
 
@@ -523,7 +523,7 @@ namespace GameAletheiaCross.ViewModels
         
         public void ResumeGameLoop()
         {
-            Console.WriteLine("▶️ Reanudando game loop");
+            Console.WriteLine("Reanudando game loop");
             if (!_isRunning)
             {
                 StartGameLoop();
@@ -536,13 +536,13 @@ namespace GameAletheiaCross.ViewModels
         
         private void PauseGameLoop()
         {
-            Console.WriteLine("⏸️ Pausando game loop");
+            Console.WriteLine("Pausando game loop");
             _isPaused = true;
         }
 
         private void StopGameLoop()
         {
-            Console.WriteLine("⏹️ Deteniendo game loop");
+            Console.WriteLine("Deteniendo game loop");
             _isRunning = false;
             _gameLoopCts?.Cancel();
         }

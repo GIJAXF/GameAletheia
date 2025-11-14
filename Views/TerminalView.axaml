@@ -167,7 +167,7 @@
                            HorizontalContentAlignment="Center"/>
                     
                     <Button Grid.Column="3"
-                           Content="  CERRAR" 
+                           Content="CERRAR" 
                            Command="{Binding CloseCommand}"
                            Background="#AA0000"
                            Foreground="White"
