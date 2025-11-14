@@ -146,19 +146,19 @@ namespace GameAletheiaCross.ViewModels
                 Player = await playerRepo.GetByIdAsync(_playerId);
                 if (Player == null)
                 {
-                    Console.WriteLine("❌ Jugador no encontrado");
+                    Console.WriteLine(" Jugador no encontrado");
                     StatusMessage = "Error: Jugador no encontrado";
                     return;
                 }
                 
-                Console.WriteLine($"✅ Jugador cargado: {Player.Name} (Nivel {Player.CurrentLevel})");
+                Console.WriteLine($" Jugador cargado: {Player.Name} (Nivel {Player.CurrentLevel})");
                 
                 await LoadCurrentLevel();
                 StartGameLoop();
             }
             catch (Exception ex)
             {
-                Console.WriteLine($"❌ Error iniciando juego: {ex.Message}");
+                Console.WriteLine($" Error iniciando juego: {ex.Message}");
                 Console.WriteLine($"   Stack: {ex.StackTrace}");
                 StatusMessage = $"Error: {ex.Message}";
             }
@@ -174,7 +174,7 @@ namespace GameAletheiaCross.ViewModels
                 
                 if (CurrentLevel == null)
                 {
-                    Console.WriteLine("❌ Nivel no encontrado");
+                    Console.WriteLine(" Nivel no encontrado");
                     StatusMessage = "Error: Nivel no encontrado";
                     return;
                 }
@@ -196,7 +196,7 @@ namespace GameAletheiaCross.ViewModels
                     StatusMessage = CurrentLevel.Description;
                 }
                 
-                Console.WriteLine($"✅ {LevelInfo}");
+                Console.WriteLine($" {LevelInfo}");
                 Console.WriteLine($"   Plataformas: {CurrentLevel.Platforms?.Count ?? 0}");
                 Console.WriteLine($"   NPCs: {CurrentLevel.NPCs?.Count ?? 0}");
                 Console.WriteLine($"   Requiere puzzles: {_levelRequiresPuzzle}");
@@ -207,7 +207,7 @@ namespace GameAletheiaCross.ViewModels
             }
             catch (Exception ex)
             {
-                Console.WriteLine($"❌ Error cargando nivel: {ex.Message}");
+                Console.WriteLine($" Error cargando nivel: {ex.Message}");
                 Console.WriteLine($"   Stack: {ex.StackTrace}");
                 StatusMessage = $"Error: {ex.Message}";
             }
@@ -400,7 +400,7 @@ namespace GameAletheiaCross.ViewModels
                 Player.TotalScore += levelPoints;
                 await playerRepo.UpdateAsync(_playerId, Player);
                 
-                Console.WriteLine($"✅ +{levelPoints} puntos. Score total: {Player.TotalScore}");
+                Console.WriteLine($" +{levelPoints} puntos. Score total: {Player.TotalScore}");
                 StatusMessage = $"✓ +{levelPoints} puntos. Score total: {Player.TotalScore}";
                 
                 await Task.Delay(2000);
@@ -411,7 +411,7 @@ namespace GameAletheiaCross.ViewModels
                 
                 if (advanced)
                 {
-                    Console.WriteLine("✅ Avanzado exitosamente");
+                    Console.WriteLine(" Avanzado exitosamente");
                     StatusMessage = "✓ Avanzando al siguiente nivel...";
                     
                     // Recargar el jugador actualizado desde la BD
@@ -436,7 +436,7 @@ namespace GameAletheiaCross.ViewModels
             }
             catch (Exception ex)
             {
-                Console.WriteLine($"❌ Error completando nivel: {ex.Message}");
+                Console.WriteLine($" Error completando nivel: {ex.Message}");
                 Console.WriteLine($"   Stack: {ex.StackTrace}");
                 StatusMessage = $"Error: {ex.Message}";
                 _isCompletingLevel = false;
@@ -502,11 +502,11 @@ namespace GameAletheiaCross.ViewModels
             Console.WriteLine($"🧩 Puzzle {puzzleId} completado - Actualizando estado...");
             _puzzlesCompleted = await _puzzleService.AreLevelPuzzlesCompletedAsync(CurrentLevel.Id);
             
-            Console.WriteLine($"✅ Estado actualizado: Puzzles completados = {_puzzlesCompleted}");
+            Console.WriteLine($" Estado actualizado: Puzzles completados = {_puzzlesCompleted}");
             
             if (_puzzlesCompleted)
             {
-                StatusMessage = "✅ ¡Puzzles completados! Dirígete al portal verde para continuar.";
+                StatusMessage = " ¡Puzzles completados! Dirígete al portal verde para continuar.";
             }
         }
 

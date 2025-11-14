@@ -55,8 +55,8 @@ namespace GameAletheiaCross.Services
             Console.WriteLine("🔗 Asignando NPCs a niveles...");
             await AssignNPCsToLevelsAsync();
 
-            Console.WriteLine("ℹ️ Los puzzles se generarán desde SeedData.cs");
-            Console.WriteLine("✅ Todos los niveles y NPCs han sido generados correctamente.");
+            Console.WriteLine(" Los puzzles se generarán desde SeedData.cs");
+            Console.WriteLine(" Todos los niveles y NPCs han sido generados correctamente.");
         }
 
         private List<Level.Platform> GeneratePlatformsForLevel(int levelNumber)
@@ -396,15 +396,15 @@ private async Task CreateNPCsAsync()
 
         // Insertar
         await npcsCollection.InsertManyAsync(npcs);
-        Console.WriteLine($"✅ {npcs.Count} NPCs creados con éxito");
+        Console.WriteLine($" {npcs.Count} NPCs creados con éxito");
 
         // Verificar
         var verifyCount = await npcsCollection.CountDocumentsAsync(_ => true);
-        Console.WriteLine($"🔍 Verificación: {verifyCount} NPCs en la base de datos");
+        Console.WriteLine($" Verificación: {verifyCount} NPCs en la base de datos");
     }
     catch (Exception ex)
     {
-        Console.WriteLine($"❌ Error creando NPCs: {ex.Message}");
+        Console.WriteLine($" Error creando NPCs: {ex.Message}");
         Console.WriteLine($"   Stack: {ex.StackTrace}");
     }
 }
@@ -421,18 +421,18 @@ private async Task CreateNPCsAsync()
                 
                 if (allNpcs.Count == 0)
                 {
-                    Console.WriteLine("❌ No hay NPCs para asignar");
+                    Console.WriteLine(" No hay NPCs para asignar");
                     return;
                 }
 
-                Console.WriteLine($"📋 NPCs disponibles para asignar: {allNpcs.Count}");
+                Console.WriteLine($" NPCs disponibles para asignar: {allNpcs.Count}");
                 foreach (var npc in allNpcs)
                 {
                     Console.WriteLine($"   - {npc.Name} (ID: {npc.Id})");
                 }
 
                 var levels = await _levelRepo.GetAllAsync();
-                Console.WriteLine($"📋 Niveles disponibles: {levels.Count}");
+                Console.WriteLine($" Niveles disponibles: {levels.Count}");
                 
                 // Asignar NPCs a niveles específicos
                 // Asignación correcta basada en IDs, no índices
@@ -458,22 +458,22 @@ private async Task CreateNPCsAsync()
 
                         if (updated)
                         {
-                            Console.WriteLine($"✅ NPCs asignados al nivel {level.OrderNumber}: {string.Join(", ", npcIds)}");
+                            Console.WriteLine($" NPCs asignados al nivel {level.OrderNumber}: {string.Join(", ", npcIds)}");
                         }
                         else
                         {
-                            Console.WriteLine($"❌ No se pudo actualizar el nivel {level.OrderNumber}");
+                            Console.WriteLine($" No se pudo actualizar el nivel {level.OrderNumber}");
                         }
                     }
                     else
                     {
-                        Console.WriteLine($"ℹ️ Nivel {level.OrderNumber} sin NPC asignado");
+                        Console.WriteLine($" Nivel {level.OrderNumber} sin NPC asignado");
                     }
                 }
 
                 
                 // Verificar la asignación
-                Console.WriteLine("\n🔍 Verificando asignación de NPCs:");
+                Console.WriteLine("\n Verificando asignación de NPCs:");
                 var verifyLevels = await _levelRepo.GetAllAsync();
                 foreach (var level in verifyLevels)
                 {
@@ -482,7 +482,7 @@ private async Task CreateNPCsAsync()
             }
             catch (Exception ex)
             {
-                Console.WriteLine($"❌ Error asignando NPCs: {ex.Message}");
+                Console.WriteLine($" Error asignando NPCs: {ex.Message}");
                 Console.WriteLine($"   Stack: {ex.StackTrace}");
             }
         }

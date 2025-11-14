@@ -16,10 +16,10 @@ namespace GameAletheiaCross.Services
             {
                 if (!platform.IsSolid) continue;
 
-                // ✅ VERIFICAR COLISIÓN CON ESTA PLATAFORMA
+                //  VERIFICAR COLISIÓN CON ESTA PLATAFORMA
                 if (IsCollidingWithPlatform(player, platform))
                 {
-                    // ✅ El jugador está cayendo Y está ENCIMA de la plataforma
+                    //  El jugador está cayendo Y está ENCIMA de la plataforma
                     if (player.Velocity.Y >= 0 && player.Position.Y <= platform.Y + platform.Height)
                     {
                         // Posicionar el jugador SOBRE la plataforma
@@ -31,7 +31,7 @@ namespace GameAletheiaCross.Services
                 }
             }
 
-            // ✅ Si NO está en el suelo, debe estar saltando
+            //  Si NO está en el suelo, debe estar saltando
             if (!onGround)
             {
                 player.IsJumping = true;
@@ -58,7 +58,7 @@ namespace GameAletheiaCross.Services
             Console.WriteLine($"  Jugador: ({playerLeft}, {playerTop}) a ({playerRight}, {playerBottom})");
             Console.WriteLine($"  Plataforma: ({platformLeft}, {platformTop}) a ({platformRight}, {platformBottom})");
 
-            // ✅ AABB Collision Detection (Axis-Aligned Bounding Box)
+            //  AABB Collision Detection (Axis-Aligned Bounding Box)
             // Dos rectángulos colisionan si se solapan en ambos ejes
             bool colliding = playerRight > platformLeft &&
                            playerLeft < platformRight &&
@@ -67,7 +67,7 @@ namespace GameAletheiaCross.Services
 
             if (colliding)
             {
-                Console.WriteLine($"  ✅ ¡COLISIÓN DETECTADA!");
+                Console.WriteLine($"   ¡COLISIÓN DETECTADA!");
             }
 
             return colliding;

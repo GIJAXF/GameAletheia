@@ -30,13 +30,13 @@ namespace GameAletheiaCross.Services.Database.Repositories
 
         public async Task<Level?> GetByOrderNumberAsync(int orderNumber)
         {
-            Console.WriteLine($"🔍 LevelRepository: Buscando nivel {orderNumber}...");
+            Console.WriteLine($" LevelRepository: Buscando nivel {orderNumber}...");
             
             var level = await _levels.Find(l => l.OrderNumber == orderNumber).FirstOrDefaultAsync();
             
             if (level != null)
             {
-                Console.WriteLine($"✅ Nivel encontrado: {level.Name}");
+                Console.WriteLine($" Nivel encontrado: {level.Name}");
                 Console.WriteLine($"   NPCIds en BD: {level.NPCIds?.Count ?? 0}");
                 
                 if (level.NPCIds != null && level.NPCIds.Count > 0)
@@ -60,7 +60,7 @@ namespace GameAletheiaCross.Services.Database.Repositories
             }
             else
             {
-                Console.WriteLine($"❌ Nivel {orderNumber} no encontrado");
+                Console.WriteLine($" Nivel {orderNumber} no encontrado");
             }
             
             return level;
@@ -94,18 +94,18 @@ namespace GameAletheiaCross.Services.Database.Repositories
                     }
                     else
                     {
-                        Console.WriteLine($"✅ {level.NPCs.Count} NPCs cargados para nivel {level.OrderNumber}");
+                        Console.WriteLine($" {level.NPCs.Count} NPCs cargados para nivel {level.OrderNumber}");
                     }
                 }
                 else
                 {
                     level.NPCs = new List<NPC>();
-                    Console.WriteLine($"ℹ️ Nivel {level.OrderNumber} no tiene NPCs asignados");
+                    Console.WriteLine($" Nivel {level.OrderNumber} no tiene NPCs asignados");
                 }
             }
             catch (Exception ex)
             {
-                Console.WriteLine($"❌ Error cargando NPCs: {ex.Message}");
+                Console.WriteLine($" Error cargando NPCs: {ex.Message}");
                 level.NPCs = new List<NPC>();
             }
         }
@@ -113,7 +113,7 @@ namespace GameAletheiaCross.Services.Database.Repositories
         public async Task<Level> CreateAsync(Level level)
         {
             await _levels.InsertOneAsync(level);
-            Console.WriteLine($"✅ Nivel {level.OrderNumber} creado con ID: {level.Id}");
+            Console.WriteLine($" Nivel {level.OrderNumber} creado con ID: {level.Id}");
             return level;
         }
 

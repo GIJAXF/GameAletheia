@@ -32,7 +32,7 @@ namespace GameAletheiaCross.Data
                 await CreatePuzzlesForLevel(level);
             }
 
-            Console.WriteLine("✅ Puzzles avanzados generados");
+            Console.WriteLine(" Puzzles avanzados generados");
         }
 
         private async Task CreatePuzzlesForLevel(Level level)

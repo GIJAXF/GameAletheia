@@ -22,7 +22,7 @@ namespace GameAletheiaCross
                 // 🧠 Inicializa conexión MongoDB
                 var dbService = new MongoDbService("mongodb://localhost:27017", "HackerFantasmaDB");
 
-                // ✅ VERIFICAR CONEXIÓN ANTES DE CONTINUAR
+                //  VERIFICAR CONEXIÓN ANTES DE CONTINUAR
                 if (!dbService.Ping())
                 {
                     Console.WriteLine("💀 ERROR: No se pudo conectar a MongoDB.");
@@ -31,7 +31,7 @@ namespace GameAletheiaCross
                     return;
                 }
 
-                Console.WriteLine("✅ Conexión a MongoDB establecida");
+                Console.WriteLine(" Conexión a MongoDB establecida");
 
                 var levelRepo = new LevelRepository(dbService);
                 var puzzleRepo = new PuzzleRepository(dbService);

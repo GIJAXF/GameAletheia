@@ -20,11 +20,11 @@ namespace GameAletheiaCross.Services.Database.Repositories
             var player = await _players.Find(p => p.Id == id).FirstOrDefaultAsync();
             if (player != null)
             {
-                Console.WriteLine($"🔍 GetByIdAsync: Jugador '{player.Name}' encontrado (Nivel {player.CurrentLevel})");
+                Console.WriteLine($" GetByIdAsync: Jugador '{player.Name}' encontrado (Nivel {player.CurrentLevel})");
             }
             else
             {
-                Console.WriteLine($"❌ GetByIdAsync: Jugador con ID {id} no encontrado");
+                Console.WriteLine($" GetByIdAsync: Jugador con ID {id} no encontrado");
             }
             return player;
         }
@@ -50,7 +50,7 @@ namespace GameAletheiaCross.Services.Database.Repositories
         public async Task<Player> CreateAsync(Player player)
         {
             await _players.InsertOneAsync(player);
-            Console.WriteLine($"✅ CreateAsync: Jugador '{player.Name}' creado con ID {player.Id}");
+            Console.WriteLine($" CreateAsync: Jugador '{player.Name}' creado con ID {player.Id}");
             return player;
         }
 
@@ -70,7 +70,7 @@ namespace GameAletheiaCross.Services.Database.Repositories
                 var verificacion = await GetByIdAsync(id);
                 if (verificacion != null)
                 {
-                    Console.WriteLine($"✅ Verificación: Jugador ahora está en nivel {verificacion.CurrentLevel}");
+                    Console.WriteLine($" Verificación: Jugador ahora está en nivel {verificacion.CurrentLevel}");
                 }
             }
             

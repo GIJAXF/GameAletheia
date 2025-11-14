@@ -37,12 +37,12 @@ namespace GameAletheiaCross.Services
                 var player = await _playerRepo.GetByIdAsync(playerId);
                 if (player == null)
                 {
-                    Console.WriteLine("❌ Jugador no encontrado");
+                    Console.WriteLine(" Jugador no encontrado");
                     return false;
                 }
 
                 var totalLevels = await _levelRepo.GetTotalLevelsAsync();
-                Console.WriteLine($"🔍 Nivel actual: {player.CurrentLevel}, Total niveles: {totalLevels}");
+                Console.WriteLine($" Nivel actual: {player.CurrentLevel}, Total niveles: {totalLevels}");
 
                 if (player.CurrentLevel >= totalLevels)
                 {
@@ -57,18 +57,18 @@ namespace GameAletheiaCross.Services
                 
                 if (updated)
                 {
-                    Console.WriteLine($"✅ Jugador avanzó al nivel {player.CurrentLevel}");
+                    Console.WriteLine($" Jugador avanzó al nivel {player.CurrentLevel}");
                     return true;
                 }
                 else
                 {
-                    Console.WriteLine("❌ No se pudo actualizar el jugador en la base de datos");
+                    Console.WriteLine(" No se pudo actualizar el jugador en la base de datos");
                     return false;
                 }
             }
             catch (Exception ex)
             {
-                Console.WriteLine($"❌ Error avanzando nivel: {ex.Message}");
+                Console.WriteLine($" Error avanzando nivel: {ex.Message}");
                 Console.WriteLine($"   Stack: {ex.StackTrace}");
                 return false;
             }
@@ -86,27 +86,27 @@ namespace GameAletheiaCross.Services
                 var player = await _playerRepo.GetByIdAsync(playerId);
                 if (player == null)
                 {
-                    Console.WriteLine("❌ Jugador no encontrado al obtener nivel");
+                    Console.WriteLine(" Jugador no encontrado al obtener nivel");
                     return null;
                 }
 
-                Console.WriteLine($"🔍 Buscando nivel {player.CurrentLevel}...");
+                Console.WriteLine($" Buscando nivel {player.CurrentLevel}...");
                 var level = await _levelRepo.GetByOrderNumberAsync(player.CurrentLevel);
                 
                 if (level == null)
                 {
-                    Console.WriteLine($"❌ No se encontró el nivel {player.CurrentLevel}");
+                    Console.WriteLine($" No se encontró el nivel {player.CurrentLevel}");
                 }
                 else
                 {
-                    Console.WriteLine($"✅ Nivel encontrado: {level.Name}");
+                    Console.WriteLine($" Nivel encontrado: {level.Name}");
                 }
                 
                 return level;
             }
             catch (Exception ex)
             {
-                Console.WriteLine($"❌ Error obteniendo nivel actual: {ex.Message}");
+                Console.WriteLine($" Error obteniendo nivel actual: {ex.Message}");
                 return null;
             }
         }

@@ -122,7 +122,7 @@ namespace GameAletheiaCross.ViewModels
 ║  Recompensa: {CurrentPuzzle.Points} puntos
 ╚═══════════════════════════════════════════════════════╝
 
-📋 DESCRIPCIÓN:
+ DESCRIPCIÓN:
 {CurrentPuzzle.Description}
 
 💡 Tienes {CurrentPuzzle.Hints?.Count ?? 0} pistas disponibles
@@ -177,7 +177,7 @@ namespace GameAletheiaCross.ViewModels
             }
             catch (Exception ex)
             {
-                Output = $"❌ ERROR INESPERADO\n\n{ex.Message}\n\nVerifica que JDK esté instalado correctamente.";
+                Output = $" ERROR INESPERADO\n\n{ex.Message}\n\nVerifica que JDK esté instalado correctamente.";
                 Console.WriteLine($"✗ Error de compilación: {ex.Message}");
             }
             finally
@@ -190,7 +190,7 @@ namespace GameAletheiaCross.ViewModels
         {
             Output = $@"
 ╔═══════════════════════════════════════════════════════╗
-║  ✅ ¡PUZZLE RESUELTO CORRECTAMENTE!
+║   ¡PUZZLE RESUELTO CORRECTAMENTE!
 ╚═══════════════════════════════════════════════════════╝
 
 🎉 ¡Excelente trabajo!
@@ -217,7 +217,7 @@ La terminal se cerrará en 3 segundos...
 
         private void HandleIncorrectSolution(string actualOutput)
         {
-            Output = $@"❌ SOLUCIÓN INCORRECTA
+            Output = $@" SOLUCIÓN INCORRECTA
 
 Tu código compiló correctamente pero la salida no es la esperada.
 
@@ -235,7 +235,7 @@ Tu código compiló correctamente pero la salida no es la esperada.
 
         private void HandleCompilationError(string errorMessage)
         {
-            Output = $@"❌ ERROR DE COMPILACIÓN
+            Output = $@" ERROR DE COMPILACIÓN
 
 Tu código tiene errores de sintaxis:
 

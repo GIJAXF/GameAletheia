@@ -35,7 +35,7 @@ namespace GameAletheiaCross.Services
             }
             catch (Exception ex)
             {
-                Console.WriteLine($"❌ Error obteniendo puzzles: {ex.Message}");
+                Console.WriteLine($" Error obteniendo puzzles: {ex.Message}");
                 return new List<Puzzle>();
             }
         }
@@ -50,11 +50,11 @@ namespace GameAletheiaCross.Services
             
             if (activePuzzle != null)
             {
-                Console.WriteLine($"✅ Puzzle activo: {activePuzzle.Name}");
+                Console.WriteLine($" Puzzle activo: {activePuzzle.Name}");
             }
             else
             {
-                Console.WriteLine($"ℹ️ No hay puzzles activos para este nivel");
+                Console.WriteLine($" No hay puzzles activos para este nivel");
             }
             
             return activePuzzle;
@@ -85,7 +85,7 @@ namespace GameAletheiaCross.Services
                 var expectedOutput = puzzle.ExpectedOutput.Trim();
                 var actualOutput = output.Trim();
 
-                Console.WriteLine($"🔍 Validando puzzle '{puzzle.Name}':");
+                Console.WriteLine($" Validando puzzle '{puzzle.Name}':");
                 Console.WriteLine($"   Esperado: '{expectedOutput}'");
                 Console.WriteLine($"   Obtenido: '{actualOutput}'");
 
@@ -93,7 +93,7 @@ namespace GameAletheiaCross.Services
                 
                 if (result.IsValid)
                 {
-                    Console.WriteLine($"✅ ¡CORRECTO!");
+                    Console.WriteLine($" ¡CORRECTO!");
                     
                     // Marcar puzzle como completado
                     puzzle.IsCompleted = true;
@@ -112,7 +112,7 @@ namespace GameAletheiaCross.Services
                 }
                 else
                 {
-                    Console.WriteLine($"❌ Incorrecto");
+                    Console.WriteLine($" Incorrecto");
                     result.Message = $"Incorrecto.\nEsperado: {expectedOutput}\nObtenido: {actualOutput}";
                 }
             }
@@ -120,7 +120,7 @@ namespace GameAletheiaCross.Services
             {
                 result.IsValid = false;
                 result.Message = $"Error validando: {ex.Message}";
-                Console.WriteLine($"❌ Error en validación: {ex.Message}");
+                Console.WriteLine($" Error en validación: {ex.Message}");
             }
 
             return result;
@@ -149,12 +149,12 @@ namespace GameAletheiaCross.Services
             
             if (puzzles == null || puzzles.Count == 0)
             {
-                Console.WriteLine($"ℹ️ No hay puzzles en este nivel, se considera completado");
+                Console.WriteLine($" No hay puzzles en este nivel, se considera completado");
                 return true;
             }
             
             bool allCompleted = puzzles.All(p => p.IsCompleted);
-            Console.WriteLine($"🔍 Puzzles del nivel: {puzzles.Count(p => p.IsCompleted)}/{puzzles.Count} completados");
+            Console.WriteLine($" Puzzles del nivel: {puzzles.Count(p => p.IsCompleted)}/{puzzles.Count} completados");
             
             return allCompleted;
         }

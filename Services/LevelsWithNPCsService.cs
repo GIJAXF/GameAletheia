@@ -50,7 +50,7 @@ namespace GameAletheiaCross.Services
             }
             catch (Exception ex)
             {
-                Console.WriteLine($"❌ Error obteniendo niveles con NPCs: {ex.Message}");
+                Console.WriteLine($" Error obteniendo niveles con NPCs: {ex.Message}");
                 throw;
             }
         }
@@ -80,7 +80,7 @@ namespace GameAletheiaCross.Services
             }
             catch (Exception ex)
             {
-                Console.WriteLine($"❌ Error obteniendo nivel {levelNumber}: {ex.Message}");
+                Console.WriteLine($" Error obteniendo nivel {levelNumber}: {ex.Message}");
                 throw;
             }
         }
@@ -104,12 +104,12 @@ namespace GameAletheiaCross.Services
                 }
 
                 Console.WriteLine(new string('=', 80));
-                Console.WriteLine($"✅ Total de niveles: {levels.Count}");
+                Console.WriteLine($" Total de niveles: {levels.Count}");
                 Console.WriteLine(new string('=', 80) + "\n");
             }
             catch (Exception ex)
             {
-                Console.WriteLine($"❌ Error imprimiendo reporte: {ex.Message}");
+                Console.WriteLine($" Error imprimiendo reporte: {ex.Message}");
             }
         }
 
@@ -189,7 +189,7 @@ Console.WriteLine($"│      Diálogo: {preview.PadRight(51)} │");
             }
             catch (Exception ex)
             {
-                Console.WriteLine($"❌ Error serializando a JSON: {ex.Message}");
+                Console.WriteLine($" Error serializando a JSON: {ex.Message}");
                 throw;
             }
         }

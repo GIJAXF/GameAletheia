@@ -34,12 +34,12 @@ namespace GameAletheiaCross.Views
             
             Focus();
             
-            // 🔍 ENCONTRAR EL CANVAS POR NOMBRE
+            //  ENCONTRAR EL CANVAS POR NOMBRE
             _gameCanvas = this.FindControl<Canvas>("GameCanvas");
             
             if (_gameCanvas == null)
             {
-                Console.WriteLine("❌ ERROR: Canvas 'GameCanvas' no encontrado");
+                Console.WriteLine(" ERROR: Canvas 'GameCanvas' no encontrado");
                 Console.WriteLine("   Buscando todos los Canvas disponibles...");
                 
                 // Buscar recursivamente cualquier Canvas
@@ -51,7 +51,7 @@ namespace GameAletheiaCross.Views
                         if (_gameCanvas == null && c.Name == null)
                         {
                             _gameCanvas = c;
-                            Console.WriteLine("   ✅ Usando este Canvas");
+                            Console.WriteLine("    Usando este Canvas");
                             break;
                         }
                     }
@@ -59,12 +59,12 @@ namespace GameAletheiaCross.Views
             }
             else
             {
-                Console.WriteLine("✅ GameCanvas encontrado por nombre");
+                Console.WriteLine(" GameCanvas encontrado por nombre");
             }
             
             if (_gameCanvas == null)
             {
-                Console.WriteLine("❌ CRÍTICO: No se pudo encontrar ningún Canvas");
+                Console.WriteLine(" CRÍTICO: No se pudo encontrar ningún Canvas");
                 return;
             }
             
@@ -72,21 +72,21 @@ namespace GameAletheiaCross.Views
             
             if (_viewModel == null)
             {
-                Console.WriteLine("❌ ERROR: ViewModel es null");
+                Console.WriteLine(" ERROR: ViewModel es null");
                 return;
             }
             
-            Console.WriteLine("✅ ViewModel encontrado");
+            Console.WriteLine(" ViewModel encontrado");
             
             // 🎯 SUSCRIBIRSE A CAMBIOS DEL VIEWMODEL
             _viewModel.PropertyChanged += ViewModel_PropertyChanged;
             
-            Console.WriteLine($"✅ PropertyChanged suscrito. CurrentLevel: {_viewModel.CurrentLevel?.Name ?? "null"}");
+            Console.WriteLine($" PropertyChanged suscrito. CurrentLevel: {_viewModel.CurrentLevel?.Name ?? "null"}");
             
             // 🎯 RENDERIZAR INMEDIATAMENTE SI YA HAY NIVEL
             if (_viewModel.CurrentLevel != null)
             {
-                Console.WriteLine("✅ CurrentLevel ya existe, renderizando inmediatamente...");
+                Console.WriteLine(" CurrentLevel ya existe, renderizando inmediatamente...");
                 Dispatcher.UIThread.Post(() =>
                 {
                     Console.WriteLine("📍 Dispatcher ejecutando RenderLevel");
@@ -127,13 +127,13 @@ namespace GameAletheiaCross.Views
             
             if (_gameCanvas == null)
             {
-                Console.WriteLine("❌ ERROR: _gameCanvas es null");
+                Console.WriteLine(" ERROR: _gameCanvas es null");
                 return;
             }
 
             if (_viewModel?.CurrentLevel == null)
             {
-                Console.WriteLine("❌ ERROR: CurrentLevel es null");
+                Console.WriteLine(" ERROR: CurrentLevel es null");
                 return;
             }
 
@@ -172,7 +172,7 @@ namespace GameAletheiaCross.Views
                     }
                     catch (Exception ex)
                     {
-                        Console.WriteLine($"   ❌ Error: {ex.Message}");
+                        Console.WriteLine($"    Error: {ex.Message}");
                     }
                 }
                 Console.WriteLine($"   ✓ {platformCount} plataformas renderizadas");
@@ -206,7 +206,7 @@ namespace GameAletheiaCross.Views
                     }
                     catch (Exception ex)
                     {
-                        Console.WriteLine($"   ❌ Error: {ex.Message}");
+                        Console.WriteLine($"    Error: {ex.Message}");
                     }
                 }
             }
@@ -233,7 +233,7 @@ namespace GameAletheiaCross.Views
                 }
                 catch (Exception ex)
                 {
-                    Console.WriteLine($"❌ Error jugador: {ex.Message}");
+                    Console.WriteLine($" Error jugador: {ex.Message}");
                 }
             }
 
@@ -258,10 +258,10 @@ namespace GameAletheiaCross.Views
             }
             catch (Exception ex)
             {
-                Console.WriteLine($"❌ Error portal: {ex.Message}");
+                Console.WriteLine($" Error portal: {ex.Message}");
             }
 
-            Console.WriteLine($"✅ Nivel renderizado. Total elementos en Canvas: {_gameCanvas.Children.Count}");
+            Console.WriteLine($" Nivel renderizado. Total elementos en Canvas: {_gameCanvas.Children.Count}");
             Console.WriteLine("🎨 === FIN RENDERIZADO ===\n");
         }
 
@@ -277,7 +277,7 @@ namespace GameAletheiaCross.Views
             }
             catch (Exception ex)
             {
-                Console.WriteLine($"❌ Error actualizar posición: {ex.Message}");
+                Console.WriteLine($" Error actualizar posición: {ex.Message}");
             }
         }
 
