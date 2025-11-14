@@ -54,9 +54,9 @@ namespace GameAletheiaCross.Services
             float platformTop = platform.Y;
             float platformBottom = platform.Y + platform.Height;
 
-            Console.WriteLine($"DEBUG Colisión:");
-            Console.WriteLine($"  Jugador: ({playerLeft}, {playerTop}) a ({playerRight}, {playerBottom})");
-            Console.WriteLine($"  Plataforma: ({platformLeft}, {platformTop}) a ({platformRight}, {platformBottom})");
+            //Console.WriteLine($"DEBUG Colisión:");
+            //Console.WriteLine($"  Jugador: ({playerLeft}, {playerTop}) a ({playerRight}, {playerBottom})");
+            //Console.WriteLine($"  Plataforma: ({platformLeft}, {platformTop}) a ({platformRight}, {platformBottom})");
 
             //  AABB Collision Detection (Axis-Aligned Bounding Box)
             // Dos rectángulos colisionan si se solapan en ambos ejes
@@ -67,7 +67,7 @@ namespace GameAletheiaCross.Services
 
             if (colliding)
             {
-                Console.WriteLine($"   ¡COLISIÓN DETECTADA!");
+            //    Console.WriteLine($"   ¡COLISIÓN DETECTADA!");
             }
 
             return colliding;

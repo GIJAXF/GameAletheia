@@ -8,6 +8,11 @@
     <AvaloniaUseCompiledBindingsByDefault>true</AvaloniaUseCompiledBindingsByDefault>
   </PropertyGroup>
 
+  <!-- ✅ INCLUIR ASSETS COMO RECURSOS DE AVALONIA -->
+  <ItemGroup>
+    <AvaloniaResource Include="Assets\**\*" />
+  </ItemGroup>
+
   <ItemGroup>
     <PackageReference Include="Avalonia" Version="11.3.8" />
     <PackageReference Include="Avalonia.Desktop" Version="11.3.8" />

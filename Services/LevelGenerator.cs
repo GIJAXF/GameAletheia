@@ -198,6 +198,12 @@ namespace GameAletheiaCross.Services
             }
         }
 
+// En Services/LevelGenerator.cs
+// Reemplazar el método CreateNPCsAsync() completo
+
+// En Services/LevelGenerator.cs
+// Reemplazar el método CreateNPCsAsync() completo
+
 private async Task CreateNPCsAsync()
 {
     try
@@ -214,8 +220,9 @@ private async Task CreateNPCsAsync()
         }
 
         // ============================
-        // NPCs DEFINITIVOS
-        // CON POSICIÓN ASIGNADA
+        // NPCs CON POSICIONES AJUSTADAS
+        // Nota: PositionY es la BASE del NPC (sus pies)
+        // Los NPCs se renderizan con PositionY - 32 (altura del sprite)
         // ============================
         var npcs = new List<NPC>
         {
@@ -223,24 +230,10 @@ private async Task CreateNPCsAsync()
             // FACCIÓN GOBIERNO (001)
             // ======================================
 
-            new NPC
-            {
-                Id = "671000000000000000000101",
-                Name = "El Archivero — Julián Casablancas",
-                Role = "Líder del Gobierno",
-                FactionId = "671000000000000000000001",
-                LevelId = null, // Se asigna después
-                PositionX = 620,
-                PositionY = 260,    // Punto elevado: observador, vigilante
-                DialogueList = new List<string>
-                {
-                    "El caos no es libertad; es olvido.",
-                    "La información debe ser preservada, incluso de ti mismo."
-                },
-                Stats = new NPC.NPCStats { Strength = 6, Defense = 12, Intelligence = 18, Agility = 5 },
-                IsActive = true
-            },
+            // NIVEL 1: Sin NPCs (nivel tutorial)
+            // Este nivel no tiene NPCs para que el jugador aprenda los controles
 
+            // NIVEL 2: Custodio Alfa - Plataforma 1 en Y=520
             new NPC
             {
                 Id = "671000000000000000000102",
@@ -248,8 +241,8 @@ private async Task CreateNPCsAsync()
                 Role = "Agente del Archivo",
                 FactionId = "671000000000000000000001",
                 LevelId = null,
-                PositionX = 540,
-                PositionY = 410,   // Vigilante, intermedio
+                PositionX = 200,   // Plataforma 1: X=150, W=120 → Centro en X=210
+                PositionY = 520,   // Plataforma en Y=520, H=20
                 DialogueList = new List<string>
                 {
                     "Acceso restringido. Tu presencia es una anomalía.",
@@ -259,6 +252,7 @@ private async Task CreateNPCsAsync()
                 IsActive = true
             },
 
+            // NIVEL 3: Reportero Fantasma - Plataforma 2 en Y=470
             new NPC
             {
                 Id = "671000000000000000000103",
@@ -266,8 +260,8 @@ private async Task CreateNPCsAsync()
                 Role = "Analista del Gobierno",
                 FactionId = "671000000000000000000001",
                 LevelId = null,
-                PositionX = 880,
-                PositionY = 300,
+                PositionX = 390,   // Plataforma 2: X=320, W=140 → Centro en X=390
+                PositionY = 470,   // Plataforma en Y=470, H=20
                 DialogueList = new List<string>
                 {
                     "Todas tus decisiones serán registradas.",
@@ -277,10 +271,30 @@ private async Task CreateNPCsAsync()
                 IsActive = true
             },
 
+            // NIVEL 7: El Archivero - Plataforma final elevada en Y=270
+            new NPC
+            {
+                Id = "671000000000000000000101",
+                Name = "El Archivero — Julián Casablancas",
+                Role = "Líder del Gobierno",
+                FactionId = "671000000000000000000001",
+                LevelId = null,
+                PositionX = 720,   // Plataforma central: X=600, W=180 → Centro en X=690
+                PositionY = 270,   // Plataforma en Y=270, H=20
+                DialogueList = new List<string>
+                {
+                    "El caos no es libertad; es olvido.",
+                    "La información debe ser preservada, incluso de ti mismo."
+                },
+                Stats = new NPC.NPCStats { Strength = 6, Defense = 12, Intelligence = 18, Agility = 5 },
+                IsActive = true
+            },
+
             // ======================================
             // FACCIÓN REDLINE (002)
             // ======================================
 
+            // Nivel 4: Plataforma en Y=330, NPC debe estar en Y=330
             new NPC
             {
                 Id = "671000000000000000000201",
@@ -288,8 +302,8 @@ private async Task CreateNPCsAsync()
                 Role = "Líder de Redline",
                 FactionId = "671000000000000000000002",
                 LevelId = null,
-                PositionX = 400,
-                PositionY = 310,
+                PositionX = 430,   // Plataforma en X=370-500
+                PositionY = 330,   // Plataforma en Y=330
                 DialogueList = new List<string>
                 {
                     "Todo tiene un precio, incluso tú.",
@@ -299,6 +313,7 @@ private async Task CreateNPCsAsync()
                 IsActive = true
             },
 
+            // Nivel 5: Plataforma en Y=420, NPC debe estar en Y=420
             new NPC
             {
                 Id = "671000000000000000000202",
@@ -306,8 +321,8 @@ private async Task CreateNPCsAsync()
                 Role = "Defensa Automatizada",
                 FactionId = "671000000000000000000002",
                 LevelId = null,
-                PositionX = 700,
-                PositionY = 350,
+                PositionX = 640,   // Plataforma en X=560-780
+                PositionY = 420,   // Plataforma en Y=420
                 DialogueList = new List<string>
                 {
                     "Directiva: Eliminación de intrusos.",
@@ -317,6 +332,7 @@ private async Task CreateNPCsAsync()
                 IsActive = true
             },
 
+            // Nivel 6: Plataforma en Y=340, NPC debe estar en Y=340
             new NPC
             {
                 Id = "671000000000000000000203",
@@ -324,8 +340,8 @@ private async Task CreateNPCsAsync()
                 Role = "Ingeniero de Redline",
                 FactionId = "671000000000000000000002",
                 LevelId = null,
-                PositionX = 520,
-                PositionY = 280,
+                PositionX = 560,   // Plataforma en X=490-620
+                PositionY = 340,   // Plataforma en Y=340
                 DialogueList = new List<string>
                 {
                     "Los números no mienten, pero tú sí.",
@@ -339,6 +355,7 @@ private async Task CreateNPCsAsync()
             // FACCIÓN RESISTENCIA (003)
             // ======================================
 
+            // Nivel 5: Plataforma en Y=330, NPC debe estar en Y=330
             new NPC
             {
                 Id = "671000000000000000000301",
@@ -346,8 +363,8 @@ private async Task CreateNPCsAsync()
                 Role = "Líder de la Resistencia",
                 FactionId = "671000000000000000000003",
                 LevelId = null,
-                PositionX = 150,
-                PositionY = 380,
+                PositionX = 480,   // Plataforma en X=400-560
+                PositionY = 330,   // Plataforma en Y=330
                 DialogueList = new List<string>
                 {
                     "La red no pertenece a nadie.",
@@ -357,6 +374,7 @@ private async Task CreateNPCsAsync()
                 IsActive = true
             },
 
+            // Nivel 3: Plataforma en Y=380, NPC debe estar en Y=380
             new NPC
             {
                 Id = "671000000000000000000302",
@@ -364,8 +382,8 @@ private async Task CreateNPCsAsync()
                 Role = "Recolector de Datos Libres",
                 FactionId = "671000000000000000000003",
                 LevelId = null,
-                PositionX = 300,
-                PositionY = 330,
+                PositionX = 335,   // Plataforma en X=300-400
+                PositionY = 380,   // Plataforma en Y=380
                 DialogueList = new List<string>
                 {
                     "La información nace para circular.",
@@ -375,6 +393,7 @@ private async Task CreateNPCsAsync()
                 IsActive = true
             },
 
+            // Nivel 6: Plataforma en Y=240, NPC debe estar en Y=240
             new NPC
             {
                 Id = "671000000000000000000303",
@@ -382,8 +401,8 @@ private async Task CreateNPCsAsync()
                 Role = "Protector de Archivos Liberados",
                 FactionId = "671000000000000000000003",
                 LevelId = null,
-                PositionX = 900,
-                PositionY = 260,
+                PositionX = 1015,  // Plataforma en X=930-1070
+                PositionY = 240,   // Plataforma en Y=240
                 DialogueList = new List<string>
                 {
                     "Cada memoria salvada es una victoria.",
@@ -396,95 +415,140 @@ private async Task CreateNPCsAsync()
 
         // Insertar
         await npcsCollection.InsertManyAsync(npcs);
-        Console.WriteLine($" {npcs.Count} NPCs creados con éxito");
+        Console.WriteLine($"✅ {npcs.Count} NPCs creados con posiciones ajustadas");
 
         // Verificar
         var verifyCount = await npcsCollection.CountDocumentsAsync(_ => true);
-        Console.WriteLine($" Verificación: {verifyCount} NPCs en la base de datos");
+        Console.WriteLine($"✅ Verificación: {verifyCount} NPCs en la base de datos");
+        
+        // Mostrar posiciones
+        Console.WriteLine("\n📍 Posiciones de NPCs:");
+        foreach (var npc in npcs)
+        {
+            Console.WriteLine($"   {npc.Name.Split('—')[0].Trim()}: X={npc.PositionX}, Y={npc.PositionY}");
+        }
     }
     catch (Exception ex)
     {
-        Console.WriteLine($" Error creando NPCs: {ex.Message}");
+        Console.WriteLine($"❌ Error creando NPCs: {ex.Message}");
         Console.WriteLine($"   Stack: {ex.StackTrace}");
     }
 }
 
 
-        private async Task AssignNPCsToLevelsAsync()
+private async Task AssignNPCsToLevelsAsync()
+{
+    try
+    {
+        var dbService = new MongoDbService();
+        var npcsCollection = dbService.GetCollection<NPC>("npcs");
+
+        var allNpcs = await npcsCollection.Find(_ => true).ToListAsync();
+
+        if (allNpcs.Count == 0)
         {
-            try
+            Console.WriteLine("❌ No hay NPCs para asignar");
+            return;
+        }
+
+        Console.WriteLine($"📋 NPCs disponibles para asignar: {allNpcs.Count}");
+        foreach (var npc in allNpcs)
+            Console.WriteLine($"   - {npc.Name} (ID: {npc.Id})");
+
+        var levels = await _levelRepo.GetAllAsync();
+        Console.WriteLine($"📋 Niveles disponibles: {levels.Count}");
+
+        // =============================================================
+        // ASIGNACIÓN DEFINITIVA BASADA EN LOS COMENTARIOS DEL PROYECTO
+        // =============================================================
+
+        // Cada nivel recibe exactamente el NPC que corresponde
+        var npcAssignments = new Dictionary<int, List<string>>
+        {
+            // NIVEL 1 → Sin NPC (tutorial)
+            { 1, new List<string>() },
+
+            // NIVEL 2 → Custodio Alfa
+            { 2, new List<string> { "671000000000000000000102" } },
+
+            // NIVEL 3 → Reportero Fantasma + Bibliotecario Errante
+            { 3, new List<string> 
+                { 
+                    "671000000000000000000103", // Reportero Fantasma
+                    "671000000000000000000302"  // Bibliotecario Errante
+                } 
+            },
+
+            // NIVEL 4 → Decano Villanueva
+            { 4, new List<string> { "671000000000000000000201" } },
+
+            // NIVEL 5 → IA Centinela R-07 + Noa Espectra
+            { 5, new List<string> 
+                { 
+                    "671000000000000000000202", // IA Centinela
+                    "671000000000000000000301"  // Noa Espectra
+                } 
+            },
+
+            // NIVEL 6 → Analista Fractal + Guardián de Memoria
+            { 6, new List<string> 
+                { 
+                    "671000000000000000000203", // Analista Fractal
+                    "671000000000000000000303"  // Guardián de Memoria
+                } 
+            },
+
+            // NIVEL 7 → El Archivero — Julián Casablancas
+            { 7, new List<string> { "671000000000000000000101" } }
+        };
+
+
+        // =============================================================
+        // APLICAR LA ASIGNACIÓN
+        // =============================================================
+        foreach (var level in levels)
+        {
+            if (npcAssignments.TryGetValue(level.OrderNumber, out var npcIds))
             {
-                var dbService = new MongoDbService();
-                var npcsCollection = dbService.GetCollection<NPC>("npcs");
-                
-                var allNpcs = await npcsCollection.Find(_ => true).ToListAsync();
-                
-                if (allNpcs.Count == 0)
+                level.NPCIds = npcIds;
+
+                bool updated = await _levelRepo.UpdateAsync(level.Id, level);
+
+                if (updated)
                 {
-                    Console.WriteLine(" No hay NPCs para asignar");
-                    return;
+                    Console.WriteLine(
+                        $"✅ Nivel {level.OrderNumber} → NPCs asignados: {string.Join(", ", npcIds)}"
+                    );
                 }
-
-                Console.WriteLine($" NPCs disponibles para asignar: {allNpcs.Count}");
-                foreach (var npc in allNpcs)
+                else
                 {
-                    Console.WriteLine($"   - {npc.Name} (ID: {npc.Id})");
-                }
-
-                var levels = await _levelRepo.GetAllAsync();
-                Console.WriteLine($" Niveles disponibles: {levels.Count}");
-                
-                // Asignar NPCs a niveles específicos
-                // Asignación correcta basada en IDs, no índices
-                var npcAssignments = new Dictionary<int, List<string>>
-                {
-                    { 1, new List<string> { "671000000000000000000101" } }, // Archivero
-                    { 2, new List<string> { "671000000000000000000102" } }, // Custodio Alfa
-                    { 3, new List<string> { "671000000000000000000103" } }, // Reportero Fantasma
-                    { 4, new List<string> { "671000000000000000000201" } }, // Decano Villanueva
-                    { 5, new List<string> { "671000000000000000000202" } }, // IA Centinela R-07
-                    { 6, new List<string> { "671000000000000000000203" } }, // Analista Fractal
-                    { 7, new List<string> { "671000000000000000000301" } }, // Noa Espectra
-                };
-
-                
-                foreach (var level in levels)
-                {
-                    if (npcAssignments.TryGetValue(level.OrderNumber, out var npcIds))
-                    {
-                        level.NPCIds = npcIds;
-
-                        bool updated = await _levelRepo.UpdateAsync(level.Id, level);
-
-                        if (updated)
-                        {
-                            Console.WriteLine($" NPCs asignados al nivel {level.OrderNumber}: {string.Join(", ", npcIds)}");
-                        }
-                        else
-                        {
-                            Console.WriteLine($" No se pudo actualizar el nivel {level.OrderNumber}");
-                        }
-                    }
-                    else
-                    {
-                        Console.WriteLine($" Nivel {level.OrderNumber} sin NPC asignado");
-                    }
-                }
-
-                
-                // Verificar la asignación
-                Console.WriteLine("\n Verificando asignación de NPCs:");
-                var verifyLevels = await _levelRepo.GetAllAsync();
-                foreach (var level in verifyLevels)
-                {
-                    Console.WriteLine($"   Nivel {level.OrderNumber}: {level.NPCIds?.Count ?? 0} NPCs, {level.NPCs?.Count ?? 0} NPCs cargados");
+                    Console.WriteLine($"❌ No se pudo actualizar el nivel {level.OrderNumber}");
                 }
             }
-            catch (Exception ex)
+            else
             {
-                Console.WriteLine($" Error asignando NPCs: {ex.Message}");
-                Console.WriteLine($"   Stack: {ex.StackTrace}");
+                Console.WriteLine($"ℹ️ Nivel {level.OrderNumber} sin NPC asignado");
             }
         }
+
+        // =============================================================
+        // VERIFICACIÓN FINAL
+        // =============================================================
+        Console.WriteLine("\n🔍 Verificando asignación de NPCs:");
+        var verifyLevels = await _levelRepo.GetAllAsync();
+
+        foreach (var level in verifyLevels)
+        {
+            Console.WriteLine(
+                $"   Nivel {level.OrderNumber}: {level.NPCIds?.Count ?? 0} NPCs asignados"
+            );
+        }
+    }
+    catch (Exception ex)
+    {
+        Console.WriteLine($"❌ Error asignando NPCs: {ex.Message}");
+        Console.WriteLine($"   Stack: {ex.StackTrace}");
+    }
+}
     }
 }
