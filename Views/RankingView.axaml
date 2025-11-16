@@ -4,78 +4,105 @@
              x:Class="GameAletheiaCross.Views.RankingView"
              x:DataType="vm:RankingViewModel">
 
-    <Border Background="#1a1a2e" Padding="40">
-        <Grid RowDefinitions="Auto,*,Auto">
-            
-            <!-- Título -->
-            <TextBlock Grid.Row="0"
-                       Text="RANKING GLOBAL"
-                       FontSize="26"
-                       FontWeight="Bold"
-                       HorizontalAlignment="Center"
-                       Foreground="#FFD700"
-                       Margin="0,0,0,20" />
+    <Grid>
+        <!-- Imagen de fondo -->
+        <Image Source="avares://GameAletheiaCross/Assets/Images/RankedFondo.png"
+               Stretch="UniformToFill"
+               HorizontalAlignment="Center"
+               VerticalAlignment="Center"/>
+        
+        <!-- Overlay oscuro -->
+        <Border Background="#000000CC" />
+        
+        <!-- Contenido -->
+        <Border Padding="40">
+            <Grid RowDefinitions="Auto,*,Auto">
+                
+                <!-- Título -->
+                <Border Grid.Row="0"
+                       Background="#0a0a15"
+                       BorderBrush="#FFD700"
+                       BorderThickness="0,0,0,3"
+                       Padding="20"
+                       Margin="0,0,0,20"
+                       CornerRadius="10,10,0,0">
+                    <TextBlock Text="🏆 RANKING GLOBAL 🏆"
+                               FontSize="32"
+                               FontWeight="Bold"
+                               HorizontalAlignment="Center"
+                               Foreground="#FFD700">
+                        <TextBlock.Effect>
+                            <DropShadowEffect Color="Black" OffsetX="2" OffsetY="2" BlurRadius="8"/>
+                        </TextBlock.Effect>
+                    </TextBlock>
+                </Border>
 
-            <!-- Tabla de ranking -->
-            <Border Grid.Row="1"
-                    Background="#1a1a2e" 
-                    BorderBrush="#FFD700" 
-                    BorderThickness="2"
-                    CornerRadius="5"
-                    Padding="0">
-                <ScrollViewer VerticalScrollBarVisibility="Auto">
-                    <StackPanel>
-                        
-                        <!-- Encabezado -->
-                        <Border Background="#0a0a15" Padding="15" Margin="0">
-                            <StackPanel Orientation="Horizontal" Spacing="20">
-                                <TextBlock Text="Pos" Width="50" FontWeight="Bold" Foreground="#FFD700" />
-                                <TextBlock Text="Jugador" Width="200" FontWeight="Bold" Foreground="#FFD700" />
-                                <TextBlock Text="Facción" Width="150" FontWeight="Bold" Foreground="#FFD700" />
-                                <TextBlock Text="Nivel" Width="80" FontWeight="Bold" Foreground="#FFD700" />
-                                <TextBlock Text="Score" Width="100" FontWeight="Bold" Foreground="#FFD700" />
-                            </StackPanel>
-                        </Border>
+                <!-- Tabla de ranking -->
+                <Border Grid.Row="1"
+                        Background="#0a0a15DD" 
+                        BorderBrush="#FFD700" 
+                        BorderThickness="2"
+                        CornerRadius="5"
+                        Padding="0">
+                    <ScrollViewer VerticalScrollBarVisibility="Auto">
+                        <StackPanel>
+                            
+                            <!-- Encabezado -->
+                            <Border Background="#1a1a2e" Padding="15" Margin="0">
+                                <StackPanel Orientation="Horizontal" Spacing="20">
+                                    <TextBlock Text="Pos" Width="60" FontWeight="Bold" Foreground="#FFD700" FontSize="14"/>
+                                    <TextBlock Text="Jugador" Width="200" FontWeight="Bold" Foreground="#FFD700" FontSize="14"/>
+                                    <TextBlock Text="Facción" Width="180" FontWeight="Bold" Foreground="#FFD700" FontSize="14"/>
+                                    <TextBlock Text="Nivel" Width="100" FontWeight="Bold" Foreground="#FFD700" FontSize="14"/>
+                                    <TextBlock Text="Score" Width="120" FontWeight="Bold" Foreground="#FFD700" FontSize="14"/>
+                                </StackPanel>
+                            </Border>
 
-                        <!-- Filas de datos -->
-                        <ItemsControl ItemsSource="{Binding TopPlayers}">
-                            <ItemsControl.ItemTemplate>
-                                <DataTemplate>
-                                    <Border Background="#0f3460"
-                                           BorderBrush="#00AA00"
-                                           BorderThickness="0,0,0,1"
-                                           Padding="15"
-                                           Margin="0">
-                                        <StackPanel Orientation="Horizontal" Spacing="20">
-                                            <TextBlock Text="{Binding Medal}" Width="50" VerticalAlignment="Center"
-                                                     FontSize="14" FontWeight="Bold" Foreground="#FFD700" />
-                                            <TextBlock Text="{Binding PlayerName}" Width="200" VerticalAlignment="Center"
-                                                     Foreground="White" />
-                                            <TextBlock Text="{Binding Faction}" Width="150" VerticalAlignment="Center"
-                                                     Foreground="#00D9FF" />
-                                            <TextBlock Text="{Binding Level, StringFormat='Nivel {0}'}" Width="80" VerticalAlignment="Center"
-                                                     Foreground="#00FF88" />
-                                            <TextBlock Text="{Binding Score}" Width="100" VerticalAlignment="Center"
-                                                     Foreground="#FFA500" FontWeight="Bold" />
-                                        </StackPanel>
-                                    </Border>
-                                </DataTemplate>
-                            </ItemsControl.ItemTemplate>
-                        </ItemsControl>
-                    </StackPanel>
-                </ScrollViewer>
-            </Border>
+                            <!-- Filas de datos -->
+                            <ItemsControl ItemsSource="{Binding TopPlayers}">
+                                <ItemsControl.ItemTemplate>
+                                    <DataTemplate>
+                                        <Border Background="#0f3460DD"
+                                               BorderBrush="#00AA00"
+                                               BorderThickness="0,0,0,1"
+                                               Padding="15"
+                                               Margin="0">
+                                            <StackPanel Orientation="Horizontal" Spacing="20">
+                                                <TextBlock Text="{Binding Medal}" Width="60" VerticalAlignment="Center"
+                                                         FontSize="18" FontWeight="Bold" Foreground="#FFD700" />
+                                                <TextBlock Text="{Binding PlayerName}" Width="200" VerticalAlignment="Center"
+                                                         Foreground="White" FontSize="14" FontWeight="Bold"/>
+                                                <TextBlock Text="{Binding Faction}" Width="180" VerticalAlignment="Center"
+                                                         Foreground="#00D9FF" FontSize="13"/>
+                                                <TextBlock Text="{Binding Level, StringFormat='Nivel {0}'}" Width="100" VerticalAlignment="Center"
+                                                         Foreground="#00FF88" FontSize="13" FontWeight="Bold"/>
+                                                <TextBlock Text="{Binding Score}" Width="120" VerticalAlignment="Center"
+                                                         Foreground="#FFA500" FontWeight="Bold" FontSize="14"/>
+                                            </StackPanel>
+                                        </Border>
+                                    </DataTemplate>
+                                </ItemsControl.ItemTemplate>
+                            </ItemsControl>
+                        </StackPanel>
+                    </ScrollViewer>
+                </Border>
 
-            <!-- Botón Volver -->
-            <Button Grid.Row="2"
-                    Content="Volver"
-                    Command="{Binding BackCommand}"
-                    Width="200"
-                    Height="50"
-                    HorizontalAlignment="Center"
-                    Margin="0,20,0,0"
-                    Background="#533483"
-                    Foreground="White" />
-        </Grid>
-    </Border>
+                <!-- Botón Volver -->
+                <Button Grid.Row="2"
+                        Content="← Volver al Menú"
+                        Command="{Binding BackCommand}"
+                        Width="250"
+                        Height="60"
+                        HorizontalAlignment="Center"
+                        Margin="0,20,0,0"
+                        Background="#533483"
+                        Foreground="White"
+                        BorderBrush="#AA0000"
+                        BorderThickness="2"
+                        FontWeight="Bold"
+                        FontSize="16"
+                        CornerRadius="8"/>
+            </Grid>
+        </Border>
+    </Grid>
 </UserControl>

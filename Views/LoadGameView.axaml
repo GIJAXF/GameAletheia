@@ -4,72 +4,99 @@
              x:Class="GameAletheiaCross.Views.LoadGameView"
              x:DataType="vm:LoadGameViewModel">
 
-    <StackPanel Margin="40"
-                Spacing="20"
-                HorizontalAlignment="Center"
-                VerticalAlignment="Center">
+    <Grid>
+        <!-- Imagen de fondo -->
+        <Image Source="avares://GameAletheiaCross/Assets/Images/DefaultFondo.png"
+               Stretch="UniformToFill"
+               HorizontalAlignment="Center"
+               VerticalAlignment="Center"/>
+        
+        <!-- Overlay oscuro -->
+        <Border Background="#000000AA" />
+        
+        <!-- Contenido -->
+        <StackPanel Margin="40"
+                    Spacing="20"
+                    HorizontalAlignment="Center"
+                    VerticalAlignment="Center">
 
-        <TextBlock Text="CARGAR PARTIDA"
-                   FontSize="26"
-                   FontWeight="Bold"
-                   HorizontalAlignment="Center"
-                   Foreground="#00D9FF" />
+            <TextBlock Text="📂 CARGAR PARTIDA"
+                       FontSize="32"
+                       FontWeight="Bold"
+                       HorizontalAlignment="Center"
+                       Foreground="#00D9FF">
+                <TextBlock.Effect>
+                    <DropShadowEffect Color="Black" OffsetX="2" OffsetY="2" BlurRadius="8"/>
+                </TextBlock.Effect>
+            </TextBlock>
 
-        <!-- Mostrar partidas guardadas -->
-        <Border Background="#1a1a2e" 
-               BorderBrush="#00D9FF" 
-               BorderThickness="2"
-               CornerRadius="5"
-               Padding="10"
-               MaxHeight="400"
-               MinWidth="500">
-            <ScrollViewer VerticalScrollBarVisibility="Auto">
-                <ItemsControl ItemsSource="{Binding Players}">
-                    <ItemsControl.ItemTemplate>
-                        <DataTemplate>
-                            <Button Margin="5"
-                                   Padding="15,10"
-                                   Background="#0f3460"
-                                   Foreground="White"
-                                   Command="{Binding $parent[ItemsControl].DataContext.SelectPlayerCommand}"
-                                   CommandParameter="{Binding .}"
-                                   HorizontalAlignment="Stretch"
-                                   HorizontalContentAlignment="Left">
-                                <StackPanel Spacing="5">
-                                    <TextBlock>
-                                        <Run Text="User: " FontSize="14"/>
-                                        <Run Text="{Binding Name}" FontSize="16" FontWeight="Bold"/>
-                                        <Run Text=" (Nivel " FontSize="12"/>
-                                        <Run Text="{Binding CurrentLevel}" FontSize="12" FontWeight="Bold"/>
-                                        <Run Text=")" FontSize="12"/>
-                                    </TextBlock>
-                                    <TextBlock>
-                                        <Run Text="Puntos: " FontSize="12"/>
-                                        <Run Text="Score: " FontSize="11"/>
-                                        <Run Text="{Binding TotalScore}" FontSize="11" FontWeight="Bold"/>
-                                        <Run Text=" | Faction: " FontSize="12"/>
-                                        <Run Text="{Binding Faction}" FontSize="11"/>
-                                    </TextBlock>
-                                </StackPanel>
-                            </Button>
-                        </DataTemplate>
-                    </ItemsControl.ItemTemplate>
-                </ItemsControl>
-            </ScrollViewer>
-        </Border>
+            <!-- Mostrar partidas guardadas -->
+            <Border Background="#0a0a15DD" 
+                   BorderBrush="#00D9FF" 
+                   BorderThickness="3"
+                   CornerRadius="10"
+                   Padding="15"
+                   MaxHeight="400"
+                   MinWidth="600">
+                <ScrollViewer VerticalScrollBarVisibility="Auto">
+                    <ItemsControl ItemsSource="{Binding Players}">
+                        <ItemsControl.ItemTemplate>
+                            <DataTemplate>
+                                <Button Margin="5"
+                                       Padding="20,15"
+                                       Background="#0f3460"
+                                       Foreground="White"
+                                       BorderBrush="#00FF88"
+                                       BorderThickness="2"
+                                       CornerRadius="8"
+                                       Command="{Binding $parent[ItemsControl].DataContext.SelectPlayerCommand}"
+                                       CommandParameter="{Binding .}"
+                                       HorizontalAlignment="Stretch"
+                                       HorizontalContentAlignment="Left">
+                                    <StackPanel Spacing="8">
+                                        <TextBlock FontSize="14">
+                                            <Run Text="👤 " FontSize="16"/>
+                                            <Run Text="{Binding Name}" FontSize="18" FontWeight="Bold" Foreground="#00FF88"/>
+                                            <Run Text=" — Nivel " FontSize="13" Foreground="#AAAAAA"/>
+                                            <Run Text="{Binding CurrentLevel}" FontSize="16" FontWeight="Bold" Foreground="#FFD700"/>
+                                        </TextBlock>
+                                        <StackPanel Orientation="Horizontal" Spacing="20">
+                                            <TextBlock FontSize="12" Foreground="#00D9FF">
+                                                <Run Text="⚡ Score: "/>
+                                                <Run Text="{Binding TotalScore}" FontWeight="Bold"/>
+                                            </TextBlock>
+                                            <TextBlock FontSize="12" Foreground="#AAAAAA">
+                                                <Run Text="🏴 Facción: "/>
+                                                <Run Text="{Binding Faction}" Foreground="White" FontWeight="Bold"/>
+                                            </TextBlock>
+                                        </StackPanel>
+                                    </StackPanel>
+                                </Button>
+                            </DataTemplate>
+                        </ItemsControl.ItemTemplate>
+                    </ItemsControl>
+                </ScrollViewer>
+            </Border>
 
-        <TextBlock Text="{Binding Players.Count, StringFormat='Total de partidas: {0}'}"
-                   FontSize="12"
-                   Foreground="#AAAAAA"
-                   HorizontalAlignment="Center" />
+            <TextBlock Text="{Binding Players.Count, StringFormat='📊 Total de partidas guardadas: {0}'}"
+                       FontSize="13"
+                       Foreground="#CCCCCC"
+                       HorizontalAlignment="Center"
+                       Margin="0,10,0,0"/>
 
-        <Button Content="Volver"
-                Command="{Binding BackCommand}"
-                Width="200"
-                Height="50"
-                Margin="0,20,0,0"
-                HorizontalAlignment="Center"
-                Background="#533483"
-                Foreground="White" />
-    </StackPanel>
+            <Button Content="← Volver"
+                    Command="{Binding BackCommand}"
+                    Width="250"
+                    Height="60"
+                    Margin="0,20,0,0"
+                    HorizontalAlignment="Center"
+                    Background="#533483"
+                    Foreground="White"
+                    BorderBrush="#AA0000"
+                    BorderThickness="2"
+                    FontWeight="Bold"
+                    FontSize="16"
+                    CornerRadius="8"/>
+        </StackPanel>
+    </Grid>
 </UserControl>
