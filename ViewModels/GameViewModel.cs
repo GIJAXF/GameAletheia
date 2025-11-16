@@ -547,16 +547,31 @@ namespace GameAletheiaCross.ViewModels
             IsDialogueActive = false;
             ActiveDialogue = null;
             
-            // ⭐ IMPORTANTE: Resetear todas las teclas al cerrar el diálogo
+            // ⭐ CRÍTICO: Resetear TODAS las teclas y flags al cerrar el diálogo
+            ResetAllInputs();
+        }
+        
+        private void ResetAllInputs()
+        {
+            Console.WriteLine("🎮 Reseteando todos los inputs");
+            
+            // Resetear estado de teclas
             KeyLeft = false;
             KeyRight = false;
             KeyUp = false;
             KeySpace = false;
             KeyE = false;
             
-            // Resetear las banderas de presión
+            // Resetear banderas de presión
             _spacePressed = false;
             _ePressed = false;
+            
+            // Resetear velocidad del jugador para evitar movimiento residual
+            if (Player != null)
+            {
+                Player.Velocity.X = 0;
+                Console.WriteLine("✅ Velocidad del jugador reseteada");
+            }
         }
         
         public void ResumeGameLoop()
