@@ -75,11 +75,11 @@ namespace GameAletheiaCross.ViewModels
                 var uri = new Uri($"avares://GameAletheiaCross/Assets/Images/{filename}");
                 var stream = AssetLoader.Open(uri);
                 BackgroundImage = new Bitmap(stream);
-                Console.WriteLine($"✅ Fondo cargado: {filename}");
+                Console.WriteLine($" Fondo cargado: {filename}");
             }
             catch (Exception ex)
             {
-                Console.WriteLine($"⚠️ No se pudo cargar {filename}: {ex.Message}");
+                Console.WriteLine($" No se pudo cargar {filename}: {ex.Message}");
                 // Cargar fondo por defecto
                 try
                 {
@@ -105,16 +105,16 @@ namespace GameAletheiaCross.ViewModels
                     foreach (var faction in factions)
                     {
                         Factions.Add(faction);
-                        // 🔍 DEBUG: Mostrar nombre exacto de cada facción
-                        Console.WriteLine($"🏛️ Facción cargada: '{faction.Name}'");
+                        //  DEBUG: Mostrar nombre exacto de cada facción
+                        Console.WriteLine($" Facción cargada: '{faction.Name}'");
                     }
                 });
                 
-                Console.WriteLine($"✅ {factions.Count} facciones cargadas");
+                Console.WriteLine($" {factions.Count} facciones cargadas");
             }
             catch (Exception ex)
             {
-                Console.WriteLine($"❌ Error cargando facciones: {ex.Message}");
+                Console.WriteLine($" Error cargando facciones: {ex.Message}");
             }
         }
         
@@ -140,16 +140,16 @@ namespace GameAletheiaCross.ViewModels
                 backgroundFile = "BibliotecaFondo.png";
             }
             
-            Console.WriteLine($"🎨 Cambiando fondo a: {backgroundFile} para facción: {faction.Name}");
+            Console.WriteLine($" Cambiando fondo a: {backgroundFile} para facción: {faction.Name}");
             
-            // ⭐ IMPORTANTE: Usar Dispatcher para actualizar UI en el hilo correcto
+            // IMPORTANTE: Usar Dispatcher para actualizar UI en el hilo correcto
             Dispatcher.UIThread.Post(() =>
             {
                 LoadBackground(backgroundFile);
                 ShowIntroduction = true;
             });
             
-            Console.WriteLine($"✅ Facción seleccionada: {faction.Name}");
+            Console.WriteLine($" Facción seleccionada: {faction.Name}");
         }
         
         private async void OnConfirmFaction()
@@ -162,7 +162,7 @@ namespace GameAletheiaCross.ViewModels
                 var playerRepo = new PlayerRepository(dbService);
                 await playerRepo.UpdateFactionAsync(_playerId, SelectedFaction.Name);
                 
-                Console.WriteLine($"✅ Facción confirmada: {SelectedFaction.Name}");
+                Console.WriteLine($" Facción confirmada: {SelectedFaction.Name}");
                 
                 await Task.Delay(400);
                 
@@ -173,13 +173,13 @@ namespace GameAletheiaCross.ViewModels
             }
             catch (Exception ex)
             {
-                Console.WriteLine($"❌ Error confirmando facción: {ex.Message}");
+                Console.WriteLine($" Error confirmando facción: {ex.Message}");
             }
         }
         
         private void OnCancelSelection()
         {
-            // ⭐ Volver al fondo neutral al cancelar
+            // Volver al fondo neutral al cancelar
             Dispatcher.UIThread.Post(() =>
             {
                 ShowIntroduction = false;

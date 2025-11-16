@@ -10,7 +10,7 @@ namespace GameAletheiaCross.Services
         {
             bool onGround = false;
 
-            // ⭐ VERIFICAR COLISIÓN CON EL PISO PRINCIPAL
+            // VERIFICAR COLISIÓN CON EL PISO PRINCIPAL
             if (floor != null && floor.IsSolid)
             {
                 if (IsCollidingWithFloor(player, floor))

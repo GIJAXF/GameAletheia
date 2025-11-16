@@ -28,7 +28,7 @@ namespace GameAletheiaCross.Models
         [BsonElement("timeLimit")]
         public int TimeLimit { get; set; }
         
-        // ⭐ NUEVO: Piso principal (el suelo base del nivel)
+        // NUEVO: Piso principal (el suelo base del nivel)
         [BsonElement("floor")]
         public Floor FloorPlatform { get; set; } = new Floor();
         
@@ -47,7 +47,7 @@ namespace GameAletheiaCross.Models
         [BsonIgnore]
         public List<NPC> NPCs { get; set; } = new();
 
-        // ⭐ NUEVA CLASE: Piso principal
+        // NUEVA CLASE: Piso principal
         public class Floor
         {
             [BsonElement("x")]

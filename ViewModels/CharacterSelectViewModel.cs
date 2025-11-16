@@ -41,7 +41,7 @@ namespace GameAletheiaCross.ViewModels
         {
             if (string.IsNullOrWhiteSpace(PlayerName))
             {
-                Console.WriteLine(" ️ Debes ingresar un nombre");
+                Console.WriteLine(" Debes ingresar un nombre");
                 return;
             }
 
@@ -59,16 +59,18 @@ namespace GameAletheiaCross.ViewModels
                 };
 
                 await playerRepo.CreateAsync(player);
-                Console.WriteLine($"  Jugador creado: {player.Name} (ID: {player.Id})");
+                Console.WriteLine($" Jugador creado: {player.Name} (ID: {player.Id})");
 
+                // CAMBIO PRINCIPAL: Navegar al TUTORIAL en lugar de FactionSelect
                 await Dispatcher.UIThread.InvokeAsync(() =>
                 {
-                    _navigate(new FactionSelectViewModel(_navigate, player.Id, player.Name));
+                    Console.WriteLine(" Navegando al tutorial...");
+                    _navigate(new TutorialViewModel(_navigate, player.Id, player.Name));
                 });
             }
             catch (Exception ex)
             {
-                Console.WriteLine($"  Error creando jugador: {ex.Message}");
+                Console.WriteLine($" Error creando jugador: {ex.Message}");
             }
         }
         

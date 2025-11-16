@@ -44,6 +44,11 @@
             <views:CharacterSelectView />
         </DataTemplate>
         
+        <!-- NUEVO: Template para el Tutorial -->
+        <DataTemplate DataType="vm:TutorialViewModel">
+            <views:TutorialView />
+        </DataTemplate>
+        
         <DataTemplate DataType="vm:FactionSelectViewModel">
             <views:FactionSelectView />
         </DataTemplate>

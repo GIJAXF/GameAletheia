@@ -101,8 +101,8 @@ namespace GameAletheiaCross.ViewModels
                 }
                 else
                 {
-                    Output = " ️ No hay puzzles disponibles para este nivel.\n\nPuedes continuar explorando.";
-                    Console.WriteLine(" ️ No hay puzzles en este nivel");
+                    Output = "  No hay puzzles disponibles para este nivel.\n\nPuedes continuar explorando.";
+                    Console.WriteLine("  No hay puzzles en este nivel");
                 }
             }
             catch (Exception ex)
@@ -134,7 +134,7 @@ namespace GameAletheiaCross.ViewModels
         {
             if (string.IsNullOrWhiteSpace(Code))
             {
-                Output = " ️ ERROR: El código está vacío\n\nEscribe tu solución antes de compilar.";
+                Output = "  ERROR: El código está vacío\n\nEscribe tu solución antes de compilar.";
                 return;
             }
             
@@ -256,7 +256,7 @@ Usa el botón PISTA si necesitas ayuda.
         {
             if (CurrentPuzzle == null)
             {
-                Output = " ️ No hay puzzle cargado";
+                Output = "  No hay puzzle cargado";
                 return;
             }
 
@@ -277,7 +277,7 @@ Usa el botón PISTA si necesitas ayuda.
             else
             {
                 Output = $@"
- ️ NO HAY MÁS PISTAS
+  NO HAY MÁS PISTAS
 
 Ya has usado todas las {TotalHints} pistas disponibles.
 ¡Ahora depende de ti resolverlo!

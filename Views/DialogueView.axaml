@@ -8,7 +8,7 @@
     <Grid Background="Transparent" HorizontalAlignment="Stretch" VerticalAlignment="Stretch">
         
         <!-- Diálogo en la parte superior -->
-        <Border Background="#0a0a15DD" 
+        <Border Background="#CC0a0a15" 
                 BorderBrush="#00d9ff" 
                 BorderThickness="0,0,0,3"
                 Padding="25,15"
@@ -17,7 +17,7 @@
                 HorizontalAlignment="Center"
                 VerticalAlignment="Top"
                 Margin="0,20,0,0"
-                BoxShadow="0 5 20 2 #000000AA">
+                BoxShadow="0 5 20 2 #AA000000">
             
             <StackPanel Spacing="12">
                 <!-- Nombre del NPC -->
@@ -40,14 +40,10 @@
                            HorizontalAlignment="Right" 
                            Spacing="10"
                            Margin="0,5,0,0">
-                    <TextBlock Text="{Binding TimeRemaining, StringFormat='⏱️ {0}s'}"
+                    <TextBlock Text="{Binding TimeRemaining, StringFormat='⏱ {0}s'}"
                              FontSize="11"
                              Foreground="#FFD700"
                              FontWeight="Bold"/>
-                    <TextBlock Text="| Presiona E para continuar" 
-                             FontSize="11"
-                             Foreground="#AAAAAA"
-                             FontStyle="Italic"/>
                 </StackPanel>
             </StackPanel>
         </Border>

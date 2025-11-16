@@ -40,7 +40,7 @@ namespace GameAletheiaCross.Data
             var existingPuzzles = await _puzzleRepo.GetAllByLevelIdAsync(level.Id);
             if (existingPuzzles.Count > 0)
             {
-                Console.WriteLine($" ️ Puzzles ya existen para nivel {level.OrderNumber}");
+                Console.WriteLine($"  Puzzles ya existen para nivel {level.OrderNumber}");
                 return;
             }
 

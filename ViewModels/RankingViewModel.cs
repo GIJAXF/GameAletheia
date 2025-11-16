@@ -46,9 +46,9 @@ namespace GameAletheiaCross.ViewModels
                     {
                         var medal = position switch
                         {
-                            1 => " ",
-                            2 => " ",
-                            3 => " ",
+                            1 => "1.",
+                            2 => "2.",
+                            3 => "3.",
                             _ => $"{position:D2}."
                         };
                         

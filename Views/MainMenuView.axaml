@@ -36,9 +36,9 @@
                     Height="60"
                     FontSize="18"
                     FontWeight="Bold"
-                    Background="#0f3460"
+                    Background="#740000"
                     Foreground="White"
-                    BorderBrush="#00FF88"
+                    BorderBrush="#ff0000"
                     BorderThickness="2"
                     CornerRadius="8"
                     Margin="0,10,0,0"/>
@@ -51,7 +51,7 @@
                     FontWeight="Bold"
                     Background="#0f3460"
                     Foreground="White"
-                    BorderBrush="#00D9FF"
+                    BorderBrush="#1100ff"
                     BorderThickness="2"
                     CornerRadius="8"/>
             
@@ -61,7 +61,7 @@
                     Height="60"
                     FontSize="18"
                     FontWeight="Bold"
-                    Background="#0f3460"
+                    Background="#919400"
                     Foreground="White"
                     BorderBrush="#FFD700"
                     BorderThickness="2"
@@ -73,9 +73,9 @@
                     Height="60"
                     FontSize="18"
                     FontWeight="Bold"
-                    Background="#533483"
+                    Background="#4300a7"
                     Foreground="White"
-                    BorderBrush="#AA0000"
+                    BorderBrush="#520072"
                     BorderThickness="2"
                     CornerRadius="8"/>
             

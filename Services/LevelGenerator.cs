@@ -24,12 +24,12 @@ namespace GameAletheiaCross.Services
             var existingCount = await _levelRepo.GetTotalLevelsAsync();
             if (existingCount > 0)
             {
-                Console.WriteLine($"⚠️ Ya existen {existingCount} niveles. Eliminando para regenerar...");
+                Console.WriteLine($" Ya existen {existingCount} niveles. Eliminando para regenerar...");
                 await DeleteAllLevelsAsync();
             }
 
             // PRIMERO: Crear y guardar NPCs
-            Console.WriteLine("🎭 Creando NPCs...");
+            Console.WriteLine(" Creando NPCs...");
             await CreateNPCsAsync();
 
             var levels = new List<Level>
@@ -38,7 +38,7 @@ namespace GameAletheiaCross.Services
                 { 
                     OrderNumber = 1, 
                     Name = "El Despertar Digital", 
-                    Description = "Tu primera inmersión en la red. Aprende los controles básicos.", 
+                    Description = "Tu primera inmersión en la red. Mucha suerte", 
                     Background = "forest", 
                     Difficulty = 1, 
                     FloorPlatform = new Level.Floor { FloorType = "Pasto" },
@@ -52,7 +52,7 @@ namespace GameAletheiaCross.Services
                     Description = "Navega por las defensas caídas de una red olvidada.", 
                     Background = "ruins", 
                     Difficulty = 1, 
-                    FloorPlatform = new Level.Floor { FloorType = "Pasto" },
+                    FloorPlatform = new Level.Floor { FloorType = "RedLine" },
                     Platforms = GeneratePlatformsForLevel(2), 
                     NPCIds = new List<string>() 
                 },
@@ -63,7 +63,7 @@ namespace GameAletheiaCross.Services
                     Description = "Evita las trampas de seguridad obsoletas.", 
                     Background = "city", 
                     Difficulty = 2, 
-                    FloorPlatform = new Level.Floor { FloorType = "Pasto" },
+                    FloorPlatform = new Level.Floor { FloorType = "Hielo" },
                     Platforms = GeneratePlatformsForLevel(3), 
                     NPCIds = new List<string>() 
                 },
@@ -114,19 +114,19 @@ namespace GameAletheiaCross.Services
             };
 
             // SEGUNDO: Crear niveles
-            Console.WriteLine("🎮 Creando niveles...");
+            Console.WriteLine(" Creando niveles...");
             foreach (var level in levels)
             {
                 await _levelRepo.CreateAsync(level);
-                Console.WriteLine($"✅ Nivel creado: {level.Name} (Orden: {level.OrderNumber}, Piso: {level.FloorPlatform.FloorType})");
+                Console.WriteLine($" Nivel creado: {level.Name} (Orden: {level.OrderNumber}, Piso: {level.FloorPlatform.FloorType})");
             }
 
             // TERCERO: Asignar NPCs a niveles
-            Console.WriteLine("🎭 Asignando NPCs a niveles...");
+            Console.WriteLine(" Asignando NPCs a niveles...");
             await AssignNPCsToLevelsAsync();
 
-            Console.WriteLine("🧩 Los puzzles se generarán desde SeedData.cs");
-            Console.WriteLine("✅ Todos los niveles y NPCs han sido generados correctamente.");
+            Console.WriteLine(" Los puzzles se generarán desde SeedData.cs");
+            Console.WriteLine(" Todos los niveles y NPCs han sido generados correctamente.");
         }
 
         private List<Level.Platform> GeneratePlatformsForLevel(int levelNumber)
@@ -245,11 +245,11 @@ namespace GameAletheiaCross.Services
                 {
                     await _levelRepo.DeleteAsync(level.Id);
                 }
-                Console.WriteLine($" ️ {allLevels.Count} niveles antiguos eliminados");
+                Console.WriteLine($"  {allLevels.Count} niveles antiguos eliminados");
             }
             catch (Exception ex)
             {
-                Console.WriteLine($" ️ Error al eliminar niveles: {ex.Message}");
+                Console.WriteLine($"  Error al eliminar niveles: {ex.Message}");
             }
         }
 
@@ -265,7 +265,7 @@ private async Task CreateNPCsAsync()
         if (existingCount > 0)
         {
             await npcsCollection.DeleteManyAsync(_ => true);
-            Console.WriteLine($" ️ {existingCount} NPCs antiguos eliminados");
+            Console.WriteLine($"  {existingCount} NPCs antiguos eliminados");
         }
 
         // ============================
@@ -310,7 +310,7 @@ private async Task CreateNPCsAsync()
                 FactionId = "671000000000000000000001",
                 LevelId = null,
                 PositionX = 390,   // Plataforma 2: X=320, W=140 → Centro en X=390
-                PositionY = 470,   // Plataforma en Y=470, H=20
+                PositionY = 460,   // Plataforma en Y=470, H=20
                 DialogueList = new List<string>
                 {
                     "Todas tus decisiones serán registradas.",

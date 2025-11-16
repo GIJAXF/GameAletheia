@@ -1,0 +1,94 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:vm="using:GameAletheiaCross.ViewModels"
+             x:Class="GameAletheiaCross.Views.TutorialView"
+             x:DataType="vm:TutorialViewModel">
+    
+    <Grid>
+        <!-- CAPA 1: CANVAS DEL TUTORIAL (Renderizado por código) -->
+        <Canvas x:Name="TutorialCanvas" 
+                Width="1280" 
+                Height="720" 
+                Background="#1a1a2e" 
+                ClipToBounds="True">
+            <!-- Los elementos se agregan dinámicamente desde el code-behind -->
+        </Canvas>
+        
+        <!-- CAPA 2: UI OVERLAY -->
+        <Grid>
+            <!-- Panel de instrucciones (centro superior) -->
+            <Border Background="#a5000000" 
+                   BorderBrush="#00D9FF" 
+                   BorderThickness="3"
+                   CornerRadius="10"
+                   Padding="30,20"
+                   MaxWidth="700"
+                   HorizontalAlignment="Center" 
+                   VerticalAlignment="Top" 
+                   Margin="0,40,0,0">
+                <StackPanel Spacing="15">
+                    <TextBlock Text="{Binding InstructionText}" 
+                             FontSize="14" 
+                             Foreground="White"
+                             TextAlignment="Center"
+                             TextWrapping="Wrap"
+                             LineHeight="20"/>
+                    
+                    <TextBlock Text="{Binding ProgressText}" 
+                             FontSize="14" 
+                             Foreground="#FFD700"
+                             TextAlignment="Center"
+                             FontWeight="Bold"/>
+                </StackPanel>
+            </Border>
+            
+            <!-- Controles (abajo izquierda) -->
+            <Border Background="#DD000000" 
+                   BorderBrush="#00FF88"
+                   BorderThickness="2"
+                   CornerRadius="8"
+                   Padding="20,15"
+                   HorizontalAlignment="Left" 
+                   VerticalAlignment="Bottom" 
+                   Margin="30">
+                <StackPanel Spacing="8">
+                    <TextBlock Text="CONTROLES" 
+                             FontSize="12" 
+                             FontWeight="Bold"
+                             Foreground="#00D9FF" />
+                    
+                    <TextBlock FontSize="14" Foreground="White">
+                        <Run Text="← → (o A D):" FontWeight="Bold"/>
+                        <Run Text=" Mover"/>
+                    </TextBlock>
+                    
+                    <TextBlock FontSize="14" Foreground="White">
+                        <Run Text="↑ (o W):" FontWeight="Bold"/>
+                        <Run Text=" Saltar"/>
+                    </TextBlock>
+                </StackPanel>
+            </Border>
+            
+            <!-- Botón Continuar (aparece solo al completar) -->
+            <Button Content="CONTINUAR"
+                   Command="{Binding ContinueCommand}"
+                   IsVisible="{Binding CanContinue}"
+                   Background="#00AA00"
+                   Foreground="White"
+                   BorderBrush="#00FF00"
+                   BorderThickness="3"
+                   Width="250"
+                   Height="70"
+                   FontSize="20"
+                   FontWeight="Bold"
+                   CornerRadius="10"
+                   HorizontalAlignment="Center"
+                   VerticalAlignment="Bottom"
+                   Margin="0,0,0,50">
+                <Button.Effect>
+                    <DropShadowEffect Color="#00FF00" OffsetX="0" OffsetY="0" BlurRadius="20" Opacity="0.8"/>
+                </Button.Effect>
+            </Button>
+        </Grid>
+    </Grid>
+</UserControl>

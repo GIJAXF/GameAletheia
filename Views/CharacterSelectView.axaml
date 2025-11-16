@@ -58,7 +58,7 @@
                             Spacing="15"
                             HorizontalAlignment="Center"
                             Margin="0,20,0,0">
-                    <Button Content="✓ Continuar"
+                    <Button Content=" Continuar"
                             Command="{Binding ContinueCommand}"
                             Width="160"
                             Height="50"

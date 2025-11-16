@@ -45,7 +45,7 @@ namespace GameAletheiaCross
                 var advancedSeed = new AdvancedSeedData(dbService);
                 await advancedSeed.SeedAdvancedPuzzlesAsync();
 
-                //  ️ Configura ReactiveUI para Avalonia
+                //   Configura ReactiveUI para Avalonia
                 RxApp.MainThreadScheduler = AvaloniaScheduler.Instance;
 
                 Console.WriteLine("  Iniciando interfaz gráfica...\n");

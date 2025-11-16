@@ -20,7 +20,7 @@
                     HorizontalAlignment="Center"
                     VerticalAlignment="Center">
 
-            <TextBlock Text="📂 CARGAR PARTIDA"
+            <TextBlock Text="CARGAR PARTIDA"
                        FontSize="32"
                        FontWeight="Bold"
                        HorizontalAlignment="Center"
@@ -31,7 +31,7 @@
             </TextBlock>
 
             <!-- Mostrar partidas guardadas -->
-            <Border Background="#0a0a15DD" 
+            <Border Background="#0a0a15" 
                    BorderBrush="#00D9FF" 
                    BorderThickness="3"
                    CornerRadius="10"
@@ -55,18 +55,18 @@
                                        HorizontalContentAlignment="Left">
                                     <StackPanel Spacing="8">
                                         <TextBlock FontSize="14">
-                                            <Run Text="👤 " FontSize="16"/>
+                                            <Run Text="Nombre:" FontSize="16"/>
                                             <Run Text="{Binding Name}" FontSize="18" FontWeight="Bold" Foreground="#00FF88"/>
                                             <Run Text=" — Nivel " FontSize="13" Foreground="#AAAAAA"/>
                                             <Run Text="{Binding CurrentLevel}" FontSize="16" FontWeight="Bold" Foreground="#FFD700"/>
                                         </TextBlock>
                                         <StackPanel Orientation="Horizontal" Spacing="20">
                                             <TextBlock FontSize="12" Foreground="#00D9FF">
-                                                <Run Text="⚡ Score: "/>
+                                                <Run Text="Puntuacion: "/>
                                                 <Run Text="{Binding TotalScore}" FontWeight="Bold"/>
                                             </TextBlock>
                                             <TextBlock FontSize="12" Foreground="#AAAAAA">
-                                                <Run Text="🏴 Facción: "/>
+                                                <Run Text="Facción: "/>
                                                 <Run Text="{Binding Faction}" Foreground="White" FontWeight="Bold"/>
                                             </TextBlock>
                                         </StackPanel>
@@ -78,21 +78,31 @@
                 </ScrollViewer>
             </Border>
 
-            <TextBlock Text="{Binding Players.Count, StringFormat='📊 Total de partidas guardadas: {0}'}"
-                       FontSize="13"
-                       Foreground="#CCCCCC"
-                       HorizontalAlignment="Center"
-                       Margin="0,10,0,0"/>
+            <!-- Usamos Border para el fondo, CornerRadius, y Margin -->
+            <Border Background="#071930" 
+                    CornerRadius="8"
+                    HorizontalAlignment="Center"
+                    BorderBrush="#FFFFFF"
+                    BorderThickness="2"
+                    Margin="20">
+                
+                <!-- El TextBlock solo maneja el texto y la fuente -->
+                <TextBlock Text="{Binding Players.Count, StringFormat='Total de partidas guardadas: {0}'}"
+                        FontSize="13"
+                        Foreground="#ffffffff"
+                        Padding="10, 5" />
+                        <!-- Añadí Padding para que el texto no se pegue al borde. -->
+            </Border>
 
-            <Button Content="← Volver"
+            <Button Content="Volver"
                     Command="{Binding BackCommand}"
                     Width="250"
                     Height="60"
                     Margin="0,20,0,0"
                     HorizontalAlignment="Center"
-                    Background="#533483"
+                    Background="#0f3460"
                     Foreground="White"
-                    BorderBrush="#AA0000"
+                    BorderBrush="#FFFFFF"
                     BorderThickness="2"
                     FontWeight="Bold"
                     FontSize="16"

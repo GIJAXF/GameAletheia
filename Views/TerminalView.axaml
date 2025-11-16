@@ -4,7 +4,7 @@
              x:Class="GameAletheiaCross.Views.TerminalView"
              x:DataType="vm:TerminalViewModel">
     
-    <Grid Background="#000000DD">
+    <Grid Background="Transparent">
         <Border Background="#0a0a15" 
                 BorderBrush="#00FF00" 
                 BorderThickness="3"

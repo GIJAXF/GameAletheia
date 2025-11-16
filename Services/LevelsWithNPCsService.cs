@@ -168,7 +168,7 @@ Console.WriteLine($"│      Diálogo: {preview.PadRight(51)} │");
             }
             else
             {
-                Console.WriteLine($"│  ️ No hay NPCs asignados a este nivel                              │");
+                Console.WriteLine($"│   No hay NPCs asignados a este nivel                              │");
             }
 
             Console.WriteLine($"└─────────────────────────────────────────────────────────────────────┘\n");

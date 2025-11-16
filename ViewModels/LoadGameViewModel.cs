@@ -62,7 +62,7 @@ namespace GameAletheiaCross.ViewModels
                 
                 if (sortedPlayers.Count == 0)
                 {
-                    Console.WriteLine(" ️ No hay jugadores guardados");
+                    Console.WriteLine("  No hay jugadores guardados");
                 }
                 else
                 {

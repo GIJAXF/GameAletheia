@@ -29,7 +29,7 @@ namespace GameAletheiaCross.Services
             
             try
             {
-                //  ️ IMPORTANTE: Limpiar archivos anteriores ANTES de compilar
+                //   IMPORTANTE: Limpiar archivos anteriores ANTES de compilar
                 CleanupTempFiles();
                 
                 // Recrear el directorio temporal
@@ -50,7 +50,7 @@ namespace GameAletheiaCross.Services
                 
                 // Escribir el código en el archivo
                 await File.WriteAllTextAsync(sourceFile, code);
-                Console.WriteLine($" ️ Código escrito en: {sourceFile}");
+                Console.WriteLine($"  Código escrito en: {sourceFile}");
                 
                 // Compilar
                 var compileResult = await CompileAsync(sourceFile, className);
@@ -119,11 +119,11 @@ namespace GameAletheiaCross.Services
                     try
                     {
                         File.Delete(file);
-                        Console.WriteLine($" ️ Eliminado: {Path.GetFileName(file)}");
+                        Console.WriteLine($"  Eliminado: {Path.GetFileName(file)}");
                     }
                     catch (Exception ex)
                     {
-                        Console.WriteLine($" ️ No se pudo eliminar {file}: {ex.Message}");
+                        Console.WriteLine($"  No se pudo eliminar {file}: {ex.Message}");
                     }
                 }
                 
@@ -171,7 +171,7 @@ namespace GameAletheiaCross.Services
                         }
                         else
                         {
-                            Console.WriteLine($" ️ Advertencia: archivo .class no encontrado");
+                            Console.WriteLine($"  Advertencia: archivo .class no encontrado");
                         }
                     }
                 }
@@ -272,7 +272,7 @@ namespace GameAletheiaCross.Services
                         }
                         catch (Exception ex)
                         {
-                            Console.WriteLine($" ️ No se pudo eliminar {Path.GetFileName(file)}: {ex.Message}");
+                            Console.WriteLine($"  No se pudo eliminar {Path.GetFileName(file)}: {ex.Message}");
                         }
                     }
                     
@@ -282,7 +282,7 @@ namespace GameAletheiaCross.Services
                         if (Directory.GetFiles(_tempDirectory).Length == 0)
                         {
                             Directory.Delete(_tempDirectory, false);
-                            Console.WriteLine($" ️ Directorio temporal eliminado");
+                            Console.WriteLine($"  Directorio temporal eliminado");
                             
                             // Crear uno nuevo para la próxima compilación
                             CreateNewTempDirectory();
@@ -296,7 +296,7 @@ namespace GameAletheiaCross.Services
             }
             catch (Exception ex)
             {
-                Console.WriteLine($" ️ Error limpiando archivos temporales: {ex.Message}");
+                Console.WriteLine($"  Error limpiando archivos temporales: {ex.Message}");
             }
         }
         

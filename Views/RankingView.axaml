@@ -72,12 +72,50 @@
                                             <StackPanel Orientation="Horizontal" Spacing="20">
                                                 <TextBlock Text="{Binding Medal}" Width="60" VerticalAlignment="Center"
                                                          FontSize="18" FontWeight="Bold" Foreground="#FFD700" />
-                                                <TextBlock Text="{Binding PlayerName}" Width="200" VerticalAlignment="Center"
-                                                         Foreground="White" FontSize="14" FontWeight="Bold"/>
-                                                <TextBlock Text="{Binding Faction}" Width="180" VerticalAlignment="Center"
-                                                         Foreground="#00D9FF" FontSize="13"/>
-                                                <TextBlock Text="{Binding Level, StringFormat='Nivel {0}'}" Width="100" VerticalAlignment="Center"
-                                                         Foreground="#00FF88" FontSize="13" FontWeight="Bold"/>
+<StackPanel Orientation="Horizontal" Spacing="5">
+    
+    <!-- 1. Nombre del Jugador (Ancho fijo: 200) -->
+    <Border Background="#000000" 
+            CornerRadius="4" 
+            Width="200"
+            Margin="0" 
+            Padding="8, 4"
+            VerticalAlignment="Center">
+        <TextBlock Text="{Binding PlayerName}"
+                   Foreground="White" 
+                   FontSize="14" 
+                   FontWeight="Bold"
+                   TextTrimming="CharacterEllipsis"/> <!-- Añadido: para manejar texto largo -->
+    </Border>
+
+    <!-- 2. Facción/Clase (Ancho fijo: 180) -->
+    <Border Background="#000000" 
+            CornerRadius="4" 
+            Width="180"    
+            Margin="0" 
+            Padding="8, 4"
+            VerticalAlignment="Center">
+        <TextBlock Text="{Binding Faction}" 
+                   Foreground="#00D9FF" 
+                   FontSize="13"
+                   TextTrimming="CharacterEllipsis"/> <!-- Añadido: para manejar texto largo -->
+    </Border>
+
+    <!-- 3. Nivel (Ancho fijo: 100) -->
+    <Border Background="#000000" 
+            CornerRadius="4" 
+            Width="100"        
+            Margin="0" 
+            Padding="8, 4"
+            VerticalAlignment="Center">
+        <TextBlock Text="{Binding Level, StringFormat='Nivel {0}'}"
+                   Foreground="#00FF88" 
+                   FontSize="13" 
+                   FontWeight="Bold"
+                   HorizontalAlignment="Center"/> <!-- Ajuste: Texto centrado en un ancho fijo -->
+    </Border>
+    
+</StackPanel>
                                                 <TextBlock Text="{Binding Score}" Width="120" VerticalAlignment="Center"
                                                          Foreground="#FFA500" FontWeight="Bold" FontSize="14"/>
                                             </StackPanel>
@@ -91,15 +129,15 @@
 
                 <!-- Botón Volver -->
                 <Button Grid.Row="2"
-                        Content="← Volver al Menú"
+                        Content="Volver al Menú"
                         Command="{Binding BackCommand}"
                         Width="250"
                         Height="60"
                         HorizontalAlignment="Center"
                         Margin="0,20,0,0"
-                        Background="#533483"
+                        Background="#070031"
                         Foreground="White"
-                        BorderBrush="#AA0000"
+                        BorderBrush="#FFFFFF"
                         BorderThickness="2"
                         FontWeight="Bold"
                         FontSize="16"

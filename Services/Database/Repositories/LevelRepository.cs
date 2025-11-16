@@ -89,7 +89,7 @@ namespace GameAletheiaCross.Services.Database.Repositories
                     
                     if (level.NPCs == null || level.NPCs.Count == 0)
                     {
-                        Console.WriteLine($" ️ No se encontraron NPCs con los IDs proporcionados");
+                        Console.WriteLine($"  No se encontraron NPCs con los IDs proporcionados");
                         level.NPCs = new List<NPC>();
                     }
                     else
