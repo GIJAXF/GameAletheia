@@ -163,12 +163,12 @@
                        VerticalAlignment="Top" 
                        Margin="20" 
                        Spacing="10">
-                <Button Content="🖥️ Terminal (T)" 
+                <Button Content="Terminal (T)" 
                        Command="{Binding OpenTerminalCommand}"
                        Background="#0f3460"
                        Foreground="White"
                        Padding="15,8" />
-                <Button Content="⏸️ Pausa (ESC)" 
+                <Button Content=" Salir (ESC)" 
                        Command="{Binding PauseCommand}"
                        Background="#533483"
                        Foreground="White"
