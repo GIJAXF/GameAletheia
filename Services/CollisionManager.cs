@@ -6,18 +6,24 @@ namespace GameAletheiaCross.Services
 {
     public class CollisionManager
     {
-public void CheckPlatformCollisions(Player player, List<Level.Platform> platforms, Level.Platform? floor)
+        public void CheckPlatformCollisions(Player player, List<Level.Platform> platforms)
         {
+            if (platforms == null || platforms.Count == 0) return;
+
             bool onGround = false;
 
-            // ✅ VERIFICAR COLISIÓN CON EL PISO PRIMERO
-            if (floor != null && floor.IsSolid)
+            foreach (var platform in platforms)
             {
-                if (IsCollidingWithPlatform(player, floor))
+                if (!platform.IsSolid) continue;
+
+                //  VERIFICAR COLISIÓN CON ESTA PLATAFORMA
+                if (IsCollidingWithPlatform(player, platform))
                 {
-                    if (player.Velocity.Y >= 0 && player.Position.Y <= floor.Y + floor.Height)
+                    //  El jugador está cayendo Y está ENCIMA de la plataforma
+                    if (player.Velocity.Y >= 0 && player.Position.Y <= platform.Y + platform.Height)
                     {
-                        player.Position.Y = floor.Y;
+                        // Posicionar el jugador SOBRE la plataforma
+                        player.Position.Y = platform.Y;
                         player.Velocity.Y = 0;
                         player.IsJumping = false;
                         onGround = true;
@@ -25,28 +31,7 @@ public void CheckPlatformCollisions(Player player, List<Level.Platform> platform
                 }
             }
 
-            // ✅ VERIFICAR COLISIONES CON PLATAFORMAS (solo si no está en el suelo)
-            if (!onGround && platforms != null && platforms.Count > 0)
-            {
-                foreach (var platform in platforms)
-                {
-                    if (!platform.IsSolid) continue;
-
-                    if (IsCollidingWithPlatform(player, platform))
-                    {
-                        if (player.Velocity.Y >= 0 && player.Position.Y <= platform.Y + platform.Height)
-                        {
-                            player.Position.Y = platform.Y;
-                            player.Velocity.Y = 0;
-                            player.IsJumping = false;
-                            onGround = true;
-                            break; // Salir del loop cuando encuentra una plataforma
-                        }
-                    }
-                }
-            }
-
-            // Si NO está en el suelo, debe estar saltando
+            //  Si NO está en el suelo, debe estar saltando
             if (!onGround)
             {
                 player.IsJumping = true;

@@ -9,8 +9,6 @@ using System.Linq;
 using MongoDB.Driver;
 using System.Threading.Tasks;
 using Avalonia.Threading;
-using Avalonia.Media.Imaging;
-using Avalonia.Platform;
 
 namespace GameAletheiaCross.ViewModels
 {
@@ -20,7 +18,6 @@ namespace GameAletheiaCross.ViewModels
         private readonly string _playerId;
         private readonly string _playerName;
         private Faction _selectedFaction;
-        private Bitmap _backgroundImage;
         
         public FactionSelectViewModel(Action<ViewModelBase> navigate, string playerId, string playerName)
         {
@@ -30,11 +27,7 @@ namespace GameAletheiaCross.ViewModels
             
             Factions = new ObservableCollection<Faction>();
             
-            // Por defecto, cargar fondo de Biblioteca
-            LoadBackgroundImage("biblioteca.png");
-            
             SelectFactionCommand = ReactiveCommand.Create<Faction>(OnSelectFaction);
-            SelectFactionByNameCommand = ReactiveCommand.Create<string>(OnSelectFactionByName);
             BackCommand = ReactiveCommand.Create(OnBack);
             
             // Cargar facciones
@@ -49,51 +42,8 @@ namespace GameAletheiaCross.ViewModels
             set => this.RaiseAndSetIfChanged(ref _selectedFaction, value);
         }
         
-        public Bitmap BackgroundImage
-        {
-            get => _backgroundImage;
-            set => this.RaiseAndSetIfChanged(ref _backgroundImage, value);
-        }
-        
         public ReactiveCommand<Faction, Unit> SelectFactionCommand { get; }
-        public ReactiveCommand<string, Unit> SelectFactionByNameCommand { get; }
         public ReactiveCommand<Unit, Unit> BackCommand { get; }
-        
-        private void LoadBackgroundImage(string filename)
-        {
-            try
-            {
-                var uri = new Uri($"avares://GameAletheiaCross/Assets/Images/{filename}");
-                using var stream = AssetLoader.Open(uri);
-                BackgroundImage = new Bitmap(stream);
-                Console.WriteLine($"✅ Fondo cargado: {filename}");
-            }
-            catch (Exception ex)
-            {
-                Console.WriteLine($"⚠️ No se pudo cargar fondo {filename}: {ex.Message}");
-            }
-        }
-        
-        // ✅ MÉTODOS PÚBLICOS PARA CAMBIAR FONDOS
-        public void OnBibliotecaHover()
-        {
-            LoadBackgroundImage("biblioteca.png");
-        }
-        
-        public void OnGobiernoHover()
-        {
-            LoadBackgroundImage("gobierno.png");
-        }
-        
-        public void OnRedlineHover()
-        {
-            LoadBackgroundImage("redline.png");
-        }
-        
-        public void OnNeutralHover()
-        {
-            LoadBackgroundImage("neutral.png");
-        }
         
         private async Task LoadFactions()
         {
@@ -112,36 +62,11 @@ namespace GameAletheiaCross.ViewModels
                     }
                 });
                 
-                Console.WriteLine($"✅ {factions.Count} facciones cargadas");
+                Console.WriteLine($"  {factions.Count} facciones cargadas");
             }
             catch (Exception ex)
             {
-                Console.WriteLine($"❌ Error cargando facciones: {ex.Message}");
-            }
-        }
-        
-        private async void OnSelectFactionByName(string factionName)
-        {
-            if (string.IsNullOrEmpty(factionName)) return;
-            
-            try
-            {
-                var dbService = new MongoDbService();
-                var playerRepo = new PlayerRepository(dbService);
-                await playerRepo.UpdateFactionAsync(_playerId, factionName);
-                
-                Console.WriteLine($"✅ Facción seleccionada: {factionName}");
-                
-                await Task.Delay(400);
-                
-                await Dispatcher.UIThread.InvokeAsync(() =>
-                {
-                    _navigate(new GameViewModel(_navigate, _playerId, _playerName));
-                });
-            }
-            catch (Exception ex)
-            {
-                Console.WriteLine($"❌ Error seleccionando facción: {ex.Message}");
+                Console.WriteLine($"  Error cargando facciones: {ex.Message}");
             }
         }
         
@@ -157,7 +82,7 @@ namespace GameAletheiaCross.ViewModels
                 var playerRepo = new PlayerRepository(dbService);
                 await playerRepo.UpdateFactionAsync(_playerId, faction.Name);
                 
-                Console.WriteLine($"✅ Facción seleccionada: {faction.Name}");
+                Console.WriteLine($"  Facción seleccionada: {faction.Name}");
                 
                 await Task.Delay(400);
                 
@@ -168,7 +93,7 @@ namespace GameAletheiaCross.ViewModels
             }
             catch (Exception ex)
             {
-                Console.WriteLine($"❌ Error seleccionando facción: {ex.Message}");
+                Console.WriteLine($"  Error seleccionando facción: {ex.Message}");
             }
         }
         

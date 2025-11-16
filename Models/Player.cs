@@ -15,12 +15,8 @@ namespace GameAletheiaCross.Models
         private string _faction;
         private int _totalScore = 0;
         private int _health = 100;
-        
-        // ✅ OPTIMIZACIÓN CRÍTICA: No usar ReactiveObject para Position/Velocity
-        // Esto evita miles de notificaciones innecesarias por segundo
         private Position _position = new Position { X = 100, Y = 400 };
         private Velocity _velocity = new Velocity();
-        
         private bool _isJumping;
         private bool _isFacingRight = true;
         private DateTime _creationDate = DateTime.UtcNow;
@@ -87,28 +83,28 @@ namespace GameAletheiaCross.Models
         public Position Position
         {
             get => _position;
-            set => _position = value; // ✅ NO notificar cambios aquí
+            set => this.RaiseAndSetIfChanged(ref _position, value);
         }
 
         [BsonElement("velocity")]
         public Velocity Velocity
         {
             get => _velocity;
-            set => _velocity = value; // ✅ NO notificar cambios aquí
+            set => this.RaiseAndSetIfChanged(ref _velocity, value);
         }
 
         [BsonElement("isJumping")]
         public bool IsJumping
         {
             get => _isJumping;
-            set => _isJumping = value; // ✅ NO notificar (se actualiza 60 veces/seg)
+            set => this.RaiseAndSetIfChanged(ref _isJumping, value);
         }
 
         [BsonElement("isFacingRight")]
         public bool IsFacingRight
         {
             get => _isFacingRight;
-            set => _isFacingRight = value; // ✅ NO notificar (se actualiza constantemente)
+            set => this.RaiseAndSetIfChanged(ref _isFacingRight, value);
         }
 
         [BsonElement("creationDate")]
@@ -126,23 +122,43 @@ namespace GameAletheiaCross.Models
         }
     }
 
-    // ✅ CRÍTICO: Position y Velocity ya NO heredan de ReactiveObject
-    // Esto elimina miles de notificaciones innecesarias
-    public class Position
+    public class Position : ReactiveObject
     {
+        private float _x;
+        private float _y;
+
         [BsonElement("x")]
-        public float X { get; set; }
+        public float X
+        {
+            get => _x;
+            set => this.RaiseAndSetIfChanged(ref _x, value);
+        }
 
         [BsonElement("y")]
-        public float Y { get; set; }
+        public float Y
+        {
+            get => _y;
+            set => this.RaiseAndSetIfChanged(ref _y, value);
+        }
     }
 
-    public class Velocity
+    public class Velocity : ReactiveObject
     {
+        private float _x;
+        private float _y;
+
         [BsonElement("x")]
-        public float X { get; set; }
+        public float X
+        {
+            get => _x;
+            set => this.RaiseAndSetIfChanged(ref _x, value);
+        }
 
         [BsonElement("y")]
-        public float Y { get; set; }
+        public float Y
+        {
+            get => _y;
+            set => this.RaiseAndSetIfChanged(ref _y, value);
+        }
     }
 }

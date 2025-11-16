@@ -4,300 +4,40 @@
              x:Class="GameAletheiaCross.Views.FactionSelectView"
              x:DataType="vm:FactionSelectViewModel">
 
-    <Grid>
-        <!-- FONDO DINÁMICO DE FACCIÓN -->
-        <Image x:Name="BackgroundImage"
-               Source="{Binding BackgroundImage}"
-               Stretch="UniformToFill"
-               HorizontalAlignment="Stretch"
-               VerticalAlignment="Stretch"
-               Opacity="0.5"/>
-        
-        <!-- OVERLAY OSCURO -->
-        <Border Background="#000000" Opacity="0.4"/>
-        
-        <!-- CONTENIDO PRINCIPAL -->
-        <Grid RowDefinitions="Auto,*,Auto" Margin="40,30">
-            
-            <!-- TÍTULO -->
-            <Border Grid.Row="0" 
-                    Background="#000000DD"
-                    Padding="30,15"
-                    CornerRadius="10"
-                    HorizontalAlignment="Center"
-                    BorderBrush="#00FF88"
-                    BorderThickness="2">
-                <TextBlock Text="SELECCIONA TU FACCIÓN"
-                           FontSize="36"
-                           FontWeight="Bold"
-                           Foreground="#00FF88"
-                           HorizontalAlignment="Center"/>
-            </Border>
+    <StackPanel Margin="40"
+                Spacing="20"
+                HorizontalAlignment="Center"
+                VerticalAlignment="Center">
 
-            <!-- GRID DE FACCIONES (2x2) -->
-            <Grid Grid.Row="1" 
-                  RowDefinitions="*,*"
-                  ColumnDefinitions="*,*" 
-                  ColumnSpacing="20"
-                  RowSpacing="20"
-                  Margin="0,30,0,0"
-                  VerticalAlignment="Center"
-                  MaxWidth="1100">
-                
-                <!-- FACCIÓN 1: BIBLIOTECA (Top Left) -->
-                <Border Grid.Row="0" Grid.Column="0"
-                        x:Name="BibliotecaBorder"
-                        Background="#1a1a2eEE"
-                        BorderBrush="#8B4513"
-                        BorderThickness="3"
-                        CornerRadius="12"
-                        Padding="20">
-                    <Border.Styles>
-                        <Style Selector="Border:pointerover">
-                            <Setter Property="BorderBrush" Value="#D2691E"/>
-                            <Setter Property="Background" Value="#0f3460EE"/>
-                        </Style>
-                    </Border.Styles>
-                    
-                    <StackPanel Spacing="12">
-                        <TextBlock Text="📚 BIBLIOTECA"
-                                   FontSize="20"
-                                   FontWeight="Bold"
-                                   Foreground="#D2691E"
-                                   HorizontalAlignment="Center"/>
-                        
-                        <TextBlock Text="Líder: Los Archiveros"
-                                   FontSize="11"
-                                   Foreground="#AAAAAA"
-                                   TextAlignment="Center"/>
-                        
-                        <Border Background="#0f3460"
-                               Padding="12"
-                               CornerRadius="6"
-                               Margin="0,8,0,0">
-                            <TextBlock Text="Guardianes del conocimiento ancestral. Protegen y preservan los datos históricos para que las generaciones futuras aprendan del pasado."
-                                     FontSize="11"
-                                     Foreground="White"
-                                     TextAlignment="Center"
-                                     TextWrapping="Wrap"
-                                     LineHeight="16"/>
-                        </Border>
-                        
-                        <TextBlock Text="+ Bonificación: Sabiduría aumentada"
-                                   FontSize="10"
-                                   Foreground="#FFD700"
-                                   TextAlignment="Center"
-                                   Margin="0,8,0,0"/>
-                        
-                        <Button Content="UNIRSE"
-                               Command="{Binding SelectFactionByNameCommand}"
-                               CommandParameter="Biblioteca"
-                               Background="#8B4513"
-                               Foreground="White"
-                               Padding="12,10"
-                               FontWeight="Bold"
-                               FontSize="12"
-                               CornerRadius="6"
-                               HorizontalAlignment="Stretch"
-                               HorizontalContentAlignment="Center"
-                               Margin="0,10,0,0"/>
-                    </StackPanel>
-                </Border>
+        <TextBlock Text="SELECCIONA TU FACCIÓN"
+                   FontSize="26"
+                   FontWeight="Bold"
+                   HorizontalAlignment="Center"/>
 
-                <!-- FACCIÓN 2: GOBIERNO (Top Right) -->
-                <Border Grid.Row="0" Grid.Column="1"
-                        x:Name="GobiernoBorder"
-                        Background="#1a1a2eEE"
-                        BorderBrush="#0080FF"
-                        BorderThickness="3"
-                        CornerRadius="12"
-                        Padding="20">
-                    <Border.Styles>
-                        <Style Selector="Border:pointerover">
-                            <Setter Property="BorderBrush" Value="#00BBFF"/>
-                            <Setter Property="Background" Value="#0f3460EE"/>
-                        </Style>
-                    </Border.Styles>
-                    
-                    <StackPanel Spacing="12">
-                        <TextBlock Text="🏛️ GOBIERNO"
-                                   FontSize="20"
-                                   FontWeight="Bold"
-                                   Foreground="#0080FF"
-                                   HorizontalAlignment="Center"/>
-                        
-                        <TextBlock Text="Líder: El Archivero — Julián Casablancas"
-                                   FontSize="11"
-                                   Foreground="#AAAAAA"
-                                   TextAlignment="Center"/>
-                        
-                        <Border Background="#0f3460"
-                               Padding="12"
-                               CornerRadius="6"
-                               Margin="0,8,0,0">
-                            <TextBlock Text="Controlan y regulan el flujo de información. El orden y la seguridad digital están por encima de la libertad individual."
-                                     FontSize="11"
-                                     Foreground="White"
-                                     TextAlignment="Center"
-                                     TextWrapping="Wrap"
-                                     LineHeight="16"/>
-                        </Border>
-                        
-                        <TextBlock Text="+ Bonificación: Defensa aumentada"
-                                   FontSize="10"
-                                   Foreground="#FFD700"
-                                   TextAlignment="Center"
-                                   Margin="0,8,0,0"/>
-                        
-                        <Button Content="UNIRSE"
-                               Command="{Binding SelectFactionByNameCommand}"
-                               CommandParameter="Gobierno"
-                               Background="#0080FF"
-                               Foreground="White"
-                               Padding="12,10"
-                               FontWeight="Bold"
-                               FontSize="12"
-                               CornerRadius="6"
-                               HorizontalAlignment="Stretch"
-                               HorizontalContentAlignment="Center"
-                               Margin="0,10,0,0"/>
-                    </StackPanel>
-                </Border>
+        <!-- Aquí mostramos las facciones desde la base de datos -->
+        <ItemsControl ItemsSource="{Binding Factions}">
+            <ItemsControl.ItemTemplate>
+                <DataTemplate>
+                    <Button Content="{Binding Name}"
+                            Width="180"
+                            Height="80"
+                            Margin="10"
+                            Command="{Binding $parent[ItemsControl].DataContext.SelectFactionCommand}"
+                            CommandParameter="{Binding .}"/>
+                </DataTemplate>
+            </ItemsControl.ItemTemplate>
 
-                <!-- FACCIÓN 3: REDLINE CORP (Bottom Left) -->
-                <Border Grid.Row="1" Grid.Column="0"
-                        x:Name="RedlineBorder"
-                        Background="#1a1a2eEE"
-                        BorderBrush="#FF0080"
-                        BorderThickness="3"
-                        CornerRadius="12"
-                        Padding="20">
-                    <Border.Styles>
-                        <Style Selector="Border:pointerover">
-                            <Setter Property="BorderBrush" Value="#FF00FF"/>
-                            <Setter Property="Background" Value="#0f3460EE"/>
-                        </Style>
-                    </Border.Styles>
-                    
-                    <StackPanel Spacing="12">
-                        <TextBlock Text="🏢 REDLINE CORP."
-                                   FontSize="20"
-                                   FontWeight="Bold"
-                                   Foreground="#FF0080"
-                                   HorizontalAlignment="Center"/>
-                        
-                        <TextBlock Text="Líder: Decano Villanueva"
-                                   FontSize="11"
-                                   Foreground="#AAAAAA"
-                                   TextAlignment="Center"/>
-                        
-                        <Border Background="#0f3460"
-                               Padding="12"
-                               CornerRadius="6"
-                               Margin="0,8,0,0">
-                            <TextBlock Text="La información es poder, y el poder tiene un precio. Controlamos los datos para maximizar beneficios y dominar el mercado digital."
-                                     FontSize="11"
-                                     Foreground="White"
-                                     TextAlignment="Center"
-                                     TextWrapping="Wrap"
-                                     LineHeight="16"/>
-                        </Border>
-                        
-                        <TextBlock Text="+ Bonificación: Puntos extra por puzzle"
-                                   FontSize="10"
-                                   Foreground="#FFD700"
-                                   TextAlignment="Center"
-                                   Margin="0,8,0,0"/>
-                        
-                        <Button Content="UNIRSE"
-                               Command="{Binding SelectFactionByNameCommand}"
-                               CommandParameter="Redline"
-                               Background="#FF0080"
-                               Foreground="White"
-                               Padding="12,10"
-                               FontWeight="Bold"
-                               FontSize="12"
-                               CornerRadius="6"
-                               HorizontalAlignment="Stretch"
-                               HorizontalContentAlignment="Center"
-                               Margin="0,10,0,0"/>
-                    </StackPanel>
-                </Border>
+            <ItemsControl.ItemsPanel>
+                <ItemsPanelTemplate>
+                    <WrapPanel HorizontalAlignment="Center" />
+                </ItemsPanelTemplate>
+            </ItemsControl.ItemsPanel>
+        </ItemsControl>
 
-                <!-- FACCIÓN 4: NEUTRAL (Bottom Right) -->
-                <Border Grid.Row="1" Grid.Column="1"
-                        x:Name="NeutralBorder"
-                        Background="#1a1a2eEE"
-                        BorderBrush="#CCCCCC"
-                        BorderThickness="3"
-                        CornerRadius="12"
-                        Padding="20">
-                    <Border.Styles>
-                        <Style Selector="Border:pointerover">
-                            <Setter Property="BorderBrush" Value="#FFFFFF"/>
-                            <Setter Property="Background" Value="#0f3460EE"/>
-                        </Style>
-                    </Border.Styles>
-                    
-                    <StackPanel Spacing="12">
-                        <TextBlock Text="⚖️ NEUTRAL"
-                                   FontSize="20"
-                                   FontWeight="Bold"
-                                   Foreground="#CCCCCC"
-                                   HorizontalAlignment="Center"/>
-                        
-                        <TextBlock Text="Sin líder establecido"
-                                   FontSize="11"
-                                   Foreground="#AAAAAA"
-                                   TextAlignment="Center"/>
-                        
-                        <Border Background="#0f3460"
-                               Padding="12"
-                               CornerRadius="6"
-                               Margin="0,8,0,0">
-                            <TextBlock Text="No te alineas con ninguna facción. Forjas tu propio camino sin ataduras ideológicas, tomando decisiones basadas en tus propios principios."
-                                     FontSize="11"
-                                     Foreground="White"
-                                     TextAlignment="Center"
-                                     TextWrapping="Wrap"
-                                     LineHeight="16"/>
-                        </Border>
-                        
-                        <TextBlock Text="+ Bonificación: Equilibrio en todas las stats"
-                                   FontSize="10"
-                                   Foreground="#FFD700"
-                                   TextAlignment="Center"
-                                   Margin="0,8,0,0"/>
-                        
-                        <Button Content="UNIRSE"
-                               Command="{Binding SelectFactionByNameCommand}"
-                               CommandParameter="Neutral"
-                               Background="#888888"
-                               Foreground="White"
-                               Padding="12,10"
-                               FontWeight="Bold"
-                               FontSize="12"
-                               CornerRadius="6"
-                               HorizontalAlignment="Stretch"
-                               HorizontalContentAlignment="Center"
-                               Margin="0,10,0,0"/>
-                    </StackPanel>
-                </Border>
-            </Grid>
-
-            <!-- BOTÓN VOLVER -->
-            <Button Grid.Row="2"
-                    Content="⬅ VOLVER"
-                    Command="{Binding BackCommand}"
-                    Width="200"
-                    Height="50"
-                    Margin="0,20,0,0"
-                    HorizontalAlignment="Center"
-                    Background="#533483"
-                    Foreground="White"
-                    FontWeight="Bold"
-                    FontSize="14"
-                    CornerRadius="8"/>
-        </Grid>
-    </Grid>
+        <Button Content="Volver"
+                Width="200"
+                Margin="0,20,0,0"
+                Command="{Binding BackCommand}"
+                HorizontalAlignment="Center"/>
+    </StackPanel>
 </UserControl>

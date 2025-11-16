@@ -31,9 +31,6 @@ namespace GameAletheiaCross.Models
         [BsonElement("platforms")]
         public List<Platform> Platforms { get; set; } = new List<Platform>();
         
-        [BsonElement("floor")]
-        public Platform? Floor { get; set; }
-        
         [BsonElement("enemies")]
         public List<Enemy> Enemies { get; set; } = new List<Enemy>();
 

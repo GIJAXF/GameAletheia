@@ -142,61 +142,22 @@
                          TextAlignment="Center" />
             </Border>
             
-<!-- Reemplaza la sección de botones en GameView.axaml -->
-
-<!-- Botones (arriba derecha) CON IMÁGENES -->
-<!-- Reemplaza la sección de botones en GameView.axaml -->
-
-<!-- Botones (arriba derecha) CON IMÁGENES MÁS GRANDES -->
-<StackPanel HorizontalAlignment="Right" 
-           VerticalAlignment="Top" 
-           Margin="20" 
-           Spacing="15">
-    
-    <!-- BOTÓN TERMINAL -->
-    <Button Command="{Binding OpenTerminalCommand}"
-            Width="80"
-            Height="80"
-            Padding="0"
-            Background="Transparent"
-            BorderThickness="0"
-            ToolTip.Tip="Abrir Terminal (T)">
-        <Button.Styles>
-            <Style Selector="Button:pointerover">
-                <Setter Property="Opacity" Value="0.8"/>
-            </Style>
-            <Style Selector="Button:pressed">
-                <Setter Property="Opacity" Value="0.6"/>
-            </Style>
-        </Button.Styles>
-        <Image Source="avares://GameAletheiaCross/Assets/Images/terminalbtn.png"
-               Width="80"
-               Height="80"
-               Stretch="Uniform"/>
-    </Button>
-    
-    <!-- BOTÓN PAUSA -->
-    <Button Command="{Binding PauseCommand}"
-            Width="80"
-            Height="80"
-            Padding="0"
-            Background="Transparent"
-            BorderThickness="0"
-            ToolTip.Tip="Pausar (ESC)">
-        <Button.Styles>
-            <Style Selector="Button:pointerover">
-                <Setter Property="Opacity" Value="0.8"/>
-            </Style>
-            <Style Selector="Button:pressed">
-                <Setter Property="Opacity" Value="0.6"/>
-            </Style>
-        </Button.Styles>
-        <Image Source="avares://GameAletheiaCross/Assets/Images/pausabtn.png"
-               Width="80"
-               Height="80"
-               Stretch="Uniform"/>
-    </Button>
-</StackPanel>
+            <!-- Botones (arriba derecha) -->
+            <StackPanel HorizontalAlignment="Right" 
+                       VerticalAlignment="Top" 
+                       Margin="20" 
+                       Spacing="10">
+                <Button Content="Terminal (T)" 
+                       Command="{Binding OpenTerminalCommand}"
+                       Background="#0f3460"
+                       Foreground="White"
+                       Padding="15,8" />
+                <Button Content="Pausa (ESC)" 
+                       Command="{Binding PauseCommand}"
+                       Background="#533483"
+                       Foreground="White"
+                       Padding="15,8" />
+            </StackPanel>
             
             <!-- Controles (abajo izquierda) -->
             <Border Background="#000000AA" 
