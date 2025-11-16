@@ -191,6 +191,8 @@ namespace GameAletheiaCross.Views
             }
         }
 
+// Reemplaza el método RenderLevel() completo en GameView.axaml.cs
+
 private void RenderLevel()
 {
     Console.WriteLine("=== RENDERIZANDO NIVEL ===");
@@ -229,13 +231,13 @@ private void RenderLevel()
             
             if (platformSprite != null)
             {
-                // ⚠️ CREAR NUEVA IMAGEN CADA VEZ
+                // ⚠️ CREAR NUEVA IMAGEN CADA VEZ con mejor stretch
                 var img = new Image
                 {
                     Source = platformSprite,
                     Width = platform.Width,
                     Height = platform.Height,
-                    Stretch = Stretch.Fill
+                    Stretch = Stretch.UniformToFill, // Mejor para sprites
                 };
                 
                 Canvas.SetLeft(img, platform.X);
@@ -418,41 +420,58 @@ private void RenderLevel()
 
 // Reemplaza el método GetPlatformSprite en GameView.axaml.cs
 
-            private Bitmap? GetPlatformSprite(int levelNumber, int platformIndex)
-            {
-                // Mapeo de niveles a pisos específicos
-                string platformFile = levelNumber switch
-                {
-                    1 => "piedratutorial.png",  // Nivel 1: Tutorial
-                    2 => "pastopiso.png",        // Nivel 2: Ruinas del Firewall
-                    3 => "piedraspiso.png",      // Nivel 3: Ciudad de Contraseñas
-                    4 => "nievepiso.png",        // Nivel 4: Laberinto de Algoritmos
-                    5 => "redlinepiso.png",      // Nivel 5: Santuario de Datos
-                    6 => "gobierno.png",         // Nivel 6: Torre Corporativa
-                    7 => "piedraspiso.png",      // Nivel 7: Archivo Prohibido (reutilizar)
-                    _ => "platform1.png"         // Fallback
-                };
-                
-                try
-                {
-                    var uri = new Uri($"avares://GameAletheiaCross/Assets/Images/{platformFile}");
-                    using var stream = AssetLoader.Open(uri);
-                    return new Bitmap(stream);
-                }
-                catch (Exception ex)
-                {
-                    Console.WriteLine($"⚠️ No se pudo cargar {platformFile}: {ex.Message}");
-                    
-                    // Intentar usar los platform genericos como fallback
-                    if (_platformBitmaps.Count > 0)
-                    {
-                        int spriteIndex = (levelNumber - 1) % _platformBitmaps.Count;
-                        return _platformBitmaps[spriteIndex];
-                    }
-                    
-                    return null;
-                }
-            }
+// Agregar al inicio de la clase GameView:
+private Dictionary<int, Bitmap?> _platformSpriteCache = new();
+
+// Reemplazar el método GetPlatformSprite:
+private Bitmap? GetPlatformSprite(int levelNumber, int platformIndex)
+{
+    // ✅ CACHEAR para no cargar la misma imagen múltiples veces
+    if (_platformSpriteCache.TryGetValue(levelNumber, out var cachedSprite))
+    {
+        return cachedSprite;
+    }
+    
+    // Mapeo de niveles a pisos específicos
+    string platformFile = levelNumber switch
+    {
+        1 => "piedratutorial.png",  // Nivel 1: Tutorial
+        2 => "pastopiso.png",        // Nivel 2: Ruinas del Firewall
+        3 => "piedraspiso.png",      // Nivel 3: Ciudad de Contraseñas
+        4 => "nievepiso.png",        // Nivel 4: Laberinto de Algoritmos
+        5 => "redlinepiso.png",      // Nivel 5: Santuario de Datos
+        6 => "gobierno.png",         // Nivel 6: Torre Corporativa
+        7 => "piedraspiso.png",      // Nivel 7: Archivo Prohibido
+        _ => "platform1.png"         // Fallback
+    };
+    
+    try
+    {
+        var uri = new Uri($"avares://GameAletheiaCross/Assets/Images/{platformFile}");
+        using var stream = AssetLoader.Open(uri);
+        var bitmap = new Bitmap(stream);
+        
+        // Guardar en cache
+        _platformSpriteCache[levelNumber] = bitmap;
+        
+        return bitmap;
+    }
+    catch (Exception ex)
+    {
+        Console.WriteLine($"⚠️ No se pudo cargar {platformFile}: {ex.Message}");
+        
+        // Intentar usar los platform genéricos como fallback
+        if (_platformBitmaps.Count > 0)
+        {
+            int spriteIndex = (levelNumber - 1) % _platformBitmaps.Count;
+            var fallback = _platformBitmaps[spriteIndex];
+            _platformSpriteCache[levelNumber] = fallback;
+            return fallback;
+        }
+        
+        return null;
+    }
+}
 
         private Bitmap? GetNPCSprite(int npcIndex)
         {
@@ -526,27 +545,37 @@ private void RenderLevel()
             };
         }
 
-        private void UpdatePlayerPosition()
-        {
-            if (_gameCanvas == null || _viewModel?.Player == null)
-                return;
+// Reemplaza el método UpdatePlayerPosition() en GameView.axaml.cs
 
-            if (_playerImage != null)
+private void UpdatePlayerPosition()
+{
+    if (_gameCanvas == null || _viewModel?.Player == null)
+        return;
+
+    if (_playerImage != null)
+    {
+        // ✅ SOLO actualizar posición, NO recrear la imagen
+        Canvas.SetLeft(_playerImage, _viewModel.Player.Position.X - 16);
+        Canvas.SetTop(_playerImage, _viewModel.Player.Position.Y - 32);
+        
+        // Actualizar dirección si cambió
+        if (_viewModel.Player.IsFacingRight)
+        {
+            if (_playerImage.RenderTransform != null)
             {
-                Canvas.SetLeft(_playerImage, _viewModel.Player.Position.X - 16);
-                Canvas.SetTop(_playerImage, _viewModel.Player.Position.Y - 32);
-                
-                if (_viewModel.Player.IsFacingRight)
-                {
-                    _playerImage.RenderTransform = null;
-                }
-                else
-                {
-                    _playerImage.RenderTransform = new ScaleTransform(-1, 1);
-                    _playerImage.RenderTransformOrigin = new RelativePoint(0.5, 0.5, RelativeUnit.Relative);
-                }
+                _playerImage.RenderTransform = null;
             }
         }
+        else
+        {
+            if (_playerImage.RenderTransform == null || !(_playerImage.RenderTransform is ScaleTransform))
+            {
+                _playerImage.RenderTransform = new ScaleTransform(-1, 1);
+                _playerImage.RenderTransformOrigin = new RelativePoint(0.5, 0.5, RelativeUnit.Relative);
+            }
+        }
+    }
+}
 
         private void OnKeyDown(object? sender, KeyEventArgs e)
         {

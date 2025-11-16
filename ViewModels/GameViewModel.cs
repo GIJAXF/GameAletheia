@@ -232,49 +232,71 @@ namespace GameAletheiaCross.ViewModels
             Console.WriteLine("  Posición del jugador reiniciada");
         }
         
-        private void StartGameLoop()
-        {
-            _gameLoopCts = new CancellationTokenSource();
-            _isRunning = true;
-            _isPaused = false;
-            _isCompletingLevel = false;
-            
-            Console.WriteLine("Game loop iniciado");
-            
-            Task.Run(async () =>
-            {
-                while (_isRunning && !_gameLoopCts.Token.IsCancellationRequested)
-                {
-                    GameLoop();
-                    await Task.Delay(16); // ~60 FPS
-                }
-            }, _gameLoopCts.Token);
-        }
-        
-        private void GameLoop()
-        {
-            if (Player == null || CurrentLevel == null || _isPaused) return;
-            
-            UpdatePlayerMovement();
-            _physics.ApplyGravity(Player);
-            _physics.UpdatePosition(Player);
-            _collision.CheckPlatformCollisions(Player, CurrentLevel.Platforms);
-            
-            // Límites del mundo
-            if (Player.Position.X < 0) Player.Position.X = 0;
-            if (Player.Position.X > 1240) Player.Position.X = 1240;
-            
-            // Caída fuera del mapa
-            if (Player.Position.Y > 800)
-            {
-                ResetPlayerPosition();
-            }
+// Reemplaza el método StartGameLoop() en GameViewModel.cs
 
-            CheckNearbyInteractions();
-            CheckLevelExit();
+private void StartGameLoop()
+{
+    _gameLoopCts = new CancellationTokenSource();
+    _isRunning = true;
+    _isPaused = false;
+    _isCompletingLevel = false;
+    
+    Console.WriteLine("🎮 Game loop iniciado");
+    
+    Task.Run(async () =>
+    {
+        const int targetFPS = 60;
+        const int frameDelay = 1000 / targetFPS; // ~16ms para 60 FPS
+        
+        while (_isRunning && !_gameLoopCts.Token.IsCancellationRequested)
+        {
+            var frameStart = DateTime.UtcNow;
             
-            this.RaisePropertyChanged(nameof(Player));
+            GameLoop();
+            
+            // Calcular cuánto tiempo tomó el frame
+            var frameTime = (DateTime.UtcNow - frameStart).TotalMilliseconds;
+            var delay = Math.Max(1, frameDelay - (int)frameTime);
+            
+            await Task.Delay(delay, _gameLoopCts.Token);
         }
+    }, _gameLoopCts.Token);
+}
+// Reemplaza el método GameLoop() en GameViewModel.cs
+
+private void GameLoop()
+{
+    if (Player == null || CurrentLevel == null || _isPaused) return;
+    
+    // Guardar posición anterior
+    float oldX = Player.Position.X;
+    float oldY = Player.Position.Y;
+    
+    UpdatePlayerMovement();
+    _physics.ApplyGravity(Player);
+    _physics.UpdatePosition(Player);
+    _collision.CheckPlatformCollisions(Player, CurrentLevel.Platforms);
+    
+    // Límites del mundo
+    if (Player.Position.X < 0) Player.Position.X = 0;
+    if (Player.Position.X > 1240) Player.Position.X = 1240;
+    
+    // Caída fuera del mapa
+    if (Player.Position.Y > 800)
+    {
+        ResetPlayerPosition();
+    }
+
+    CheckNearbyInteractions();
+    CheckLevelExit();
+    
+    // ✅ SOLO notificar si la posición cambió significativamente
+    // Esto reduce DRÁSTICAMENTE el lag
+    if (Math.Abs(Player.Position.X - oldX) > 0.5f || Math.Abs(Player.Position.Y - oldY) > 0.5f)
+    {
+        this.RaisePropertyChanged(nameof(Player));
+    }
+}
         
         private void UpdatePlayerMovement()
         {
