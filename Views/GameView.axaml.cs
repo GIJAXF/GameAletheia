@@ -89,7 +89,7 @@ namespace GameAletheiaCross.Views
                 _platformBitmaps.Add(LoadBitmap("platform7.png"));
                 
                 // Portal
-                _portalBitmap = LoadBitmap("platform7.png");
+                _portalBitmap = LoadBitmap("portal.png");
                 
                 // Verificar si al menos el jugador se cargó
                 _spritesLoaded = _playerBitmap != null;
@@ -191,230 +191,268 @@ namespace GameAletheiaCross.Views
             }
         }
 
-        private void RenderLevel()
+private void RenderLevel()
+{
+    Console.WriteLine("=== RENDERIZANDO NIVEL ===");
+    
+    if (_gameCanvas == null || _viewModel?.CurrentLevel == null)
+    {
+        Console.WriteLine("ERROR: Canvas o CurrentLevel es null");
+        return;
+    }
+
+    var level = _viewModel.CurrentLevel;
+    _gameCanvas.Children.Clear(); // ⚠️ IMPORTANTE: Limpiar ANTES de renderizar
+
+    // ACTUALIZAR SPRITE DEL JUGADOR SEGÚN GÉNERO
+    if (_viewModel.Player != null)
+    {
+        string playerSprite = _viewModel.Player.Gender == "Hombre" ? "playerH.png" : "playerM.png";
+        _playerBitmap = LoadBitmap(playerSprite);
+        
+        if (_playerBitmap != null)
         {
-            Console.WriteLine("=== RENDERIZANDO NIVEL ===");
+            Console.WriteLine($"✅ Sprite de jugador cargado: {playerSprite}");
+        }
+    }
+
+    // 🟦 RENDERIZAR PLATAFORMAS
+    if (level.Platforms != null && level.Platforms.Count > 0)
+    {
+        Console.WriteLine($"Renderizando {level.Platforms.Count} plataformas...");
+        
+        for (int i = 0; i < level.Platforms.Count; i++)
+        {
+            var platform = level.Platforms[i];
             
-            if (_gameCanvas == null || _viewModel?.CurrentLevel == null)
+            Bitmap? platformSprite = GetPlatformSprite(level.OrderNumber, i);
+            
+            if (platformSprite != null)
             {
-                Console.WriteLine("ERROR: Canvas o CurrentLevel es null");
-                return;
-            }
-
-            var level = _viewModel.CurrentLevel;
-            _gameCanvas.Children.Clear();
-
-            //ACTUALIZAR SPRITE DEL JUGADOR SEGÚN GÉNERO
-            if (_viewModel.Player != null)
-            {
-                string playerSprite = _viewModel.Player.Gender == "Hombre" ? "playerH.png" : "playerM.png";
-                _playerBitmap = LoadBitmap(playerSprite);
-                
-                if (_playerBitmap != null)
-                {
-                    Console.WriteLine($"Sprite de jugador cargado: {playerSprite}");
-                }
-                else
-                {
-                    Console.WriteLine($"No se pudo cargar {playerSprite}, usando fallback");
-                }
-            }
-
-            //RENDERIZAR PLATAFORMAS
-            if (level.Platforms != null && level.Platforms.Count > 0)
-            {
-                Console.WriteLine($"Renderizando {level.Platforms.Count} plataformas...");
-                
-                for (int i = 0; i < level.Platforms.Count; i++)
-                {
-                    var platform = level.Platforms[i];
-                    
-                    Bitmap? platformSprite = GetPlatformSprite(level.OrderNumber, i);
-                    
-                    if (platformSprite != null)
-                    {
-                        // Usar sprite
-                        var img = new Image
-                        {
-                            Source = platformSprite,
-                            Width = platform.Width,
-                            Height = platform.Height,
-                            Stretch = Stretch.Fill
-                        };
-                        
-                        Canvas.SetLeft(img, platform.X);
-                        Canvas.SetTop(img, platform.Y);
-                        _gameCanvas.Children.Add(img);
-                    }
-                    else
-                    {
-                        // Fallback: rectángulo con color
-                        var color = GetLevelColor(level.OrderNumber);
-                        var rect = new Avalonia.Controls.Shapes.Rectangle
-                        {
-                            Fill = new SolidColorBrush(color),
-                            Stroke = new SolidColorBrush(Colors.White),
-                            StrokeThickness = 2,
-                            Width = platform.Width,
-                            Height = platform.Height
-                        };
-                        
-                        Canvas.SetLeft(rect, platform.X);
-                        Canvas.SetTop(rect, platform.Y);
-                        _gameCanvas.Children.Add(rect);
-                    }
-                }
-            }
-
-            //RENDERIZAR NPCs CON ASIGNACIÓN ESPECÍFICA
-            if (level.NPCs != null && level.NPCs.Count > 0)
-            {
-                Console.WriteLine($"Renderizando {level.NPCs.Count} NPCs...");
-                
-                for (int i = 0; i < level.NPCs.Count; i++)
-                {
-                    var npc = level.NPCs[i];
-                    
-                    // Asignar sprite específico según el nombre del NPC
-                    Bitmap? npcSprite = GetNPCSpriteByName(npc.Name);
-                    
-                    if (npcSprite != null)
-                    {
-                        // Usar sprite
-                        var img = new Image
-                        {
-                            Source = npcSprite,
-                            Width = 32,
-                            Height = 32
-                        };
-                        
-                        Canvas.SetLeft(img, npc.PositionX - 16);
-                        Canvas.SetTop(img, npc.PositionY - 32);
-                        _gameCanvas.Children.Add(img);
-                        
-                        Console.WriteLine($"Renderizado NPC: {npc.Name.Split('—')[0].Trim()} con sprite específico");
-                    }
-                    else
-                    {
-                        // Fallback: elipse azul
-                        var ellipse = new Avalonia.Controls.Shapes.Ellipse
-                        {
-                            Fill = new SolidColorBrush(Color.Parse("#00d9ff")),
-                            Stroke = new SolidColorBrush(Color.Parse("#0080FF")),
-                            StrokeThickness = 1,
-                            Width = 40,
-                            Height = 40
-                        };
-                        
-                        Canvas.SetLeft(ellipse, npc.PositionX - 20);
-                        Canvas.SetTop(ellipse, npc.PositionY - 20);
-                        _gameCanvas.Children.Add(ellipse);
-                    }
-                    
-                    // Nombre del NPC
-                    var nameText = new TextBlock
-                    {
-                        Text = npc.Name.Split('—')[0].Trim(),
-                        FontSize = 10,
-                        Foreground = new SolidColorBrush(Colors.White),
-                        Background = new SolidColorBrush(Color.FromArgb(180, 0, 0, 0)),
-                        Padding = new Thickness(4, 2),
-                        TextAlignment = TextAlignment.Center
-                    };
-                    
-                    Canvas.SetLeft(nameText, npc.PositionX - 40);
-                    Canvas.SetTop(nameText, npc.PositionY - 50);
-                    _gameCanvas.Children.Add(nameText);
-                }
-            }
-
-            //RENDERIZAR JUGADOR
-            if (_viewModel.Player != null)
-            {
-                if (_playerBitmap != null)
-                {
-                    // Usar sprite
-                    _playerImage = new Image
-                    {
-                        Source = _playerBitmap,
-                        Width = 32,
-                        Height = 32
-                    };
-                    
-                    Canvas.SetLeft(_playerImage, _viewModel.Player.Position.X - 16);
-                    Canvas.SetTop(_playerImage, _viewModel.Player.Position.Y - 32);
-                    
-                    if (!_viewModel.Player.IsFacingRight)
-                    {
-                        _playerImage.RenderTransform = new ScaleTransform(-1, 1);
-                        _playerImage.RenderTransformOrigin = new RelativePoint(0.5, 0.5, RelativeUnit.Relative);
-                    }
-                    
-                    _gameCanvas.Children.Add(_playerImage);
-                }
-                else
-                {
-                    // Fallback: rectángulo rojo
-                    var rect = new Avalonia.Controls.Shapes.Rectangle
-                    {
-                        Fill = new SolidColorBrush(Color.Parse("#e94560")),
-                        Stroke = new SolidColorBrush(Color.Parse("#ff0080")),
-                        StrokeThickness = 2,
-                        Width = 40,
-                        Height = 60
-                    };
-                    
-                    Canvas.SetLeft(rect, _viewModel.Player.Position.X - 20);
-                    Canvas.SetTop(rect, _viewModel.Player.Position.Y - 60);
-                    _gameCanvas.Children.Add(rect);
-                }
-            }
-
-            //RENDERIZAR PORTAL (VERTICAL)
-            if (_portalBitmap != null)
-            {
+                // ⚠️ CREAR NUEVA IMAGEN CADA VEZ
                 var img = new Image
                 {
-                    Source = _portalBitmap,
-                    Width = 100,  // Ancho temporal (antes de rotar)
-                    Height = 40,  // Alto temporal (antes de rotar)
-                    Opacity = 0.7,
-                    RenderTransform = new RotateTransform(90), // Rotar 90° para hacerlo vertical
-                    RenderTransformOrigin = new RelativePoint(0.5, 0.5, RelativeUnit.Relative)
+                    Source = platformSprite,
+                    Width = platform.Width,
+                    Height = platform.Height,
+                    Stretch = Stretch.Fill
                 };
                 
-                Canvas.SetLeft(img, 680);
-                Canvas.SetTop(img, 340);
+                Canvas.SetLeft(img, platform.X);
+                Canvas.SetTop(img, platform.Y);
                 _gameCanvas.Children.Add(img);
             }
             else
             {
-                // Fallback: rectángulo rojo vertical
-                var portal = new Avalonia.Controls.Shapes.Rectangle
+                // Fallback: rectángulo con color
+                var color = GetLevelColor(level.OrderNumber);
+                var rect = new Avalonia.Controls.Shapes.Rectangle
                 {
-                    Fill = new SolidColorBrush(Color.Parse("#E63946")),
-                    Stroke = new SolidColorBrush(Color.Parse("#FF0000")),
+                    Fill = new SolidColorBrush(color),
+                    Stroke = new SolidColorBrush(Colors.White),
                     StrokeThickness = 2,
-                    Width = 40,   // Estrecho
-                    Height = 100, // Alto (vertical)
-                    Opacity = 0.6
+                    Width = platform.Width,
+                    Height = platform.Height
                 };
                 
-                Canvas.SetLeft(portal, 680);
-                Canvas.SetTop(portal, 320);
-                _gameCanvas.Children.Add(portal);
+                Canvas.SetLeft(rect, platform.X);
+                Canvas.SetTop(rect, platform.Y);
+                _gameCanvas.Children.Add(rect);
             }
-
-            Console.WriteLine($"✅ Nivel renderizado. Total: {_gameCanvas.Children.Count} elementos");
         }
+    }
 
-        private Bitmap? GetPlatformSprite(int levelNumber, int platformIndex)
+    // 👥 RENDERIZAR NPCs
+    if (level.NPCs != null && level.NPCs.Count > 0)
+    {
+        Console.WriteLine($"Renderizando {level.NPCs.Count} NPCs...");
+        
+        for (int i = 0; i < level.NPCs.Count; i++)
         {
-            if (_platformBitmaps.Count == 0) return null;
+            var npc = level.NPCs[i];
             
-            int spriteIndex = (levelNumber - 1) % _platformBitmaps.Count;
-            return _platformBitmaps[spriteIndex];
+            Bitmap? npcSprite = GetNPCSpriteByName(npc.Name);
+            
+            if (npcSprite != null)
+            {
+                // ⚠️ CREAR NUEVA IMAGEN CADA VEZ
+                var img = new Image
+                {
+                    Source = npcSprite,
+                    Width = 32,
+                    Height = 32
+                };
+                
+                Canvas.SetLeft(img, npc.PositionX - 16);
+                Canvas.SetTop(img, npc.PositionY - 32);
+                _gameCanvas.Children.Add(img);
+                
+                Console.WriteLine($"✅ Renderizado NPC: {npc.Name.Split('—')[0].Trim()}");
+            }
+            else
+            {
+                // Fallback: elipse azul
+                var ellipse = new Avalonia.Controls.Shapes.Ellipse
+                {
+                    Fill = new SolidColorBrush(Color.Parse("#00d9ff")),
+                    Stroke = new SolidColorBrush(Color.Parse("#0080FF")),
+                    StrokeThickness = 1,
+                    Width = 40,
+                    Height = 40
+                };
+                
+                Canvas.SetLeft(ellipse, npc.PositionX - 20);
+                Canvas.SetTop(ellipse, npc.PositionY - 20);
+                _gameCanvas.Children.Add(ellipse);
+            }
+            
+            // Nombre del NPC
+            var nameText = new TextBlock
+            {
+                Text = npc.Name.Split('—')[0].Trim(),
+                FontSize = 10,
+                Foreground = new SolidColorBrush(Colors.White),
+                Background = new SolidColorBrush(Color.FromArgb(180, 0, 0, 0)),
+                Padding = new Thickness(4, 2),
+                TextAlignment = TextAlignment.Center
+            };
+            
+            Canvas.SetLeft(nameText, npc.PositionX - 40);
+            Canvas.SetTop(nameText, npc.PositionY - 50);
+            _gameCanvas.Children.Add(nameText);
         }
+    }
+
+    // 🧑 RENDERIZAR JUGADOR
+    if (_viewModel.Player != null)
+    {
+        if (_playerBitmap != null)
+        {
+            // ⚠️ CREAR NUEVA IMAGEN CADA VEZ
+            _playerImage = new Image
+            {
+                Source = _playerBitmap,
+                Width = 32,
+                Height = 32
+            };
+            
+            Canvas.SetLeft(_playerImage, _viewModel.Player.Position.X - 16);
+            Canvas.SetTop(_playerImage, _viewModel.Player.Position.Y - 32);
+            
+            if (!_viewModel.Player.IsFacingRight)
+            {
+                _playerImage.RenderTransform = new ScaleTransform(-1, 1);
+                _playerImage.RenderTransformOrigin = new RelativePoint(0.5, 0.5, RelativeUnit.Relative);
+            }
+            
+            _gameCanvas.Children.Add(_playerImage);
+        }
+        else
+        {
+            // Fallback: rectángulo rojo
+            var rect = new Avalonia.Controls.Shapes.Rectangle
+            {
+                Fill = new SolidColorBrush(Color.Parse("#e94560")),
+                Stroke = new SolidColorBrush(Color.Parse("#ff0080")),
+                StrokeThickness = 2,
+                Width = 40,
+                Height = 60
+            };
+            
+            Canvas.SetLeft(rect, _viewModel.Player.Position.X - 20);
+            Canvas.SetTop(rect, _viewModel.Player.Position.Y - 60);
+            _gameCanvas.Children.Add(rect);
+        }
+    }
+
+    // 🌀 RENDERIZAR PORTAL (VERTICAL)
+    if (_portalBitmap != null)
+    {
+        // Efecto de brillo (fondo)
+        var glow = new Avalonia.Controls.Shapes.Ellipse
+        {
+            Fill = new SolidColorBrush(Color.Parse("#00FF88")),
+            Width = 60,
+            Height = 120,
+            Opacity = 0.3
+        };
+        
+        Canvas.SetLeft(glow, 670);
+        Canvas.SetTop(glow, 310);
+        _gameCanvas.Children.Add(glow);
+        
+        // Portal (frente)
+        var portalImg = new Image
+        {
+            Source = _portalBitmap,
+            Width = 40,
+            Height = 100,
+            Opacity = 0.8,
+            Stretch = Stretch.Fill
+        };
+        
+        Canvas.SetLeft(portalImg, 680);
+        Canvas.SetTop(portalImg, 320);
+        _gameCanvas.Children.Add(portalImg);
+    }
+    else
+    {
+        // Fallback: elipse verde vertical
+        var portal = new Avalonia.Controls.Shapes.Ellipse
+        {
+            Fill = new SolidColorBrush(Color.Parse("#00FF88")),
+            Stroke = new SolidColorBrush(Color.Parse("#00FF00")),
+            StrokeThickness = 2,
+            Width = 40,
+            Height = 100,
+            Opacity = 0.7
+        };
+        
+        Canvas.SetLeft(portal, 680);
+        Canvas.SetTop(portal, 320);
+        _gameCanvas.Children.Add(portal);
+    }
+
+    Console.WriteLine($"✅ Nivel renderizado. Total: {_gameCanvas.Children.Count} elementos");
+}
+
+// Reemplaza el método GetPlatformSprite en GameView.axaml.cs
+
+            private Bitmap? GetPlatformSprite(int levelNumber, int platformIndex)
+            {
+                // Mapeo de niveles a pisos específicos
+                string platformFile = levelNumber switch
+                {
+                    1 => "piedratutorial.png",  // Nivel 1: Tutorial
+                    2 => "pastopiso.png",        // Nivel 2: Ruinas del Firewall
+                    3 => "piedraspiso.png",      // Nivel 3: Ciudad de Contraseñas
+                    4 => "nievepiso.png",        // Nivel 4: Laberinto de Algoritmos
+                    5 => "redlinepiso.png",      // Nivel 5: Santuario de Datos
+                    6 => "gobierno.png",         // Nivel 6: Torre Corporativa
+                    7 => "piedraspiso.png",      // Nivel 7: Archivo Prohibido (reutilizar)
+                    _ => "platform1.png"         // Fallback
+                };
+                
+                try
+                {
+                    var uri = new Uri($"avares://GameAletheiaCross/Assets/Images/{platformFile}");
+                    using var stream = AssetLoader.Open(uri);
+                    return new Bitmap(stream);
+                }
+                catch (Exception ex)
+                {
+                    Console.WriteLine($"⚠️ No se pudo cargar {platformFile}: {ex.Message}");
+                    
+                    // Intentar usar los platform genericos como fallback
+                    if (_platformBitmaps.Count > 0)
+                    {
+                        int spriteIndex = (levelNumber - 1) % _platformBitmaps.Count;
+                        return _platformBitmaps[spriteIndex];
+                    }
+                    
+                    return null;
+                }
+            }
 
         private Bitmap? GetNPCSprite(int npcIndex)
         {

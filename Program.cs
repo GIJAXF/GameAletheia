@@ -17,46 +17,49 @@ namespace GameAletheiaCross
         {
             try
             {
-                Console.WriteLine("  Iniciando Game Aletheia Cross...");
+                Console.WriteLine("🎮 Iniciando Game Aletheia Cross...");
                 
-                //   Inicializa conexión MongoDB
+                // 🔗 Inicializa conexión MongoDB
                 var dbService = new MongoDbService("mongodb://localhost:27017", "HackerFantasmaDB");
 
-                //  VERIFICAR CONEXIÓN ANTES DE CONTINUAR
+                // ✅ VERIFICAR CONEXIÓN ANTES DE CONTINUAR
                 if (!dbService.Ping())
                 {
-                    Console.WriteLine("  ERROR: No se pudo conectar a MongoDB.");
-                    Console.WriteLine("   Asegúrate de que el servicio esté corriendo.");
-                    Console.WriteLine("   Inicia MongoDB con: mongod");
+                    Console.WriteLine("❌ ERROR: No se pudo conectar a MongoDB.");
+                    Console.WriteLine("⚠️  Asegúrate de que el servicio esté corriendo.");
+                    Console.WriteLine("💡 Inicia MongoDB con: mongod");
                     return;
                 }
 
-                Console.WriteLine(" Conexión a MongoDB establecida");
+                Console.WriteLine("✅ Conexión a MongoDB establecida");
+
+                // 🆕 ACTUALIZAR FACCIONES (ejecutar solo una vez o cuando necesites actualizar)
+                await UpdateFactionsScript.UpdateFactionsAsync();
 
                 var levelRepo = new LevelRepository(dbService);
                 var puzzleRepo = new PuzzleRepository(dbService);
 
-                //   Genera niveles si no existen
+                // 🏗️ Genera niveles si no existen
                 var generator = new LevelGenerator(levelRepo, puzzleRepo);
                 await generator.GenerateDefaultLevelsAsync();
 
-                //   Genera puzzles avanzados
-                Console.WriteLine("  Verificando puzzles de programación...");
+                // 🧩 Genera puzzles avanzados
+                Console.WriteLine("🔍 Verificando puzzles de programación...");
                 var advancedSeed = new AdvancedSeedData(dbService);
                 await advancedSeed.SeedAdvancedPuzzlesAsync();
 
-                //  ️ Configura ReactiveUI para Avalonia
+                // ⚛️ Configura ReactiveUI para Avalonia
                 RxApp.MainThreadScheduler = AvaloniaScheduler.Instance;
 
-                Console.WriteLine("  Iniciando interfaz gráfica...\n");
+                Console.WriteLine("🖥️  Iniciando interfaz gráfica...\n");
 
-                //   Inicia la app
+                // 🚀 Inicia la app
                 BuildAvaloniaApp()
                     .StartWithClassicDesktopLifetime(args);
             }
             catch (Exception ex)
             {
-                Console.WriteLine($"  Error fatal al iniciar: {ex.Message}");
+                Console.WriteLine($"❌ Error fatal al iniciar: {ex.Message}");
                 Console.WriteLine(ex.StackTrace);
             }
         }

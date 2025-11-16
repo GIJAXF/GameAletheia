@@ -142,22 +142,58 @@
                          TextAlignment="Center" />
             </Border>
             
-            <!-- Botones (arriba derecha) -->
-            <StackPanel HorizontalAlignment="Right" 
-                       VerticalAlignment="Top" 
-                       Margin="20" 
-                       Spacing="10">
-                <Button Content="Terminal (T)" 
-                       Command="{Binding OpenTerminalCommand}"
-                       Background="#0f3460"
-                       Foreground="White"
-                       Padding="15,8" />
-                <Button Content="Pausa (ESC)" 
-                       Command="{Binding PauseCommand}"
-                       Background="#533483"
-                       Foreground="White"
-                       Padding="15,8" />
-            </StackPanel>
+<!-- Reemplaza la sección de botones en GameView.axaml -->
+
+<!-- Botones (arriba derecha) CON IMÁGENES -->
+<StackPanel HorizontalAlignment="Right" 
+           VerticalAlignment="Top" 
+           Margin="20" 
+           Spacing="10">
+    
+    <!-- BOTÓN TERMINAL -->
+    <Button Command="{Binding OpenTerminalCommand}"
+            Width="60"
+            Height="60"
+            Padding="0"
+            Background="Transparent"
+            BorderThickness="0"
+            ToolTip.Tip="Abrir Terminal (T)">
+        <Button.Styles>
+            <Style Selector="Button:pointerover">
+                <Setter Property="Opacity" Value="0.8"/>
+            </Style>
+            <Style Selector="Button:pressed">
+                <Setter Property="Opacity" Value="0.6"/>
+            </Style>
+        </Button.Styles>
+        <Image Source="avares://GameAletheiaCross/Assets/Images/terminalbtn.png"
+               Width="60"
+               Height="60"
+               Stretch="Uniform"/>
+    </Button>
+    
+    <!-- BOTÓN PAUSA -->
+    <Button Command="{Binding PauseCommand}"
+            Width="60"
+            Height="60"
+            Padding="0"
+            Background="Transparent"
+            BorderThickness="0"
+            ToolTip.Tip="Pausar (ESC)">
+        <Button.Styles>
+            <Style Selector="Button:pointerover">
+                <Setter Property="Opacity" Value="0.8"/>
+            </Style>
+            <Style Selector="Button:pressed">
+                <Setter Property="Opacity" Value="0.6"/>
+            </Style>
+        </Button.Styles>
+        <Image Source="avares://GameAletheiaCross/Assets/Images/pausabtn.png"
+               Width="60"
+               Height="60"
+               Stretch="Uniform"/>
+    </Button>
+</StackPanel>
             
             <!-- Controles (abajo izquierda) -->
             <Border Background="#000000AA" 

@@ -4,42 +4,136 @@
              x:Class="GameAletheiaCross.Views.MainMenuView"
              x:DataType="vm:MainMenuViewModel">
     
-    <Grid Background="#1a1a2e">
+    <Grid>
+        <!-- FONDO CON IMAGEN -->
+        <Image Source="avares://GameAletheiaCross/Assets/Images/inicio.png"
+               Stretch="UniformToFill"
+               HorizontalAlignment="Stretch"
+               VerticalAlignment="Stretch"
+               Opacity="0.6"/>
+        
+        <!-- OVERLAY OSCURO -->
+        <Border Background="#000000" Opacity="0.5"/>
+        
+        <!-- CONTENIDO DEL MENÚ -->
         <StackPanel HorizontalAlignment="Center" 
                     VerticalAlignment="Center" 
-                    Spacing="20">
+                    Spacing="25">
             
-            <TextBlock Text="GAME ALETHEIA CROSS" 
-                       FontSize="48" 
-                       FontWeight="Bold"
-                       HorizontalAlignment="Center"
-                       Foreground="White"/>
+            <!-- TÍTULO CON EFECTO CYBERPUNK -->
+            <Border Background="#000000DD"
+                    Padding="40,20"
+                    CornerRadius="10"
+                    BorderBrush="#00FF88"
+                    BorderThickness="3"
+                    HorizontalAlignment="Center"
+                    Margin="0,0,0,30">
+                <StackPanel Spacing="8">
+                    <TextBlock Text="GAME ALETHEIA" 
+                               FontSize="48" 
+                               FontWeight="Bold"
+                               HorizontalAlignment="Center"
+                               Foreground="#00FF88"/>
+                    <TextBlock Text="CROSS" 
+                               FontSize="36" 
+                               FontWeight="Bold"
+                               HorizontalAlignment="Center"
+                               Foreground="#00D9FF"
+                               Margin="0,-10,0,0"/>
+                    <TextBlock Text="v1.0 - The Truth Awaits" 
+                               FontSize="11" 
+                               HorizontalAlignment="Center"
+                               Foreground="#888888"
+                               Margin="0,5,0,0"/>
+                </StackPanel>
+            </Border>
             
-            <Button Content="Nueva Partida" 
+            <!-- BOTONES DEL MENÚ -->
+            <Button Content="▶ NUEVA PARTIDA" 
                     Command="{Binding NewGameCommand}"
-                    Width="200" 
-                    Height="50"
-                    FontSize="18"/>
+                    Width="280" 
+                    Height="60"
+                    FontSize="18"
+                    FontWeight="Bold"
+                    Background="#00FF88"
+                    Foreground="#000000"
+                    CornerRadius="8"
+                    BorderBrush="#00FFFF"
+                    BorderThickness="2">
+                <Button.Styles>
+                    <Style Selector="Button:pointerover">
+                        <Setter Property="Background" Value="#00FFFF"/>
+                    </Style>
+                </Button.Styles>
+            </Button>
             
-            <Button Content="Cargar Partida" 
+            <Button Content="CARGAR PARTIDA" 
                     Command="{Binding LoadGameCommand}"
-                    Width="200" 
-                    Height="50"
-                    FontSize="18"/>
+                    Width="280" 
+                    Height="60"
+                    FontSize="18"
+                    FontWeight="Bold"
+                    Background="#0080FF"
+                    Foreground="White"
+                    CornerRadius="8"
+                    BorderBrush="#00BBFF"
+                    BorderThickness="2">
+                <Button.Styles>
+                    <Style Selector="Button:pointerover">
+                        <Setter Property="Background" Value="#00AAFF"/>
+                    </Style>
+                </Button.Styles>
+            </Button>
             
-            <Button Content="Ranking" 
+            <Button Content="RANKING" 
                     Command="{Binding ShowRankingCommand}"
-                    Width="200" 
-                    Height="50"
-                    FontSize="18"/>
+                    Width="280" 
+                    Height="60"
+                    FontSize="18"
+                    FontWeight="Bold"
+                    Background="#FFD700"
+                    Foreground="#000000"
+                    CornerRadius="8"
+                    BorderBrush="#FFFF00"
+                    BorderThickness="2">
+                <Button.Styles>
+                    <Style Selector="Button:pointerover">
+                        <Setter Property="Background" Value="#FFFF00"/>
+                    </Style>
+                </Button.Styles>
+            </Button>
             
-            <Button Content="Salir" 
+            <Button Content="SALIR" 
                     Command="{Binding ExitCommand}"
-                    Width="200" 
-                    Height="50"
-                    FontSize="18"/>
+                    Width="280" 
+                    Height="60"
+                    FontSize="18"
+                    FontWeight="Bold"
+                    Background="#AA0000"
+                    Foreground="White"
+                    CornerRadius="8"
+                    BorderBrush="#FF0000"
+                    BorderThickness="2">
+                <Button.Styles>
+                    <Style Selector="Button:pointerover">
+                        <Setter Property="Background" Value="#CC0000"/>
+                    </Style>
+                </Button.Styles>
+            </Button>
             
         </StackPanel>
+        
+        <!-- CRÉDITOS EN LA ESQUINA -->
+        <Border Background="#000000AA"
+                Padding="15,8"
+                CornerRadius="5"
+                HorizontalAlignment="Right"
+                VerticalAlignment="Bottom"
+                Margin="20">
+            <TextBlock Text="Desarrollado con Avalonia UI"
+                       FontSize="10"
+                       Foreground="#888888"/>
+        </Border>
     </Grid>
     
 </UserControl>
