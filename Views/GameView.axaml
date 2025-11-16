@@ -176,7 +176,7 @@
             </StackPanel>
             
             <!-- ⭐ CONTROLES (abajo izquierda) - CON FONDO NEGRO OPACO ⭐ -->
-            <Border Background="#000000" 
+            <Border Background="#000000" Opacity="0.5"
                    Padding="15" 
                    CornerRadius="5"
                    HorizontalAlignment="Left" 

@@ -13,7 +13,7 @@
                VerticalAlignment="Center"/>
         
         <!-- Overlay oscuro para mejorar legibilidad -->
-        <Border Background="#000000AA" />
+        <Border Background="#000000AA"/>
         
         <!-- Contenido -->
         <Grid IsVisible="{Binding !ShowIntroduction}">
@@ -86,7 +86,7 @@
         <Grid IsVisible="{Binding ShowIntroduction}">
             <Border Background="#000000DD" />
             
-            <Border Background="#0a0a15"
+            <Border Background="#0a0a15" 
                     BorderBrush="{Binding SelectedFaction.ThemeColor}"
                     BorderThickness="3"
                     CornerRadius="10"

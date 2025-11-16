@@ -28,7 +28,7 @@
                        Padding="20"
                        Margin="0,0,0,20"
                        CornerRadius="10,10,0,0">
-                    <TextBlock Text="🏆 RANKING GLOBAL 🏆"
+                    <TextBlock Text="RANKING"
                                FontSize="32"
                                FontWeight="Bold"
                                HorizontalAlignment="Center"
@@ -41,7 +41,7 @@
 
                 <!-- Tabla de ranking -->
                 <Border Grid.Row="1"
-                        Background="#0a0a15DD" 
+                        Background="#0a0a15" 
                         BorderBrush="#FFD700" 
                         BorderThickness="2"
                         CornerRadius="5"
@@ -64,7 +64,7 @@
                             <ItemsControl ItemsSource="{Binding TopPlayers}">
                                 <ItemsControl.ItemTemplate>
                                     <DataTemplate>
-                                        <Border Background="#0f3460DD"
+                                        <Border Background="#0f3460"
                                                BorderBrush="#00AA00"
                                                BorderThickness="0,0,0,1"
                                                Padding="15"

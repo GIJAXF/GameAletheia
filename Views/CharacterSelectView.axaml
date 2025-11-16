@@ -17,10 +17,10 @@
                VerticalAlignment="Center"/>
         
         <!-- Overlay oscuro para mejorar legibilidad -->
-        <Border Background="#000000AA" />
+        <Border Background="#000000DD" />
         
         <!-- Contenido -->
-        <Border Background="#0a0a15DD"
+        <Border Background="#0a0a15"
                 BorderBrush="#00D9FF"
                 BorderThickness="3"
                 CornerRadius="10"
@@ -46,10 +46,10 @@
                 <StackPanel Orientation="Horizontal"
                             HorizontalAlignment="Center"
                             Spacing="20">
-                    <RadioButton Content="🚹 Hombre"
+                    <RadioButton Content="Hombre"
                                  IsChecked="{Binding IsMale, Mode=TwoWay}"
                                  FontSize="16" />
-                    <RadioButton Content="🚺 Mujer"
+                    <RadioButton Content="Mujer"
                                  IsChecked="{Binding IsMale, Converter={StaticResource Negate}, Mode=TwoWay}"
                                  FontSize="16" />
                 </StackPanel>

@@ -184,7 +184,7 @@ namespace GameAletheiaCross.ViewModels
             {
                 ShowIntroduction = false;
                 SelectedFaction = null;
-                LoadBackground("NeutralFondo.png");
+                LoadBackground("DefaulFondo.png");
             });
         }
         
