@@ -275,7 +275,7 @@ private void GameLoop()
     UpdatePlayerMovement();
     _physics.ApplyGravity(Player);
     _physics.UpdatePosition(Player);
-    _collision.CheckPlatformCollisions(Player, CurrentLevel.Platforms);
+    _collision.CheckPlatformCollisions(Player, CurrentLevel.Platforms, CurrentLevel.Floor);
     
     // Límites del mundo
     if (Player.Position.X < 0) Player.Position.X = 0;
