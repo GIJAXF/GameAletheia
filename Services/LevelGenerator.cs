@@ -24,39 +24,109 @@ namespace GameAletheiaCross.Services
             var existingCount = await _levelRepo.GetTotalLevelsAsync();
             if (existingCount > 0)
             {
-                Console.WriteLine($" ️ Ya existen {existingCount} niveles. Eliminando para regenerar...");
+                Console.WriteLine($"⚠️ Ya existen {existingCount} niveles. Eliminando para regenerar...");
                 await DeleteAllLevelsAsync();
             }
 
             // PRIMERO: Crear y guardar NPCs
-            Console.WriteLine("  Creando NPCs...");
+            Console.WriteLine("🎭 Creando NPCs...");
             await CreateNPCsAsync();
 
             var levels = new List<Level>
             {
-                new Level { OrderNumber = 1, Name = "El Despertar Digital", Description = "Tu primera inmersión en la red. Aprende los controles básicos.", Background = "forest", Difficulty = 1, Platforms = GeneratePlatformsForLevel(1), NPCIds = new List<string>() },
-                new Level { OrderNumber = 2, Name = "Ruinas del Firewall Antiguo", Description = "Navega por las defensas caídas de una red olvidada.", Background = "ruins", Difficulty = 1, Platforms = GeneratePlatformsForLevel(2), NPCIds = new List<string>() },
-                new Level { OrderNumber = 3, Name = "Ciudad de las Contraseñas Perdidas", Description = "Evita las trampas de seguridad obsoletas.", Background = "city", Difficulty = 2, Platforms = GeneratePlatformsForLevel(3), NPCIds = new List<string>() },
-                new Level { OrderNumber = 4, Name = "Laberinto de Algoritmos", Description = "Resuelve el primer puzzle lógico para avanzar.", Background = "digital", Difficulty = 2, Platforms = GeneratePlatformsForLevel(4), NPCIds = new List<string>() },
-                new Level { OrderNumber = 5, Name = "Santuario de los Datos Sagrados", Description = "Protege el núcleo resolviendo códigos antiguos.", Background = "temple", Difficulty = 3, Platforms = GeneratePlatformsForLevel(5), NPCIds = new List<string>() },
-                new Level { OrderNumber = 6, Name = "Torre Corporativa Redline", Description = "Enfrenta a los agentes del sistema corrupto.", Background = "cyber", Difficulty = 3, Platforms = GeneratePlatformsForLevel(6), NPCIds = new List<string>() },
-                new Level { OrderNumber = 7, Name = "El Archivo Prohibido", Description = "Descubre la verdad oculta detrás de Aletheia.", Background = "archive", Difficulty = 4, Platforms = GeneratePlatformsForLevel(7), NPCIds = new List<string>() },
+                new Level 
+                { 
+                    OrderNumber = 1, 
+                    Name = "El Despertar Digital", 
+                    Description = "Tu primera inmersión en la red. Aprende los controles básicos.", 
+                    Background = "forest", 
+                    Difficulty = 1, 
+                    FloorPlatform = new Level.Floor { FloorType = "PiedraTutorial" },
+                    Platforms = GeneratePlatformsForLevel(1), 
+                    NPCIds = new List<string>() 
+                },
+                new Level 
+                { 
+                    OrderNumber = 2, 
+                    Name = "Ruinas del Firewall Antiguo", 
+                    Description = "Navega por las defensas caídas de una red olvidada.", 
+                    Background = "ruins", 
+                    Difficulty = 1, 
+                    FloorPlatform = new Level.Floor { FloorType = "Pasto" },
+                    Platforms = GeneratePlatformsForLevel(2), 
+                    NPCIds = new List<string>() 
+                },
+                new Level 
+                { 
+                    OrderNumber = 3, 
+                    Name = "Ciudad de las Contraseñas Perdidas", 
+                    Description = "Evita las trampas de seguridad obsoletas.", 
+                    Background = "city", 
+                    Difficulty = 2, 
+                    FloorPlatform = new Level.Floor { FloorType = "Pasto" },
+                    Platforms = GeneratePlatformsForLevel(3), 
+                    NPCIds = new List<string>() 
+                },
+                new Level 
+                { 
+                    OrderNumber = 4, 
+                    Name = "Laberinto de Algoritmos", 
+                    Description = "Resuelve el primer puzzle lógico para avanzar.", 
+                    Background = "digital", 
+                    Difficulty = 2, 
+                    FloorPlatform = new Level.Floor { FloorType = "Cristal" },
+                    Platforms = GeneratePlatformsForLevel(4), 
+                    NPCIds = new List<string>() 
+                },
+                new Level 
+                { 
+                    OrderNumber = 5, 
+                    Name = "Santuario de los Datos Sagrados", 
+                    Description = "Protege el núcleo resolviendo códigos antiguos.", 
+                    Background = "temple", 
+                    Difficulty = 3, 
+                    FloorPlatform = new Level.Floor { FloorType = "Hielo" },
+                    Platforms = GeneratePlatformsForLevel(5), 
+                    NPCIds = new List<string>() 
+                },
+                new Level 
+                { 
+                    OrderNumber = 6, 
+                    Name = "Torre Corporativa Redline", 
+                    Description = "Enfrenta a los agentes del sistema corrupto.", 
+                    Background = "cyber", 
+                    Difficulty = 3, 
+                    FloorPlatform = new Level.Floor { FloorType = "RedLine" },
+                    Platforms = GeneratePlatformsForLevel(6), 
+                    NPCIds = new List<string>() 
+                },
+                new Level 
+                { 
+                    OrderNumber = 7, 
+                    Name = "El Archivo Prohibido", 
+                    Description = "Descubre la verdad oculta detrás de Aletheia.", 
+                    Background = "archive", 
+                    Difficulty = 4, 
+                    FloorPlatform = new Level.Floor { FloorType = "Cristal" },
+                    Platforms = GeneratePlatformsForLevel(7), 
+                    NPCIds = new List<string>() 
+                },
             };
 
             // SEGUNDO: Crear niveles
-            Console.WriteLine("Creando niveles...");
+            Console.WriteLine("🎮 Creando niveles...");
             foreach (var level in levels)
             {
                 await _levelRepo.CreateAsync(level);
-                Console.WriteLine($"Nivel creado: {level.Name} (Orden: {level.OrderNumber}, Plataformas: {level.Platforms.Count})");
+                Console.WriteLine($"✅ Nivel creado: {level.Name} (Orden: {level.OrderNumber}, Piso: {level.FloorPlatform.FloorType})");
             }
 
             // TERCERO: Asignar NPCs a niveles
-            Console.WriteLine("  Asignando NPCs a niveles...");
+            Console.WriteLine("🎭 Asignando NPCs a niveles...");
             await AssignNPCsToLevelsAsync();
 
-            Console.WriteLine(" Los puzzles se generarán desde SeedData.cs");
-            Console.WriteLine(" Todos los niveles y NPCs han sido generados correctamente.");
+            Console.WriteLine("🧩 Los puzzles se generarán desde SeedData.cs");
+            Console.WriteLine("✅ Todos los niveles y NPCs han sido generados correctamente.");
         }
 
         private List<Level.Platform> GeneratePlatformsForLevel(int levelNumber)
@@ -65,8 +135,6 @@ namespace GameAletheiaCross.Services
 
             if (levelNumber == 1)
             {
-                // Nivel tutorial más espacioso
-                platforms.Add(new Level.Platform { X = 0, Y = 600, Width = 1280, Height = 120, IsSolid = true }); // Suelo principal
                 platforms.Add(new Level.Platform { X = 150, Y = 520, Width = 120, Height = 20, IsSolid = true });
                 platforms.Add(new Level.Platform { X = 320, Y = 470, Width = 140, Height = 20, IsSolid = true });
                 platforms.Add(new Level.Platform { X = 510, Y = 420, Width = 130, Height = 20, IsSolid = true });
@@ -76,8 +144,6 @@ namespace GameAletheiaCross.Services
             }
             else if (levelNumber == 2)
             {
-                // Ruinas con más complejidad vertical
-                platforms.Add(new Level.Platform { X = 0, Y = 600, Width = 1280, Height = 120, IsSolid = true });
                 platforms.Add(new Level.Platform { X = 80, Y = 520, Width = 150, Height = 25, IsSolid = true });
                 platforms.Add(new Level.Platform { X = 280, Y = 470, Width = 130, Height = 25, IsSolid = true });
                 platforms.Add(new Level.Platform { X = 140, Y = 410, Width = 120, Height = 25, IsSolid = true });
@@ -90,8 +156,6 @@ namespace GameAletheiaCross.Services
             }
             else if (levelNumber == 3)
             {
-                // Ciudad con más plataformas y saltos complejos
-                platforms.Add(new Level.Platform { X = 0, Y = 600, Width = 1280, Height = 120, IsSolid = true });
                 platforms.Add(new Level.Platform { X = 40, Y = 520, Width = 100, Height = 20, IsSolid = true });
                 platforms.Add(new Level.Platform { X = 190, Y = 490, Width = 110, Height = 20, IsSolid = true });
                 platforms.Add(new Level.Platform { X = 350, Y = 460, Width = 90, Height = 20, IsSolid = true });
@@ -103,13 +167,10 @@ namespace GameAletheiaCross.Services
                 platforms.Add(new Level.Platform { X = 1030, Y = 340, Width = 150, Height = 20, IsSolid = true });
                 platforms.Add(new Level.Platform { X = 900, Y = 260, Width = 130, Height = 20, IsSolid = true });
                 platforms.Add(new Level.Platform { X = 1100, Y = 200, Width = 180, Height = 20, IsSolid = true });
-                // Plataforma trampa (no sólida)
                 platforms.Add(new Level.Platform { X = 550, Y = 510, Width = 90, Height = 15, IsSolid = false });
             }
             else if (levelNumber == 4)
             {
-                // Laberinto digital zigzagueante más largo
-                platforms.Add(new Level.Platform { X = 0, Y = 600, Width = 1280, Height = 120, IsSolid = true });
                 platforms.Add(new Level.Platform { X = 30, Y = 520, Width = 140, Height = 20, IsSolid = true });
                 platforms.Add(new Level.Platform { X = 220, Y = 480, Width = 130, Height = 20, IsSolid = true });
                 platforms.Add(new Level.Platform { X = 100, Y = 430, Width = 110, Height = 20, IsSolid = true });
@@ -126,8 +187,6 @@ namespace GameAletheiaCross.Services
             }
             else if (levelNumber == 5)
             {
-                // Santuario con plataformas más espaciadas
-                platforms.Add(new Level.Platform { X = 0, Y = 600, Width = 1280, Height = 120, IsSolid = true });
                 platforms.Add(new Level.Platform { X = 80, Y = 510, Width = 180, Height = 25, IsSolid = true });
                 platforms.Add(new Level.Platform { X = 310, Y = 450, Width = 200, Height = 25, IsSolid = true });
                 platforms.Add(new Level.Platform { X = 150, Y = 380, Width = 150, Height = 25, IsSolid = true });
@@ -137,12 +196,10 @@ namespace GameAletheiaCross.Services
                 platforms.Add(new Level.Platform { X = 680, Y = 280, Width = 180, Height = 25, IsSolid = true });
                 platforms.Add(new Level.Platform { X = 1000, Y = 310, Width = 190, Height = 25, IsSolid = true });
                 platforms.Add(new Level.Platform { X = 900, Y = 220, Width = 160, Height = 25, IsSolid = true });
-                platforms.Add(new Level.Platform { X = 640, Y = 180, Width = 140, Height = 20, IsSolid = true }); // Plataforma central elevada
+                platforms.Add(new Level.Platform { X = 640, Y = 180, Width = 140, Height = 20, IsSolid = true });
             }
             else if (levelNumber == 6)
             {
-                // Torre corporativa ascendente más desafiante
-                platforms.Add(new Level.Platform { X = 0, Y = 600, Width = 1280, Height = 120, IsSolid = true });
                 platforms.Add(new Level.Platform { X = 20, Y = 530, Width = 160, Height = 20, IsSolid = true });
                 platforms.Add(new Level.Platform { X = 230, Y = 480, Width = 150, Height = 20, IsSolid = true });
                 platforms.Add(new Level.Platform { X = 90, Y = 420, Width = 130, Height = 20, IsSolid = true });
@@ -158,8 +215,6 @@ namespace GameAletheiaCross.Services
             }
             else if (levelNumber == 7)
             {
-                // Archivo final - nivel más largo y complejo
-                platforms.Add(new Level.Platform { X = 0, Y = 600, Width = 1280, Height = 120, IsSolid = true });
                 platforms.Add(new Level.Platform { X = 40, Y = 540, Width = 130, Height = 20, IsSolid = true });
                 platforms.Add(new Level.Platform { X = 210, Y = 510, Width = 120, Height = 20, IsSolid = true });
                 platforms.Add(new Level.Platform { X = 90, Y = 460, Width = 110, Height = 20, IsSolid = true });
@@ -175,7 +230,7 @@ namespace GameAletheiaCross.Services
                 platforms.Add(new Level.Platform { X = 930, Y = 300, Width = 140, Height = 20, IsSolid = true });
                 platforms.Add(new Level.Platform { X = 1100, Y = 240, Width = 150, Height = 20, IsSolid = true });
                 platforms.Add(new Level.Platform { X = 800, Y = 210, Width = 130, Height = 20, IsSolid = true });
-                platforms.Add(new Level.Platform { X = 600, Y = 180, Width = 180, Height = 20, IsSolid = true }); // Plataforma final central
+                platforms.Add(new Level.Platform { X = 600, Y = 180, Width = 180, Height = 20, IsSolid = true });
             }
 
             return platforms;
@@ -197,12 +252,6 @@ namespace GameAletheiaCross.Services
                 Console.WriteLine($" ️ Error al eliminar niveles: {ex.Message}");
             }
         }
-
-// En Services/LevelGenerator.cs
-// Reemplazar el método CreateNPCsAsync() completo
-
-// En Services/LevelGenerator.cs
-// Reemplazar el método CreateNPCsAsync() completo
 
 private async Task CreateNPCsAsync()
 {

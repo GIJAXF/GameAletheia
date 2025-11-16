@@ -28,6 +28,10 @@ namespace GameAletheiaCross.Models
         [BsonElement("timeLimit")]
         public int TimeLimit { get; set; }
         
+        // ⭐ NUEVO: Piso principal (el suelo base del nivel)
+        [BsonElement("floor")]
+        public Floor FloorPlatform { get; set; } = new Floor();
+        
         [BsonElement("platforms")]
         public List<Platform> Platforms { get; set; } = new List<Platform>();
         
@@ -40,11 +44,32 @@ namespace GameAletheiaCross.Models
         [BsonElement("Background")]
         public string Background { get; set; } = "";
 
-
         [BsonIgnore]
         public List<NPC> NPCs { get; set; } = new();
 
-        //   ESTAS CLASES ANIDADAS SON IMPORTANTES
+        // ⭐ NUEVA CLASE: Piso principal
+        public class Floor
+        {
+            [BsonElement("x")]
+            public float X { get; set; } = 0;
+            
+            [BsonElement("y")]
+            public float Y { get; set; } = 600;
+            
+            [BsonElement("width")]
+            public float Width { get; set; } = 1280;
+            
+            [BsonElement("height")]
+            public float Height { get; set; } = 120;
+            
+            [BsonElement("isSolid")]
+            public bool IsSolid { get; set; } = true;
+            
+            // Tipo de piso para determinar el sprite
+            [BsonElement("floorType")]
+            public string FloorType { get; set; } = "Pasto"; // Pasto, Hielo, Cristal, RedLine, PiedraTutorial
+        }
+
         public class Platform
         {
             [BsonElement("x")]

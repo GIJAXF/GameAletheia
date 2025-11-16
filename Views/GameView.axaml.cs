@@ -29,6 +29,7 @@ namespace GameAletheiaCross.Views
         private Bitmap? _portalBitmap;
         
         private bool _spritesLoaded = false;
+        private Dictionary<string, Bitmap?> _floorBitmaps = new();
 
         public GameView()
         {
@@ -87,9 +88,15 @@ namespace GameAletheiaCross.Views
                 _platformBitmaps.Add(LoadBitmap("platform5.png"));
                 _platformBitmaps.Add(LoadBitmap("platform6.png"));
                 _platformBitmaps.Add(LoadBitmap("platform7.png"));
+                _floorBitmaps["Pasto"] = LoadBitmap("PastoPiso.png");
+                _floorBitmaps["Hielo"] = LoadBitmap("HieloPiso.png");
+                _floorBitmaps["Cristal"] = LoadBitmap("CristalPiso.png");
+                _floorBitmaps["RedLine"] = LoadBitmap("RedLinePiso.png");
+                _floorBitmaps["PiedraTutorial"] = LoadBitmap("PiedraTutorial.png");
+                
                 
                 // Portal
-                _portalBitmap = LoadBitmap("platform7.png");
+                _portalBitmap = LoadBitmap("Portal.png");
                 
                 // Verificar si al menos el jugador se cargó
                 _spritesLoaded = _playerBitmap != null;
@@ -219,6 +226,50 @@ namespace GameAletheiaCross.Views
                     Console.WriteLine($"No se pudo cargar {playerSprite}, usando fallback");
                 }
             }
+
+if (level.FloorPlatform != null)
+{
+    var floor = level.FloorPlatform;
+    Bitmap? floorSprite = null;
+    
+    if (_floorBitmaps.TryGetValue(floor.FloorType, out var sprite))
+    {
+        floorSprite = sprite;
+    }
+    
+    if (floorSprite != null)
+    {
+        var floorImg = new Image
+        {
+            Source = floorSprite,
+            Width = floor.Width,
+            Height = floor.Height,
+            Stretch = Stretch.Fill
+        };
+        
+        Canvas.SetLeft(floorImg, floor.X);
+        Canvas.SetTop(floorImg, floor.Y);
+        _gameCanvas.Children.Add(floorImg);
+        
+        Console.WriteLine($"🟫 Piso renderizado: {floor.FloorType}");
+    }
+    else
+    {
+        // Fallback: rectángulo oscuro
+        var rect = new Avalonia.Controls.Shapes.Rectangle
+        {
+            Fill = new SolidColorBrush(Color.Parse("#2a2a2a")),
+            Stroke = new SolidColorBrush(Colors.Gray),
+            StrokeThickness = 2,
+            Width = floor.Width,
+            Height = floor.Height
+        };
+        
+        Canvas.SetLeft(rect, floor.X);
+        Canvas.SetTop(rect, floor.Y);
+        _gameCanvas.Children.Add(rect);
+    }
+}
 
             //RENDERIZAR PLATAFORMAS
             if (level.Platforms != null && level.Platforms.Count > 0)
@@ -372,38 +423,37 @@ namespace GameAletheiaCross.Views
 
             //RENDERIZAR PORTAL (VERTICAL)
             if (_portalBitmap != null)
-            {
-                var img = new Image
-                {
-                    Source = _portalBitmap,
-                    Width = 100,  // Ancho temporal (antes de rotar)
-                    Height = 40,  // Alto temporal (antes de rotar)
-                    Opacity = 0.7,
-                    RenderTransform = new RotateTransform(90), // Rotar 90° para hacerlo vertical
-                    RenderTransformOrigin = new RelativePoint(0.5, 0.5, RelativeUnit.Relative)
-                };
-                
-                Canvas.SetLeft(img, 680);
-                Canvas.SetTop(img, 340);
-                _gameCanvas.Children.Add(img);
-            }
-            else
-            {
-                // Fallback: rectángulo rojo vertical
-                var portal = new Avalonia.Controls.Shapes.Rectangle
-                {
-                    Fill = new SolidColorBrush(Color.Parse("#E63946")),
-                    Stroke = new SolidColorBrush(Color.Parse("#FF0000")),
-                    StrokeThickness = 2,
-                    Width = 40,   // Estrecho
-                    Height = 100, // Alto (vertical)
-                    Opacity = 0.6
-                };
-                
-                Canvas.SetLeft(portal, 680);
-                Canvas.SetTop(portal, 320);
-                _gameCanvas.Children.Add(portal);
-            }
+{
+    var img = new Image
+    {
+        Source = _portalBitmap,
+        Width = 50,  // Ajusta según el tamaño del sprite
+        Height = 100,
+        Opacity = 0.8,
+        Stretch = Stretch.Uniform
+    };
+    
+    Canvas.SetLeft(img, 675);
+    Canvas.SetTop(img, 320);
+    _gameCanvas.Children.Add(img);
+}
+else
+{
+    // Fallback: rectángulo verde vertical
+    var portal = new Avalonia.Controls.Shapes.Rectangle
+    {
+        Fill = new SolidColorBrush(Color.Parse("#00ff88")),
+        Stroke = new SolidColorBrush(Color.Parse("#00ff00")),
+        StrokeThickness = 2,
+        Width = 40,
+        Height = 100,
+        Opacity = 0.6
+    };
+    
+    Canvas.SetLeft(portal, 680);
+    Canvas.SetTop(portal, 320);
+    _gameCanvas.Children.Add(portal);
+}
 
             Console.WriteLine($"✅ Nivel renderizado. Total: {_gameCanvas.Children.Count} elementos");
         }

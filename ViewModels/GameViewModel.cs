@@ -258,7 +258,7 @@ namespace GameAletheiaCross.ViewModels
             UpdatePlayerMovement();
             _physics.ApplyGravity(Player);
             _physics.UpdatePosition(Player);
-            _collision.CheckPlatformCollisions(Player, CurrentLevel.Platforms);
+            _collision.CheckPlatformCollisions(Player, CurrentLevel.Platforms, CurrentLevel.FloorPlatform);
             
             // Límites del mundo
             if (Player.Position.X < 0) Player.Position.X = 0;
