@@ -13,7 +13,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("GameAletheiaCross")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+f77aa1d113c454ad5273816f66d43debf9d81ee3")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+de4740df2ed6067b404fd3cbd2499c08d5756f3f")]
 [assembly: System.Reflection.AssemblyProductAttribute("GameAletheiaCross")]
 [assembly: System.Reflection.AssemblyTitleAttribute("GameAletheiaCross")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]

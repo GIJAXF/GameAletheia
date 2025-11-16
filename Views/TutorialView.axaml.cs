@@ -26,6 +26,7 @@ namespace GameAletheiaCross.Views
         private Bitmap? _platformBitmap;
         private Bitmap? _portalBitmap;
         private Bitmap? _floorBitmap;
+        private Bitmap? _backgroundBitmap; // 🆕 FONDO DEL TUTORIAL
         
         private bool _spritesLoaded = false;
 
@@ -46,6 +47,9 @@ namespace GameAletheiaCross.Views
             
             try
             {
+                // 🆕 Cargar fondo del tutorial (forest)
+                _backgroundBitmap = LoadBitmap("ForestFondo.png");
+                
                 // Cargar jugador (se actualizará según género)
                 _playerBitmap = LoadBitmap("playerH.png");
                 
@@ -61,6 +65,7 @@ namespace GameAletheiaCross.Views
                 _spritesLoaded = _playerBitmap != null;
                 
                 Console.WriteLine(" Sprites del tutorial:");
+                Console.WriteLine($"   - Fondo: {(_backgroundBitmap != null ? "" : "")}");
                 Console.WriteLine($"   - Jugador: {(_playerBitmap != null ? "" : "")}");
                 Console.WriteLine($"   - Plataforma: {(_platformBitmap != null ? "" : "")}");
                 Console.WriteLine($"   - Portal: {(_portalBitmap != null ? "" : "")}");
@@ -80,6 +85,7 @@ namespace GameAletheiaCross.Views
                 var uri = new Uri($"avares://GameAletheiaCross/Assets/Images/{filename}");
                 var stream = AssetLoader.Open(uri);
                 var bitmap = new Bitmap(stream);
+                Console.WriteLine($" {filename} cargado correctamente");
                 return bitmap;
             }
             catch (Exception ex)
@@ -161,6 +167,41 @@ namespace GameAletheiaCross.Views
 
             _tutorialCanvas.Children.Clear();
 
+            // 🆕 RENDERIZAR FONDO DEL TUTORIAL (DEBE SER LO PRIMERO)
+            if (_backgroundBitmap != null)
+            {
+                var backgroundImg = new Image
+                {
+                    Source = _backgroundBitmap,
+                    Width = 1280,
+                    Height = 720,
+                    Stretch = Stretch.UniformToFill
+                };
+                
+                Canvas.SetLeft(backgroundImg, 0);
+                Canvas.SetTop(backgroundImg, 0);
+                _tutorialCanvas.Children.Add(backgroundImg);
+                
+                Console.WriteLine("️ Fondo del tutorial renderizado (forest)");
+            }
+            else
+            {
+                // Fallback: fondo verde bosque
+                var fallbackRect = new Avalonia.Controls.Shapes.Rectangle
+                {
+                    Fill = new SolidColorBrush(Color.Parse("#2d4a2b")), // Verde oscuro bosque
+                    Width = 1280,
+                    Height = 720,
+                    Opacity = 0.8
+                };
+                
+                Canvas.SetLeft(fallbackRect, 0);
+                Canvas.SetTop(fallbackRect, 0);
+                _tutorialCanvas.Children.Add(fallbackRect);
+                
+                Console.WriteLine("️ Usando fondo fallback para tutorial");
+            }
+
             // RENDERIZAR PISO
             if (_viewModel.TutorialPlatforms.Count > 0)
             {
@@ -179,6 +220,8 @@ namespace GameAletheiaCross.Views
                     Canvas.SetLeft(floorImg, floor.X);
                     Canvas.SetTop(floorImg, floor.Y);
                     _tutorialCanvas.Children.Add(floorImg);
+                    
+                    Console.WriteLine(" Piso del tutorial renderizado");
                 }
                 else
                 {
@@ -271,8 +314,6 @@ namespace GameAletheiaCross.Views
             }
 
             // RENDERIZAR PORTAL (META)
-            // La última plataforma está en X=900, Y=400, Width=200
-            // Portal debe estar sobre ella
             if (_portalBitmap != null)
             {
                 var portalImg = new Image
@@ -320,7 +361,7 @@ namespace GameAletheiaCross.Views
             Canvas.SetTop(metaText, 250);   // Justo encima del portal
             _tutorialCanvas.Children.Add(metaText);
 
-            Console.WriteLine($"Tutorial renderizado. Total: {_tutorialCanvas.Children.Count} elementos");
+            Console.WriteLine($" Tutorial renderizado. Total: {_tutorialCanvas.Children.Count} elementos");
         }
 
         private void UpdatePlayerPosition()

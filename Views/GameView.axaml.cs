@@ -30,6 +30,7 @@ namespace GameAletheiaCross.Views
         
         private bool _spritesLoaded = false;
         private Dictionary<string, Bitmap?> _floorBitmaps = new();
+        private Dictionary<string, Bitmap?> _backgroundBitmaps = new();
 
         public GameView()
         {
@@ -91,7 +92,14 @@ namespace GameAletheiaCross.Views
                 _floorBitmaps["Cristal"] = LoadBitmap("CristalPiso.png");
                 _floorBitmaps["RedLine"] = LoadBitmap("RedLinePiso.png");
                 _floorBitmaps["PiedraTutorial"] = LoadBitmap("PiedraTutorial.png");
-                
+
+                _backgroundBitmaps["forest"] = LoadBitmap("ForestFondo.png");
+                _backgroundBitmaps["ruins"] = LoadBitmap("RuinsFondo.png");
+                _backgroundBitmaps["city"] = LoadBitmap("CityFondo.png");
+                _backgroundBitmaps["digital"] = LoadBitmap("CityDigitalFondo.png");
+                _backgroundBitmaps["temple"] = LoadBitmap("TemploFondo.png");
+                _backgroundBitmaps["cyber"] = LoadBitmap("CyberFondo.png");
+                _backgroundBitmaps["archive"] = LoadBitmap("ArchivoFondo.png");
                 // Portal
                 _portalBitmap = LoadBitmap("Portal.png");
                 
@@ -195,7 +203,6 @@ namespace GameAletheiaCross.Views
         }
 
 // Busca este método en GameView.axaml.cs y reemplázalo:
-
 private void RenderLevel()
 {
     Console.WriteLine("=== RENDERIZANDO NIVEL ===");
@@ -208,6 +215,44 @@ private void RenderLevel()
 
     var level = _viewModel.CurrentLevel;
     _gameCanvas.Children.Clear();
+
+    // 🆕 RENDERIZAR FONDO DEL NIVEL (DEBE SER LO PRIMERO)
+    if (!string.IsNullOrEmpty(level.Background) && 
+        _backgroundBitmaps.TryGetValue(level.Background, out var backgroundSprite) && 
+        backgroundSprite != null)
+    {
+        var backgroundImg = new Image
+        {
+            Source = backgroundSprite,
+            Width = 1280,
+            Height = 720,
+            Stretch = Stretch.UniformToFill
+        };
+        
+        Canvas.SetLeft(backgroundImg, 0);
+        Canvas.SetTop(backgroundImg, 0);
+        _gameCanvas.Children.Add(backgroundImg);
+        
+        Console.WriteLine($"️ Fondo renderizado: {level.Background}");
+    }
+    else
+    {
+        // Fallback: fondo degradado según nivel
+        var fallbackColor = GetLevelColor(level.OrderNumber);
+        var fallbackRect = new Avalonia.Controls.Shapes.Rectangle
+        {
+            Fill = new SolidColorBrush(fallbackColor),
+            Width = 1280,
+            Height = 720,
+            Opacity = 0.3
+        };
+        
+        Canvas.SetLeft(fallbackRect, 0);
+        Canvas.SetTop(fallbackRect, 0);
+        _gameCanvas.Children.Add(fallbackRect);
+        
+        Console.WriteLine($"️ Usando fondo fallback para nivel {level.OrderNumber}");
+    }
 
     // ACTUALIZAR SPRITE DEL JUGADOR SEGÚN GÉNERO
     if (_viewModel.Player != null)
@@ -269,6 +314,7 @@ private void RenderLevel()
             _gameCanvas.Children.Add(rect);
         }
     }
+
 
     // RENDERIZAR PLATAFORMAS
     if (level.Platforms != null && level.Platforms.Count > 0)
