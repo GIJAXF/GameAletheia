@@ -42,7 +42,9 @@ namespace GameAletheiaCross.ViewModels
         private bool _levelRequiresPuzzle = false;
         private bool _puzzlesCompleted = false;
         private bool _isCompletingLevel = false;
-        
+        private int _frameCounter = 0;
+        private float _lastNotifiedX = 0;
+        private float _lastNotifiedY = 0;
         public GameViewModel(Action<ViewModelBase> navigate, string playerId, string playerName)
         {
             _navigate = navigate;
@@ -135,34 +137,35 @@ namespace GameAletheiaCross.ViewModels
         
         // ============= MÉTODOS PRIVADOS =============
         
-        private async void InitializeGame()
+// ✅ REEMPLAZAR InitializeGame() con esta versión limpia:
+
+private async void InitializeGame()
+{
+    try
+    {
+        Console.WriteLine("🎮 Inicializando juego...");
+        var dbService = new MongoDbService();
+        var playerRepo = new PlayerRepository(dbService);
+        
+        Player = await playerRepo.GetByIdAsync(_playerId);
+        if (Player == null)
         {
-            try
-            {
-                Console.WriteLine("  Inicializando juego...");
-                var dbService = new MongoDbService();
-                var playerRepo = new PlayerRepository(dbService);
-                
-                Player = await playerRepo.GetByIdAsync(_playerId);
-                if (Player == null)
-                {
-                    Console.WriteLine(" Jugador no encontrado");
-                    StatusMessage = "Error: Jugador no encontrado";
-                    return;
-                }
-                
-                Console.WriteLine($" Jugador cargado: {Player.Name} (Nivel {Player.CurrentLevel})");
-                
-                await LoadCurrentLevel();
-                StartGameLoop();
-            }
-            catch (Exception ex)
-            {
-                Console.WriteLine($" Error iniciando juego: {ex.Message}");
-                Console.WriteLine($"   Stack: {ex.StackTrace}");
-                StatusMessage = $"Error: {ex.Message}";
-            }
+            Console.WriteLine("❌ Jugador no encontrado");
+            StatusMessage = "Error: Jugador no encontrado";
+            return;
         }
+        
+        Console.WriteLine($"✅ Jugador cargado: {Player.Name} (Nivel {Player.CurrentLevel})");
+        
+        await LoadCurrentLevel();
+        StartGameLoop();
+    }
+    catch (Exception ex)
+    {
+        Console.WriteLine($"❌ Error iniciando juego: {ex.Message}");
+        StatusMessage = $"Error: {ex.Message}";
+    }
+}
         
         private async Task LoadCurrentLevel()
         {
@@ -232,45 +235,11 @@ namespace GameAletheiaCross.ViewModels
             Console.WriteLine("  Posición del jugador reiniciada");
         }
         
-// Reemplaza el método StartGameLoop() en GameViewModel.cs
-
-private void StartGameLoop()
-{
-    _gameLoopCts = new CancellationTokenSource();
-    _isRunning = true;
-    _isPaused = false;
-    _isCompletingLevel = false;
-    
-    Console.WriteLine("🎮 Game loop iniciado");
-    
-    Task.Run(async () =>
-    {
-        const int targetFPS = 60;
-        const int frameDelay = 1000 / targetFPS; // ~16ms para 60 FPS
-        
-        while (_isRunning && !_gameLoopCts.Token.IsCancellationRequested)
-        {
-            var frameStart = DateTime.UtcNow;
-            
-            GameLoop();
-            
-            // Calcular cuánto tiempo tomó el frame
-            var frameTime = (DateTime.UtcNow - frameStart).TotalMilliseconds;
-            var delay = Math.Max(1, frameDelay - (int)frameTime);
-            
-            await Task.Delay(delay, _gameLoopCts.Token);
-        }
-    }, _gameLoopCts.Token);
-}
-// Reemplaza el método GameLoop() en GameViewModel.cs
+// ✅ REEMPLAZAR ESTOS 3 MÉTODOS en GameViewModel.cs:
 
 private void GameLoop()
 {
     if (Player == null || CurrentLevel == null || _isPaused) return;
-    
-    // Guardar posición anterior
-    float oldX = Player.Position.X;
-    float oldY = Player.Position.Y;
     
     UpdatePlayerMovement();
     _physics.ApplyGravity(Player);
@@ -287,40 +256,73 @@ private void GameLoop()
         ResetPlayerPosition();
     }
 
-    CheckNearbyInteractions();
-    CheckLevelExit();
-    
-    // ✅ SOLO notificar si la posición cambió significativamente
-    // Esto reduce DRÁSTICAMENTE el lag
-    if (Math.Abs(Player.Position.X - oldX) > 0.5f || Math.Abs(Player.Position.Y - oldY) > 0.5f)
+    // Verificar interacciones solo cada 10 frames
+    _frameCounter++;
+    if (_frameCounter >= 10)
     {
-        this.RaisePropertyChanged(nameof(Player));
+        CheckNearbyInteractions();
+        CheckLevelExit();
+        _frameCounter = 0;
+    }
+    
+    // ✅ CRÍTICO: NO notificar cambios
+    // La View actualiza directamente por timer
+}
+
+private void UpdatePlayerMovement()
+{
+    if (KeyLeft)
+    {
+        Player.Velocity.X = -PLAYER_SPEED;
+        Player.IsFacingRight = false;
+        // ✅ SIN LOGS
+    }
+    else if (KeyRight)
+    {
+        Player.Velocity.X = PLAYER_SPEED;
+        Player.IsFacingRight = true;
+        // ✅ SIN LOGS
+    }
+    else
+    {
+        Player.Velocity.X = 0;
+    }
+    
+    if (KeyUp && !Player.IsJumping)
+    {
+        Player.Velocity.Y = JUMP_FORCE;
+        Player.IsJumping = true;
+        // ✅ SIN LOGS
     }
 }
+
+private void StartGameLoop()
+{
+    _gameLoopCts = new CancellationTokenSource();
+    _isRunning = true;
+    _isPaused = false;
+    _isCompletingLevel = false; // ✅ Reset flag
+    
+    Console.WriteLine("🎮 Game loop iniciado");
+    
+    Task.Run(async () =>
+    {
+        const int targetFPS = 60;
+        const int frameDelay = 1000 / targetFPS;
         
-        private void UpdatePlayerMovement()
+        while (_isRunning && !_gameLoopCts.Token.IsCancellationRequested)
         {
-            if (KeyLeft)
-            {
-                Player.Velocity.X = -PLAYER_SPEED;
-                Player.IsFacingRight = false;
-            }
-            else if (KeyRight)
-            {
-                Player.Velocity.X = PLAYER_SPEED;
-                Player.IsFacingRight = true;
-            }
-            else
-            {
-                Player.Velocity.X = 0;
-            }
+            var frameStart = DateTime.UtcNow;
             
-            if (KeyUp && !Player.IsJumping)
-            {
-                Player.Velocity.Y = JUMP_FORCE;
-                Player.IsJumping = true;
-            }
+            GameLoop();
+            
+            var frameTime = (DateTime.UtcNow - frameStart).TotalMilliseconds;
+            var delay = Math.Max(1, frameDelay - (int)frameTime);
+            
+            await Task.Delay(delay, _gameLoopCts.Token);
         }
+    }, _gameLoopCts.Token);
+}
 
         private void CheckNearbyInteractions()
         {
