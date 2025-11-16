@@ -44,16 +44,16 @@ namespace GameAletheiaCross.Views
 
         private void LoadImages()
         {
-            Console.WriteLine("Intentando cargar sprites...");
-            Console.WriteLine($"Directorio actual: {Directory.GetCurrentDirectory()}");
+            Console.WriteLine("📁 Intentando cargar sprites...");
+            Console.WriteLine($"📂 Directorio actual: {Directory.GetCurrentDirectory()}");
             
             // Verificar si Assets/Images existe físicamente
             var assetsPath = Path.Combine(Directory.GetCurrentDirectory(), "Assets", "Images");
             if (Directory.Exists(assetsPath))
             {
-                Console.WriteLine($"Directorio físico encontrado: {assetsPath}");
+                Console.WriteLine($"✅ Directorio físico encontrado: {assetsPath}");
                 var files = Directory.GetFiles(assetsPath);
-                Console.WriteLine($"Archivos encontrados: {files.Length}");
+                Console.WriteLine($"📄 Archivos encontrados: {files.Length}");
                 foreach (var file in files)
                 {
                     Console.WriteLine($"    - {Path.GetFileName(file)}");
@@ -61,7 +61,7 @@ namespace GameAletheiaCross.Views
             }
             else
             {
-                Console.WriteLine($"Directorio físico NO encontrado: {assetsPath}");
+                Console.WriteLine($"❌ Directorio físico NO encontrado: {assetsPath}");
             }
             
             try
@@ -71,10 +71,6 @@ namespace GameAletheiaCross.Views
                 _playerBitmap = LoadBitmap("playerH.png");
                 
                 // Intentar cargar NPCs (4 variaciones específicas)
-                // npc1 = Aletheia (genéricos)
-                // npc2 = Decano Villanueva
-                // npc3 = Noa Espectra
-                // npc4 = El Archivero
                 _npcBitmaps.Add(LoadBitmap("npc1.png")); // Aletheia / Genéricos
                 _npcBitmaps.Add(LoadBitmap("npc2.png")); // Decano Villanueva
                 _npcBitmaps.Add(LoadBitmap("npc3.png")); // Noa Espectra
@@ -88,12 +84,13 @@ namespace GameAletheiaCross.Views
                 _platformBitmaps.Add(LoadBitmap("platform5.png"));
                 _platformBitmaps.Add(LoadBitmap("platform6.png"));
                 _platformBitmaps.Add(LoadBitmap("platform7.png"));
+                
+                // Cargar pisos
                 _floorBitmaps["Pasto"] = LoadBitmap("PastoPiso.png");
                 _floorBitmaps["Hielo"] = LoadBitmap("HieloPiso.png");
                 _floorBitmaps["Cristal"] = LoadBitmap("CristalPiso.png");
                 _floorBitmaps["RedLine"] = LoadBitmap("RedLinePiso.png");
                 _floorBitmaps["PiedraTutorial"] = LoadBitmap("PiedraTutorial.png");
-                
                 
                 // Portal
                 _portalBitmap = LoadBitmap("Portal.png");
@@ -101,22 +98,23 @@ namespace GameAletheiaCross.Views
                 // Verificar si al menos el jugador se cargó
                 _spritesLoaded = _playerBitmap != null;
                 
-                Console.WriteLine("Resumen de carga de sprites:");
-                Console.WriteLine($"   - Jugador: {(_playerBitmap != null ? "Cargado" : "Usando fallback")}");
+                Console.WriteLine("📊 Resumen de carga de sprites:");
+                Console.WriteLine($"   - Jugador: {(_playerBitmap != null ? "✅ Cargado" : "❌ Usando fallback")}");
                 Console.WriteLine($"   - NPCs cargados: {_npcBitmaps.Count(b => b != null)}/4");
                 Console.WriteLine($"   - Plataformas cargadas: {_platformBitmaps.Count(b => b != null)}/7");
-                Console.WriteLine($"   - Portal: {(_portalBitmap != null ? "Cargado" : "Usando fallback")}");
+                Console.WriteLine($"   - Pisos cargados: {_floorBitmaps.Count(kvp => kvp.Value != null)}/5");
+                Console.WriteLine($"   - Portal: {(_portalBitmap != null ? "✅ Cargado" : "❌ Usando fallback")}");
                 
                 if (!_spritesLoaded)
                 {
-                    Console.WriteLine("No se cargaron sprites. Se usarán figuras geométricas.");
-                    Console.WriteLine("Para usar sprites, coloca archivos PNG en Assets/Images/");
+                    Console.WriteLine("⚠️ No se cargaron sprites. Se usarán figuras geométricas.");
+                    Console.WriteLine("💡 Para usar sprites, coloca archivos PNG en Assets/Images/");
                 }
             }
             catch (Exception ex)
             {
-                Console.WriteLine($"Error cargando sprites: {ex.Message}");
-                Console.WriteLine("Se usarán figuras geométricas como fallback");
+                Console.WriteLine($"❌ Error cargando sprites: {ex.Message}");
+                Console.WriteLine("⚠️ Se usarán figuras geométricas como fallback");
                 _spritesLoaded = false;
             }
         }
@@ -126,24 +124,22 @@ namespace GameAletheiaCross.Views
             try
             {
                 var uri = new Uri($"avares://GameAletheiaCross/Assets/Images/{filename}");
-                Console.WriteLine($"Intentando cargar: {uri}");
-                
                 var stream = AssetLoader.Open(uri);
                 var bitmap = new Bitmap(stream);
                 
-                Console.WriteLine($"{filename} cargado correctamente");
+                Console.WriteLine($"✅ {filename} cargado correctamente");
                 return bitmap;
             }
             catch (Exception ex)
             {
-                Console.WriteLine($"No se pudo cargar {filename}: {ex.Message}");
+                Console.WriteLine($"⚠️ No se pudo cargar {filename}: {ex.Message}");
                 return null;
             }
         }
 
         private void GameView_AttachedToVisualTree(object? sender, VisualTreeAttachmentEventArgs e)
         {
-            Console.WriteLine("GameView attached to visual tree");
+            Console.WriteLine("🔗 GameView attached to visual tree");
             
             Focus();
             
@@ -163,7 +159,7 @@ namespace GameAletheiaCross.Views
             
             if (_gameCanvas == null)
             {
-                Console.WriteLine("CRÍTICO: No se pudo encontrar ningún Canvas");
+                Console.WriteLine("❌ CRÍTICO: No se pudo encontrar ningún Canvas");
                 return;
             }
             
@@ -171,7 +167,7 @@ namespace GameAletheiaCross.Views
             
             if (_viewModel == null)
             {
-                Console.WriteLine("ERROR: ViewModel es null");
+                Console.WriteLine("❌ ERROR: ViewModel es null");
                 return;
             }
             
@@ -204,14 +200,14 @@ namespace GameAletheiaCross.Views
             
             if (_gameCanvas == null || _viewModel?.CurrentLevel == null)
             {
-                Console.WriteLine("ERROR: Canvas o CurrentLevel es null");
+                Console.WriteLine("❌ ERROR: Canvas o CurrentLevel es null");
                 return;
             }
 
             var level = _viewModel.CurrentLevel;
             _gameCanvas.Children.Clear();
 
-            //ACTUALIZAR SPRITE DEL JUGADOR SEGÚN GÉNERO
+            // ACTUALIZAR SPRITE DEL JUGADOR SEGÚN GÉNERO
             if (_viewModel.Player != null)
             {
                 string playerSprite = _viewModel.Player.Gender == "Hombre" ? "playerH.png" : "playerM.png";
@@ -219,62 +215,63 @@ namespace GameAletheiaCross.Views
                 
                 if (_playerBitmap != null)
                 {
-                    Console.WriteLine($"Sprite de jugador cargado: {playerSprite}");
+                    Console.WriteLine($"✅ Sprite de jugador cargado: {playerSprite}");
                 }
                 else
                 {
-                    Console.WriteLine($"No se pudo cargar {playerSprite}, usando fallback");
+                    Console.WriteLine($"⚠️ No se pudo cargar {playerSprite}, usando fallback");
                 }
             }
 
-if (level.FloorPlatform != null)
-{
-    var floor = level.FloorPlatform;
-    Bitmap? floorSprite = null;
-    
-    if (_floorBitmaps.TryGetValue(floor.FloorType, out var sprite))
-    {
-        floorSprite = sprite;
-    }
-    
-    if (floorSprite != null)
-    {
-        var floorImg = new Image
-        {
-            Source = floorSprite,
-            Width = floor.Width,
-            Height = floor.Height,
-            Stretch = Stretch.Fill
-        };
-        
-        Canvas.SetLeft(floorImg, floor.X);
-        Canvas.SetTop(floorImg, floor.Y);
-        _gameCanvas.Children.Add(floorImg);
-        
-        Console.WriteLine($"🟫 Piso renderizado: {floor.FloorType}");
-    }
-    else
-    {
-        // Fallback: rectángulo oscuro
-        var rect = new Avalonia.Controls.Shapes.Rectangle
-        {
-            Fill = new SolidColorBrush(Color.Parse("#2a2a2a")),
-            Stroke = new SolidColorBrush(Colors.Gray),
-            StrokeThickness = 2,
-            Width = floor.Width,
-            Height = floor.Height
-        };
-        
-        Canvas.SetLeft(rect, floor.X);
-        Canvas.SetTop(rect, floor.Y);
-        _gameCanvas.Children.Add(rect);
-    }
-}
+            // RENDERIZAR PISO PRINCIPAL
+            if (level.FloorPlatform != null)
+            {
+                var floor = level.FloorPlatform;
+                Bitmap? floorSprite = null;
+                
+                if (_floorBitmaps.TryGetValue(floor.FloorType, out var sprite))
+                {
+                    floorSprite = sprite;
+                }
+                
+                if (floorSprite != null)
+                {
+                    var floorImg = new Image
+                    {
+                        Source = floorSprite,
+                        Width = floor.Width,
+                        Height = floor.Height,
+                        Stretch = Stretch.Fill
+                    };
+                    
+                    Canvas.SetLeft(floorImg, floor.X);
+                    Canvas.SetTop(floorImg, floor.Y);
+                    _gameCanvas.Children.Add(floorImg);
+                    
+                    Console.WriteLine($"🟫 Piso renderizado: {floor.FloorType}");
+                }
+                else
+                {
+                    // Fallback: rectángulo oscuro
+                    var rect = new Avalonia.Controls.Shapes.Rectangle
+                    {
+                        Fill = new SolidColorBrush(Color.Parse("#2a2a2a")),
+                        Stroke = new SolidColorBrush(Colors.Gray),
+                        StrokeThickness = 2,
+                        Width = floor.Width,
+                        Height = floor.Height
+                    };
+                    
+                    Canvas.SetLeft(rect, floor.X);
+                    Canvas.SetTop(rect, floor.Y);
+                    _gameCanvas.Children.Add(rect);
+                }
+            }
 
-            //RENDERIZAR PLATAFORMAS
+            // RENDERIZAR PLATAFORMAS
             if (level.Platforms != null && level.Platforms.Count > 0)
             {
-                Console.WriteLine($"Renderizando {level.Platforms.Count} plataformas...");
+                Console.WriteLine($"🟦 Renderizando {level.Platforms.Count} plataformas...");
                 
                 for (int i = 0; i < level.Platforms.Count; i++)
                 {
@@ -284,7 +281,6 @@ if (level.FloorPlatform != null)
                     
                     if (platformSprite != null)
                     {
-                        // Usar sprite
                         var img = new Image
                         {
                             Source = platformSprite,
@@ -299,7 +295,6 @@ if (level.FloorPlatform != null)
                     }
                     else
                     {
-                        // Fallback: rectángulo con color
                         var color = GetLevelColor(level.OrderNumber);
                         var rect = new Avalonia.Controls.Shapes.Rectangle
                         {
@@ -317,21 +312,19 @@ if (level.FloorPlatform != null)
                 }
             }
 
-            //RENDERIZAR NPCs CON ASIGNACIÓN ESPECÍFICA
+            // RENDERIZAR NPCs CON ASIGNACIÓN ESPECÍFICA
             if (level.NPCs != null && level.NPCs.Count > 0)
             {
-                Console.WriteLine($"Renderizando {level.NPCs.Count} NPCs...");
+                Console.WriteLine($"🎭 Renderizando {level.NPCs.Count} NPCs...");
                 
                 for (int i = 0; i < level.NPCs.Count; i++)
                 {
                     var npc = level.NPCs[i];
                     
-                    // Asignar sprite específico según el nombre del NPC
                     Bitmap? npcSprite = GetNPCSpriteByName(npc.Name);
                     
                     if (npcSprite != null)
                     {
-                        // Usar sprite
                         var img = new Image
                         {
                             Source = npcSprite,
@@ -343,11 +336,10 @@ if (level.FloorPlatform != null)
                         Canvas.SetTop(img, npc.PositionY - 32);
                         _gameCanvas.Children.Add(img);
                         
-                        Console.WriteLine($"Renderizado NPC: {npc.Name.Split('—')[0].Trim()} con sprite específico");
+                        Console.WriteLine($"✅ Renderizado NPC: {npc.Name.Split('—')[0].Trim()} con sprite específico");
                     }
                     else
                     {
-                        // Fallback: elipse azul
                         var ellipse = new Avalonia.Controls.Shapes.Ellipse
                         {
                             Fill = new SolidColorBrush(Color.Parse("#00d9ff")),
@@ -379,12 +371,11 @@ if (level.FloorPlatform != null)
                 }
             }
 
-            //RENDERIZAR JUGADOR
+            // RENDERIZAR JUGADOR
             if (_viewModel.Player != null)
             {
                 if (_playerBitmap != null)
                 {
-                    // Usar sprite
                     _playerImage = new Image
                     {
                         Source = _playerBitmap,
@@ -405,7 +396,6 @@ if (level.FloorPlatform != null)
                 }
                 else
                 {
-                    // Fallback: rectángulo rojo
                     var rect = new Avalonia.Controls.Shapes.Rectangle
                     {
                         Fill = new SolidColorBrush(Color.Parse("#e94560")),
@@ -421,39 +411,38 @@ if (level.FloorPlatform != null)
                 }
             }
 
-            //RENDERIZAR PORTAL (VERTICAL)
+            // RENDERIZAR PORTAL (VERTICAL)
             if (_portalBitmap != null)
-{
-    var img = new Image
-    {
-        Source = _portalBitmap,
-        Width = 50,  // Ajusta según el tamaño del sprite
-        Height = 100,
-        Opacity = 0.8,
-        Stretch = Stretch.Uniform
-    };
-    
-    Canvas.SetLeft(img, 675);
-    Canvas.SetTop(img, 320);
-    _gameCanvas.Children.Add(img);
-}
-else
-{
-    // Fallback: rectángulo verde vertical
-    var portal = new Avalonia.Controls.Shapes.Rectangle
-    {
-        Fill = new SolidColorBrush(Color.Parse("#00ff88")),
-        Stroke = new SolidColorBrush(Color.Parse("#00ff00")),
-        StrokeThickness = 2,
-        Width = 40,
-        Height = 100,
-        Opacity = 0.6
-    };
-    
-    Canvas.SetLeft(portal, 680);
-    Canvas.SetTop(portal, 320);
-    _gameCanvas.Children.Add(portal);
-}
+            {
+                var img = new Image
+                {
+                    Source = _portalBitmap,
+                    Width = 50,
+                    Height = 100,
+                    Opacity = 0.8,
+                    Stretch = Stretch.Uniform
+                };
+                
+                Canvas.SetLeft(img, 675);
+                Canvas.SetTop(img, 320);
+                _gameCanvas.Children.Add(img);
+            }
+            else
+            {
+                var portal = new Avalonia.Controls.Shapes.Rectangle
+                {
+                    Fill = new SolidColorBrush(Color.Parse("#00ff88")),
+                    Stroke = new SolidColorBrush(Color.Parse("#00ff00")),
+                    StrokeThickness = 2,
+                    Width = 40,
+                    Height = 100,
+                    Opacity = 0.6
+                };
+                
+                Canvas.SetLeft(portal, 680);
+                Canvas.SetTop(portal, 320);
+                _gameCanvas.Children.Add(portal);
+            }
 
             Console.WriteLine($"✅ Nivel renderizado. Total: {_gameCanvas.Children.Count} elementos");
         }
@@ -466,60 +455,36 @@ else
             return _platformBitmaps[spriteIndex];
         }
 
-        private Bitmap? GetNPCSprite(int npcIndex)
-        {
-            if (_npcBitmaps.Count == 0) return null;
-            
-            int spriteIndex = npcIndex % _npcBitmaps.Count;
-            return _npcBitmaps[spriteIndex];
-        }
-
-        /// <summary>
-        /// Asigna el sprite correcto según el nombre del NPC
-        /// </summary>
         private Bitmap? GetNPCSpriteByName(string npcName)
         {
             if (_npcBitmaps.Count == 0) return null;
             
-            // Limpiar el nombre (quitar lo que está después del guión)
             string cleanName = npcName.Split('—')[0].Trim().ToLower();
-            
-            // Mapeo de nombres a índices de sprites
-            // npc1.png = Aletheia / Genéricos (índice 0)
-            // npc2.png = Decano Villanueva (índice 1)
-            // npc3.png = Noa Espectra (índice 2)
-            // npc4.png = El Archivero (índice 3)
             
             if (cleanName.Contains("custodio") || cleanName.Contains("reportero") || 
                 cleanName.Contains("bibliotecario") || cleanName.Contains("guardián"))
             {
-                // NPCs genéricos de la Resistencia/Gobierno usan sprite 1
                 return _npcBitmaps.Count > 0 ? _npcBitmaps[0] : null;
             }
             else if (cleanName.Contains("decano") || cleanName.Contains("villanueva"))
             {
-                // Decano Villanueva usa sprite 2
                 return _npcBitmaps.Count > 1 ? _npcBitmaps[1] : null;
             }
             else if (cleanName.Contains("noa") || cleanName.Contains("espectra"))
             {
-                // Noa Espectra usa sprite 3
                 return _npcBitmaps.Count > 2 ? _npcBitmaps[2] : null;
             }
             else if (cleanName.Contains("archivero") || cleanName.Contains("julián") || 
                      cleanName.Contains("casablancas"))
             {
-                // El Archivero usa sprite 4
                 return _npcBitmaps.Count > 3 ? _npcBitmaps[3] : null;
             }
             else if (cleanName.Contains("ia") || cleanName.Contains("centinela") || 
                      cleanName.Contains("analista") || cleanName.Contains("fractal"))
             {
-                // NPCs de Redline usan sprite 2
                 return _npcBitmaps.Count > 1 ? _npcBitmaps[1] : null;
             }
             
-            // Por defecto usar el primer sprite
             return _npcBitmaps[0];
         }
 
@@ -527,13 +492,13 @@ else
         {
             return levelNumber switch
             {
-                1 => Color.Parse("#9D4EDD"), // Morado
-                2 => Color.Parse("#06D6A0"), // Verde
-                3 => Color.Parse("#FF9E00"), // Naranja
-                4 => Color.Parse("#00D9FF"), // Cyan
-                5 => Color.Parse("#0080FF"), // Azul
-                6 => Color.Parse("#FFD60A"), // Amarillo
-                7 => Color.Parse("#E63946"), // Rojo
+                1 => Color.Parse("#9D4EDD"),
+                2 => Color.Parse("#06D6A0"),
+                3 => Color.Parse("#FF9E00"),
+                4 => Color.Parse("#00D9FF"),
+                5 => Color.Parse("#0080FF"),
+                6 => Color.Parse("#FFD60A"),
+                7 => Color.Parse("#E63946"),
                 _ => Color.Parse("#FFFFFF")
             };
         }
@@ -560,66 +525,74 @@ else
             }
         }
 
-        private void OnKeyDown(object? sender, KeyEventArgs e)
-        {
-            if (DataContext is not GameViewModel vm) return;
+private void OnKeyDown(object? sender, KeyEventArgs e)
+{
+    if (DataContext is not GameViewModel vm) return;
 
-            switch (e.Key)
-            {
-                case Key.A:
-                case Key.Left:
-                    vm.KeyLeft = true;
-                    break;
+    switch (e.Key)
+    {
+        case Key.A:
+        case Key.Left:
+            vm.KeyLeft = true;
+            break;
 
-                case Key.D:
-                case Key.Right:
-                    vm.KeyRight = true;
-                    break;
+        case Key.D:
+        case Key.Right:
+            vm.KeyRight = true;
+            break;
 
-                case Key.W:
-                case Key.Up:
-                    vm.KeyUp = true;
-                    break;
+        case Key.W:
+        case Key.Up:
+            vm.KeyUp = true;
+            break;
 
-                case Key.Space:
-                    vm.KeySpace = true;
-                    break;
+        case Key.Space:
+            vm.KeySpace = true;
+            break;
 
-                case Key.Escape:
-                    vm.OnPauseRequested();
-                    break;
+        case Key.E:
+            vm.KeyE = true;
+            break;
 
-                case Key.T:
-                    vm.OnToggleTerminal();
-                    break;
-            }
-        }
+        case Key.Escape:
+            vm.OnPauseRequested();
+            break;
 
-        private void OnKeyUp(object? sender, KeyEventArgs e)
-        {
-            if (DataContext is not GameViewModel vm) return;
+        case Key.T:
+            vm.OnToggleTerminal();
+            break;
+    }
+}
 
-            switch (e.Key)
-            {
-                case Key.A:
-                case Key.Left:
-                    vm.KeyLeft = false;
-                    break;
+private void OnKeyUp(object? sender, KeyEventArgs e)
+{
+    if (DataContext is not GameViewModel vm) return;
 
-                case Key.D:
-                case Key.Right:
-                    vm.KeyRight = false;
-                    break;
+    switch (e.Key)
+    {
+        case Key.A:
+        case Key.Left:
+            vm.KeyLeft = false;
+            break;
 
-                case Key.W:
-                case Key.Up:
-                    vm.KeyUp = false;
-                    break;
+        case Key.D:
+        case Key.Right:
+            vm.KeyRight = false;
+            break;
 
-                case Key.Space:
-                    vm.KeySpace = false;
-                    break;
-            }
-        }
+        case Key.W:
+        case Key.Up:
+            vm.KeyUp = false;
+            break;
+
+        case Key.Space:
+            vm.KeySpace = false;
+            break;
+
+        case Key.E:
+            vm.KeyE = false;
+            break;
+    }
+}
     }
 }

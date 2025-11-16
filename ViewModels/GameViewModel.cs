@@ -28,8 +28,9 @@ namespace GameAletheiaCross.ViewModels
         private CancellationTokenSource _gameLoopCts;
         private bool _isRunning;
         
-        private bool _keyLeft, _keyRight, _keyUp, _keySpace;
+        private bool _keyLeft, _keyRight, _keyUp, _keySpace, _keyE;
         private bool _spacePressed = false;
+        private bool _ePressed = false;
         
         private const float PLAYER_SPEED = 5f;
         private const float JUMP_FORCE = -15f;
@@ -42,6 +43,10 @@ namespace GameAletheiaCross.ViewModels
         private bool _levelRequiresPuzzle = false;
         private bool _puzzlesCompleted = false;
         private bool _isCompletingLevel = false;
+        
+        // Propiedades para el diálogo
+        private DialogueViewModel? _activeDialogue;
+        private bool _isDialogueActive;
         
         public GameViewModel(Action<ViewModelBase> navigate, string playerId, string playerName)
         {
@@ -121,13 +126,42 @@ namespace GameAletheiaCross.ViewModels
                 if (value && !_spacePressed && !_isPaused)
                 {
                     _spacePressed = true;
-                    CheckInteractions();
                 }
                 else if (!value)
                 {
                     _spacePressed = false;
                 }
             }
+        }
+
+        public bool KeyE
+        {
+            get => _keyE;
+            set
+            {
+                this.RaiseAndSetIfChanged(ref _keyE, value);
+                if (value && !_ePressed && !_isPaused)
+                {
+                    _ePressed = true;
+                    CheckInteractions();
+                }
+                else if (!value)
+                {
+                    _ePressed = false;
+                }
+            }
+        }
+        
+        public DialogueViewModel? ActiveDialogue
+        {
+            get => _activeDialogue;
+            set => this.RaiseAndSetIfChanged(ref _activeDialogue, value);
+        }
+
+        public bool IsDialogueActive
+        {
+            get => _isDialogueActive;
+            set => this.RaiseAndSetIfChanged(ref _isDialogueActive, value);
         }
         
         public ReactiveCommand<Unit, Unit> OpenTerminalCommand { get; }
@@ -139,26 +173,26 @@ namespace GameAletheiaCross.ViewModels
         {
             try
             {
-                Console.WriteLine("  Inicializando juego...");
+                Console.WriteLine("🎮 Inicializando juego...");
                 var dbService = new MongoDbService();
                 var playerRepo = new PlayerRepository(dbService);
                 
                 Player = await playerRepo.GetByIdAsync(_playerId);
                 if (Player == null)
                 {
-                    Console.WriteLine(" Jugador no encontrado");
+                    Console.WriteLine("❌ Jugador no encontrado");
                     StatusMessage = "Error: Jugador no encontrado";
                     return;
                 }
                 
-                Console.WriteLine($" Jugador cargado: {Player.Name} (Nivel {Player.CurrentLevel})");
+                Console.WriteLine($"✅ Jugador cargado: {Player.Name} (Nivel {Player.CurrentLevel})");
                 
                 await LoadCurrentLevel();
                 StartGameLoop();
             }
             catch (Exception ex)
             {
-                Console.WriteLine($" Error iniciando juego: {ex.Message}");
+                Console.WriteLine($"❌ Error iniciando juego: {ex.Message}");
                 Console.WriteLine($"   Stack: {ex.StackTrace}");
                 StatusMessage = $"Error: {ex.Message}";
             }
@@ -168,35 +202,32 @@ namespace GameAletheiaCross.ViewModels
         {
             try
             {
-                Console.WriteLine($"  Cargando nivel para jugador en nivel {Player.CurrentLevel}...");
+                Console.WriteLine($"📂 Cargando nivel para jugador en nivel {Player.CurrentLevel}...");
                 
                 CurrentLevel = await _levelManager.GetCurrentLevelAsync(_playerId);
                 
                 if (CurrentLevel == null)
                 {
-                    Console.WriteLine(" Nivel no encontrado");
+                    Console.WriteLine("❌ Nivel no encontrado");
                     StatusMessage = "Error: Nivel no encontrado";
                     return;
                 }
                 
-                // Verificar si este nivel requiere completar puzzles
                 await CheckLevelPuzzleRequirements();
-                
-                // Reiniciar posición del jugador
                 ResetPlayerPosition();
                 
                 LevelInfo = $"Nivel {Player.CurrentLevel}: {CurrentLevel.Name}";
                 
                 if (_levelRequiresPuzzle && !_puzzlesCompleted)
                 {
-                    StatusMessage = $"{CurrentLevel.Description}\n ️ Debes resolver el puzzle de programación. Presiona T.";
+                    StatusMessage = $"{CurrentLevel.Description}\n⚠️ Debes resolver el puzzle de programación. Presiona T.";
                 }
                 else
                 {
                     StatusMessage = CurrentLevel.Description;
                 }
                 
-                Console.WriteLine($" {LevelInfo}");
+                Console.WriteLine($"✅ {LevelInfo}");
                 Console.WriteLine($"   Plataformas: {CurrentLevel.Platforms?.Count ?? 0}");
                 Console.WriteLine($"   NPCs: {CurrentLevel.NPCs?.Count ?? 0}");
                 Console.WriteLine($"   Requiere puzzles: {_levelRequiresPuzzle}");
@@ -207,7 +238,7 @@ namespace GameAletheiaCross.ViewModels
             }
             catch (Exception ex)
             {
-                Console.WriteLine($" Error cargando nivel: {ex.Message}");
+                Console.WriteLine($"❌ Error cargando nivel: {ex.Message}");
                 Console.WriteLine($"   Stack: {ex.StackTrace}");
                 StatusMessage = $"Error: {ex.Message}";
             }
@@ -219,7 +250,7 @@ namespace GameAletheiaCross.ViewModels
             _levelRequiresPuzzle = puzzle != null;
             _puzzlesCompleted = puzzle?.IsCompleted ?? true;
 
-            Console.WriteLine($"  Puzzle requerido: {_levelRequiresPuzzle}, Completado: {_puzzlesCompleted}");
+            Console.WriteLine($"🧩 Puzzle requerido: {_levelRequiresPuzzle}, Completado: {_puzzlesCompleted}");
         }
 
         private void ResetPlayerPosition()
@@ -229,7 +260,7 @@ namespace GameAletheiaCross.ViewModels
             Player.Velocity.X = 0;
             Player.Velocity.Y = 0;
             Player.IsJumping = false;
-            Console.WriteLine("  Posición del jugador reiniciada");
+            Console.WriteLine("🔄 Posición del jugador reiniciada");
         }
         
         private void StartGameLoop()
@@ -239,14 +270,14 @@ namespace GameAletheiaCross.ViewModels
             _isPaused = false;
             _isCompletingLevel = false;
             
-            Console.WriteLine("Game loop iniciado");
+            Console.WriteLine("▶️ Game loop iniciado");
             
             Task.Run(async () =>
             {
                 while (_isRunning && !_gameLoopCts.Token.IsCancellationRequested)
                 {
                     GameLoop();
-                    await Task.Delay(16); // ~60 FPS
+                    await Task.Delay(16);
                 }
             }, _gameLoopCts.Token);
         }
@@ -260,11 +291,9 @@ namespace GameAletheiaCross.ViewModels
             _physics.UpdatePosition(Player);
             _collision.CheckPlatformCollisions(Player, CurrentLevel.Platforms, CurrentLevel.FloorPlatform);
             
-            // Límites del mundo
             if (Player.Position.X < 0) Player.Position.X = 0;
             if (Player.Position.X > 1240) Player.Position.X = 1240;
             
-            // Caída fuera del mapa
             if (Player.Position.Y > 800)
             {
                 ResetPlayerPosition();
@@ -312,7 +341,7 @@ namespace GameAletheiaCross.ViewModels
             
             if (nearestNPC != null)
             {
-                InteractionHint = $"  Presiona ESPACIO para hablar con {nearestNPC.Name}";
+                InteractionHint = $"💬 Presiona E para hablar con {nearestNPC.Name}";
             }
             else
             {
@@ -331,22 +360,18 @@ namespace GameAletheiaCross.ViewModels
             
             if (nearestNPC != null)
             {
-                Console.WriteLine($"  Hablando con: {nearestNPC.Name}");
+                Console.WriteLine($"💬 Hablando con: {nearestNPC.Name}");
                 _npcManager.MarkAsInteracted(nearestNPC);
                 
-                PauseGameLoop();
-                Dispatcher.UIThread.Post(() =>
-                {
-                    _navigate(new DialogueViewModel(_navigate, nearestNPC, this));
-                });
+                ActiveDialogue = new DialogueViewModel(_navigate, nearestNPC, this);
+                IsDialogueActive = true;
             }
         }
 
         private async void CheckLevelExit()
         {
-            if (_isCompletingLevel) return; // Evitar múltiples llamadas
+            if (_isCompletingLevel) return;
             
-            // Verificar si el jugador está cerca del portal de salida un dolor :P
             float exitX = 700f;
             float exitY = 420f;
             
@@ -357,27 +382,25 @@ namespace GameAletheiaCross.ViewModels
 
             if (distance < EXIT_DETECTION_DISTANCE)
             {
-                Console.WriteLine($"Jugador cerca del portal (distancia: {distance:F1})");
+                Console.WriteLine($"🚪 Jugador cerca del portal (distancia: {distance:F1})");
                 
-                // Verificar si se pueden completar los puzzles antes de avanzar
                 if (_levelRequiresPuzzle)
                 {
-                    // Verificar de nuevo el estado de los puzzles
                     _puzzlesCompleted = await _puzzleService.AreLevelPuzzlesCompletedAsync(CurrentLevel.Id);
                     
-                    Console.WriteLine($"Verificación de puzzles: Requerido={_levelRequiresPuzzle}, Completado={_puzzlesCompleted}");
+                    Console.WriteLine($"🧩 Verificación de puzzles: Requerido={_levelRequiresPuzzle}, Completado={_puzzlesCompleted}");
                     
                     if (!_puzzlesCompleted)
                     {
-                        if (string.IsNullOrEmpty(StatusMessage) || !StatusMessage.Contains(" "))
+                        if (string.IsNullOrEmpty(StatusMessage) || !StatusMessage.Contains("⚠️"))
                         {
-                            StatusMessage = "Debes resolver el puzzle de programación antes de continuar. Presiona T para abrir la terminal.";
+                            StatusMessage = "⚠️ Debes resolver el puzzle de programación antes de continuar. Presiona T para abrir la terminal.";
                         }
                         return;
                     }
                 }
 
-                Console.WriteLine("  ¡Condiciones cumplidas! Completando nivel...");
+                Console.WriteLine("✅ ¡Condiciones cumplidas! Completando nivel...");
                 _isCompletingLevel = true;
                 await OnLevelComplete();
             }
@@ -387,36 +410,33 @@ namespace GameAletheiaCross.ViewModels
         {
             PauseGameLoop();
             
-            Console.WriteLine("  ¡Nivel completado!");
-            StatusMessage = "  ¡Nivel completado!";
+            Console.WriteLine("🎉 ¡Nivel completado!");
+            StatusMessage = "🎉 ¡Nivel completado!";
             
             try
             {
                 var dbService = new MongoDbService();
                 var playerRepo = new PlayerRepository(dbService);
                 
-                // Calcular puntos por completar nivel
                 int levelPoints = 100 * CurrentLevel.Difficulty;
                 Player.TotalScore += levelPoints;
                 await playerRepo.UpdateAsync(_playerId, Player);
                 
-                Console.WriteLine($" +{levelPoints} puntos. Score total: {Player.TotalScore}");
-                StatusMessage = $"  +{levelPoints} puntos. Score total: {Player.TotalScore}";
+                Console.WriteLine($"⭐ +{levelPoints} puntos. Score total: {Player.TotalScore}");
+                StatusMessage = $"🎉 +{levelPoints} puntos. Score total: {Player.TotalScore}";
                 
                 await Task.Delay(2000);
                 
-                // Avanzar al siguiente nivel
-                Console.WriteLine("Intentando avanzar al siguiente nivel...");
+                Console.WriteLine("➡️ Intentando avanzar al siguiente nivel...");
                 bool advanced = await _levelManager.AdvanceToNextLevelAsync(_playerId);
                 
                 if (advanced)
                 {
-                    Console.WriteLine(" Avanzado exitosamente");
-                    StatusMessage = "  Avanzando al siguiente nivel...";
+                    Console.WriteLine("✅ Avanzado exitosamente");
+                    StatusMessage = "⏭️ Avanzando al siguiente nivel...";
                     
-                    // Recargar el jugador actualizado desde la BD
                     Player = await playerRepo.GetByIdAsync(_playerId);
-                    Console.WriteLine($"  Jugador recargado: Nivel actual = {Player.CurrentLevel}");
+                    Console.WriteLine($"🔄 Jugador recargado: Nivel actual = {Player.CurrentLevel}");
                     
                     await LoadCurrentLevel();
                     
@@ -426,17 +446,17 @@ namespace GameAletheiaCross.ViewModels
                 }
                 else
                 {
-                    Console.WriteLine("  Juego completado");
+                    Console.WriteLine("🏆 Juego completado");
                     await Dispatcher.UIThread.InvokeAsync(() =>
                     {
-                        StatusMessage = "  ¡¡HAS COMPLETADO EL JUEGO!!";
+                        StatusMessage = "🏆 ¡¡HAS COMPLETADO EL JUEGO!!";
                         _navigate(new MainMenuViewModel(_navigate));
                     });
                 }
             }
             catch (Exception ex)
             {
-                Console.WriteLine($" Error completando nivel: {ex.Message}");
+                Console.WriteLine($"❌ Error completando nivel: {ex.Message}");
                 Console.WriteLine($"   Stack: {ex.StackTrace}");
                 StatusMessage = $"Error: {ex.Message}";
                 _isCompletingLevel = false;
@@ -449,7 +469,7 @@ namespace GameAletheiaCross.ViewModels
             if (_isPaused) return;
             
             PauseGameLoop();
-            Console.WriteLine("  Terminal abierta");
+            Console.WriteLine("🖥️ Terminal abierta");
             
             Dispatcher.UIThread.Post(() =>
             {
@@ -466,16 +486,16 @@ namespace GameAletheiaCross.ViewModels
                 var dbService = new MongoDbService();
                 var playerRepo = new PlayerRepository(dbService);
                 await playerRepo.UpdateAsync(_playerId, Player);
-                Console.WriteLine("  Progreso guardado");
+                Console.WriteLine("💾 Progreso guardado");
             }
             catch (Exception ex)
             {
-                Console.WriteLine($"  Error guardando: {ex.Message}");
+                Console.WriteLine($"❌ Error guardando: {ex.Message}");
             }
             
             await Dispatcher.UIThread.InvokeAsync(() =>
             {
-                Console.WriteLine("Juego pausado - Volviendo al menú");
+                Console.WriteLine("⏸️ Juego pausado - Volviendo al menú");
                 _navigate(new MainMenuViewModel(_navigate));
             });
         }
@@ -484,13 +504,13 @@ namespace GameAletheiaCross.ViewModels
         
         public void OnPauseRequested()
         {
-            Console.WriteLine("Pausa solicitada (ESC presionado)");
+            Console.WriteLine("⏸️ Pausa solicitada (ESC presionado)");
             OnPause();
         }
 
         public void OnToggleTerminal()
         {
-            Console.WriteLine("  Alternar terminal (T presionada)");
+            Console.WriteLine("🖥️ Alternar terminal (T presionada)");
             if (!_isPaused)
             {
                 OnOpenTerminal();
@@ -499,14 +519,14 @@ namespace GameAletheiaCross.ViewModels
 
         public async Task OnPuzzleCompletedAsync(string puzzleId)
         {
-            Console.WriteLine($"  Puzzle {puzzleId} completado - Actualizando estado...");
+            Console.WriteLine($"🧩 Puzzle {puzzleId} completado - Actualizando estado...");
             _puzzlesCompleted = await _puzzleService.AreLevelPuzzlesCompletedAsync(CurrentLevel.Id);
             
-            Console.WriteLine($" Estado actualizado: Puzzles completados = {_puzzlesCompleted}");
+            Console.WriteLine($"✅ Estado actualizado: Puzzles completados = {_puzzlesCompleted}");
             
             if (_puzzlesCompleted)
             {
-                StatusMessage = " ¡Puzzles completados! Dirígete al portal verde para continuar.";
+                StatusMessage = "✅ ¡Puzzles completados! Dirígete al portal verde para continuar.";
             }
         }
 
@@ -514,16 +534,34 @@ namespace GameAletheiaCross.ViewModels
         {
             Dispatcher.UIThread.Post(() =>
             {
-                Console.WriteLine("  Regresando de subvista");
+                Console.WriteLine("🔄 Regresando de subvista");
                 _isPaused = false;
                 ResumeGameLoop();
                 this.RaisePropertyChanged(nameof(Player));
             });
         }
         
+        public void CloseDialogue()
+        {
+            Console.WriteLine("🔄 Cerrando diálogo");
+            IsDialogueActive = false;
+            ActiveDialogue = null;
+            
+            // ⭐ IMPORTANTE: Resetear todas las teclas al cerrar el diálogo
+            KeyLeft = false;
+            KeyRight = false;
+            KeyUp = false;
+            KeySpace = false;
+            KeyE = false;
+            
+            // Resetear las banderas de presión
+            _spacePressed = false;
+            _ePressed = false;
+        }
+        
         public void ResumeGameLoop()
         {
-            Console.WriteLine("Reanudando game loop");
+            Console.WriteLine("▶️ Reanudando game loop");
             if (!_isRunning)
             {
                 StartGameLoop();
@@ -536,13 +574,13 @@ namespace GameAletheiaCross.ViewModels
         
         private void PauseGameLoop()
         {
-            Console.WriteLine("Pausando game loop");
+            Console.WriteLine("⏸️ Pausando game loop");
             _isPaused = true;
         }
 
         private void StopGameLoop()
         {
-            Console.WriteLine("Deteniendo game loop");
+            Console.WriteLine("⏹️ Deteniendo game loop");
             _isRunning = false;
             _gameLoopCts?.Cancel();
         }

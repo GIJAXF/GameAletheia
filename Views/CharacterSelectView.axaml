@@ -9,35 +9,75 @@
         <conv:BooleanNegationConverter x:Key="Negate"/>
     </UserControl.Resources>
 
-    <StackPanel Margin="40" Spacing="20" HorizontalAlignment="Center" VerticalAlignment="Center">
+    <Grid>
+        <!-- Imagen de fondo -->
+        <Image Source="avares://GameAletheiaCross/Assets/Images/DefaultFondo.png"
+               Stretch="UniformToFill"
+               HorizontalAlignment="Center"
+               VerticalAlignment="Center"/>
+        
+        <!-- Overlay oscuro para mejorar legibilidad -->
+        <Border Background="#000000AA" />
+        
+        <!-- Contenido -->
+        <Border Background="#0a0a15DD"
+                BorderBrush="#00D9FF"
+                BorderThickness="3"
+                CornerRadius="10"
+                Padding="40"
+                Width="500"
+                HorizontalAlignment="Center"
+                VerticalAlignment="Center">
+            
+            <StackPanel Spacing="20">
 
-        <TextBlock Text="CREACIÓN DE PERSONAJE"
-                   FontSize="26"
-                   FontWeight="Bold"
-                   HorizontalAlignment="Center"/>
+                <TextBlock Text="CREACIÓN DE PERSONAJE"
+                           FontSize="28"
+                           FontWeight="Bold"
+                           HorizontalAlignment="Center"
+                           Foreground="#00FF88"/>
 
-        <TextBox Width="300"
-                 Watermark="Ingresa tu nombre"
-                 Text="{Binding PlayerName, Mode=TwoWay}" />
+                <TextBox Width="300"
+                         Watermark="Ingresa tu nombre"
+                         Text="{Binding PlayerName, Mode=TwoWay}"
+                         FontSize="16"
+                         Padding="12,8" />
 
-        <StackPanel Orientation="Horizontal"
-                    HorizontalAlignment="Center"
-                    Spacing="15">
-            <RadioButton Content="Hombre"
-                         IsChecked="{Binding IsMale, Mode=TwoWay}" />
-            <RadioButton Content="Mujer"
-                         IsChecked="{Binding IsMale, Converter={StaticResource Negate}, Mode=TwoWay}" />
-        </StackPanel>
+                <StackPanel Orientation="Horizontal"
+                            HorizontalAlignment="Center"
+                            Spacing="20">
+                    <RadioButton Content="🚹 Hombre"
+                                 IsChecked="{Binding IsMale, Mode=TwoWay}"
+                                 FontSize="16" />
+                    <RadioButton Content="🚺 Mujer"
+                                 IsChecked="{Binding IsMale, Converter={StaticResource Negate}, Mode=TwoWay}"
+                                 FontSize="16" />
+                </StackPanel>
 
-        <StackPanel Orientation="Horizontal"
-                    Spacing="10"
-                    HorizontalAlignment="Center">
-            <Button Content="Continuar"
-                    Command="{Binding ContinueCommand}"
-                    Width="140" />
-            <Button Content="Volver"
-                    Command="{Binding BackCommand}"
-                    Width="140" />
-        </StackPanel>
-    </StackPanel>
+                <StackPanel Orientation="Horizontal"
+                            Spacing="15"
+                            HorizontalAlignment="Center"
+                            Margin="0,20,0,0">
+                    <Button Content="✓ Continuar"
+                            Command="{Binding ContinueCommand}"
+                            Width="160"
+                            Height="50"
+                            FontSize="16"
+                            FontWeight="Bold"
+                            Background="#00AA00"
+                            Foreground="White"
+                            CornerRadius="5" />
+                    <Button Content="← Volver"
+                            Command="{Binding BackCommand}"
+                            Width="160"
+                            Height="50"
+                            FontSize="16"
+                            FontWeight="Bold"
+                            Background="#AA0000"
+                            Foreground="White"
+                            CornerRadius="5" />
+                </StackPanel>
+            </StackPanel>
+        </Border>
+    </Grid>
 </UserControl>

@@ -37,7 +37,7 @@ namespace GameAletheiaCross.ViewModels
             BackCommand = ReactiveCommand.Create(OnBack);
             
             // Cargar fondo neutral por defecto
-            LoadBackground("NeutralFondo.png");
+            LoadBackground("DefaultFondo.png");
             
             // Cargar facciones
             Task.Run(LoadFactions);

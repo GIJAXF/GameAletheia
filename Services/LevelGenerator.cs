@@ -41,7 +41,7 @@ namespace GameAletheiaCross.Services
                     Description = "Tu primera inmersión en la red. Aprende los controles básicos.", 
                     Background = "forest", 
                     Difficulty = 1, 
-                    FloorPlatform = new Level.Floor { FloorType = "PiedraTutorial" },
+                    FloorPlatform = new Level.Floor { FloorType = "Pasto" },
                     Platforms = GeneratePlatformsForLevel(1), 
                     NPCIds = new List<string>() 
                 },

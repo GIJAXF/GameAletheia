@@ -8,11 +8,13 @@
         <!-- Imagen de fondo -->
         <Image Source="avares://GameAletheiaCross/Assets/Images/RankedFondo.png"
                Stretch="UniformToFill"
-               HorizontalAlignment="Center"
-               VerticalAlignment="Center"/>
+               HorizontalAlignment="Stretch"
+               VerticalAlignment="Stretch"/>
         
         <!-- Overlay oscuro -->
-        <Border Background="#000000CC" />
+        <Border Background="#000000CC" 
+               HorizontalAlignment="Stretch"
+               VerticalAlignment="Stretch"/>
         
         <!-- Contenido -->
         <Border Padding="40">

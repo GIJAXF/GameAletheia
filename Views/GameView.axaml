@@ -1,6 +1,7 @@
 <UserControl xmlns="https://github.com/avaloniaui"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:vm="using:GameAletheiaCross.ViewModels"
+             xmlns:views="using:GameAletheiaCross.Views"
              x:Class="GameAletheiaCross.Views.GameView"
              x:DataType="vm:GameViewModel">
     
@@ -9,7 +10,9 @@
     </Design.DataContext>
     
     <Grid>
-        <!-- Canvas principal del juego -->
+        <!-- ========================================
+             CAPA 1: CANVAS DEL JUEGO (SIEMPRE VISIBLE)
+             ======================================== -->
         <Canvas x:Name="GameCanvas" Width="1280" Height="720" Background="#1a1a2e" ClipToBounds="True">
             
             <!-- PLATAFORMAS -->
@@ -86,12 +89,15 @@
             </Ellipse>
         </Canvas>
         
-        <!-- UI OVERLAY -->
+        <!-- ========================================
+             CAPA 2: UI OVERLAY DEL JUEGO
+             ======================================== -->
         <Grid>
-            <!-- Info del nivel (arriba izquierda) -->
+            <!-- Info del nivel (arriba izquierda) - SE OCULTA CUANDO HAY DIÁLOGO -->
             <StackPanel HorizontalAlignment="Left" 
                        VerticalAlignment="Top" 
-                       Margin="20">
+                       Margin="20"
+                       IsVisible="{Binding !IsDialogueActive}">
                 <TextBlock Text="{Binding LevelInfo}" 
                          FontSize="18" 
                          FontWeight="Bold"
@@ -103,24 +109,29 @@
                 <TextBlock FontSize="14" 
                          Foreground="#e94560" 
                          Margin="0,5,0,0">
-                    <Run Text="HP: "/><Run Text="{Binding Player.Health}"/>
+                    <Run Text="❤️ HP: "/><Run Text="{Binding Player.Health}"/>
                 </TextBlock>
                 <TextBlock FontSize="14" 
                          Foreground="#ffd700" 
                          Margin="0,5,0,0">
-                    <Run Text="# Score: "/><Run Text="{Binding Player.TotalScore}"/>
+                    <Run Text="⭐ Score: "/><Run Text="{Binding Player.TotalScore}"/>
                 </TextBlock>
             </StackPanel>
             
-            <!-- Mensaje de estado (centro superior) -->
+            <!-- Mensaje de estado (centro superior) - SE OCULTA CUANDO HAY DIÁLOGO -->
             <Border Background="#000000DD" 
                    Padding="20,10" 
                    CornerRadius="5"
                    HorizontalAlignment="Center" 
                    VerticalAlignment="Top" 
                    Margin="0,20,0,0"
-                   IsVisible="{Binding StatusMessage, Converter={x:Static StringConverters.IsNotNullOrEmpty}}"
                    MaxWidth="600">
+                <Border.IsVisible>
+                    <MultiBinding Converter="{x:Static BoolConverters.And}">
+                        <Binding Path="StatusMessage" Converter="{x:Static StringConverters.IsNotNullOrEmpty}"/>
+                        <Binding Path="!IsDialogueActive"/>
+                    </MultiBinding>
+                </Border.IsVisible>
                 <TextBlock Text="{Binding StatusMessage}" 
                          FontSize="14" 
                          Foreground="#FFD700"
@@ -128,17 +139,22 @@
                          TextWrapping="Wrap" />
             </Border>
             
-            <!-- Hint de interacción (centro inferior) -->
-            <Border Background="#000000AA" 
+            <!-- Hint de interacción (centro inferior) - CON FONDO OPACO Y SE OCULTA CUANDO HAY DIÁLOGO -->
+            <Border Background="#000000" 
                    Padding="15,10" 
                    CornerRadius="5"
                    HorizontalAlignment="Center" 
                    VerticalAlignment="Bottom" 
-                   Margin="0,0,0,80"
-                   IsVisible="{Binding InteractionHint, Converter={x:Static StringConverters.IsNotNullOrEmpty}}">
+                   Margin="0,0,0,80">
+                <Border.IsVisible>
+                    <MultiBinding Converter="{x:Static BoolConverters.And}">
+                        <Binding Path="InteractionHint" Converter="{x:Static StringConverters.IsNotNullOrEmpty}"/>
+                        <Binding Path="!IsDialogueActive"/>
+                    </MultiBinding>
+                </Border.IsVisible>
                 <TextBlock Text="{Binding InteractionHint}" 
                          FontSize="16" 
-                         Foreground="#00ff88"
+                         Foreground="#00d9ff"
                          TextAlignment="Center" />
             </Border>
             
@@ -147,27 +163,27 @@
                        VerticalAlignment="Top" 
                        Margin="20" 
                        Spacing="10">
-                <Button Content="Terminal (T)" 
+                <Button Content="🖥️ Terminal (T)" 
                        Command="{Binding OpenTerminalCommand}"
                        Background="#0f3460"
                        Foreground="White"
                        Padding="15,8" />
-                <Button Content="Pausa (ESC)" 
+                <Button Content="⏸️ Pausa (ESC)" 
                        Command="{Binding PauseCommand}"
                        Background="#533483"
                        Foreground="White"
                        Padding="15,8" />
             </StackPanel>
             
-            <!-- Controles (abajo izquierda) -->
-            <Border Background="#000000AA" 
+            <!-- ⭐ CONTROLES (abajo izquierda) - CON FONDO NEGRO OPACO ⭐ -->
+            <Border Background="#000000" 
                    Padding="15" 
                    CornerRadius="5"
                    HorizontalAlignment="Left" 
                    VerticalAlignment="Bottom" 
                    Margin="20">
                 <StackPanel Spacing="5">
-                    <TextBlock Text="Controles:" 
+                    <TextBlock Text="⌨️ Controles:" 
                              FontSize="14" 
                              FontWeight="Bold"
                              Foreground="#00d9ff" />
@@ -177,7 +193,7 @@
                     <TextBlock Text="↑ : Saltar" 
                              FontSize="12" 
                              Foreground="White" />
-                    <TextBlock Text="ESPACIO : Interactuar" 
+                    <TextBlock Text="E : Interactuar" 
                              FontSize="12" 
                              Foreground="White" />
                     <TextBlock Text="T : Terminal" 
@@ -189,5 +205,17 @@
                 </StackPanel>
             </Border>
         </Grid>
+        
+        <!-- ========================================
+             CAPA 3: DIÁLOGO COMO OVERLAY (OPCIONAL)
+             ======================================== -->
+        <ContentControl Content="{Binding ActiveDialogue}"
+                       IsVisible="{Binding IsDialogueActive}">
+            <ContentControl.ContentTemplate>
+                <DataTemplate>
+                    <views:DialogueView />
+                </DataTemplate>
+            </ContentControl.ContentTemplate>
+        </ContentControl>
     </Grid>
 </UserControl>
