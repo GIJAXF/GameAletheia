@@ -76,7 +76,12 @@ namespace GameAletheiaCross.Views
                 _npcBitmaps.Add(LoadBitmap("npc2.png")); // Decano Villanueva
                 _npcBitmaps.Add(LoadBitmap("npc3.png")); // Noa Espectra
                 _npcBitmaps.Add(LoadBitmap("npc4.png")); // El Archivero
-                
+                _npcBitmaps.Add(LoadBitmap("Analistafractal.png"));
+                _npcBitmaps.Add(LoadBitmap("Bibliotecarioerrante.png"));
+                _npcBitmaps.Add(LoadBitmap("custodioalfa.png"));
+                _npcBitmaps.Add(LoadBitmap("Guardiandelamemoria.png"));
+                _npcBitmaps.Add(LoadBitmap("reporterofantasma.png"));
+
                 // Intentar cargar plataformas (7 variaciones)
                 _platformBitmaps.Add(LoadBitmap("platform1.png"));
                 _platformBitmaps.Add(LoadBitmap("platform2.png"));
@@ -527,37 +532,57 @@ private void RenderLevel()
             return _platformBitmaps[spriteIndex];
         }
 
-        private Bitmap? GetNPCSpriteByName(string npcName)
+private Bitmap? GetNPCSpriteByName(string npcName)
         {
-            if (_npcBitmaps.Count == 0) return null;
-            
             string cleanName = npcName.Split('—')[0].Trim().ToLower();
             
-            if (cleanName.Contains("custodio") || cleanName.Contains("reportero") || 
-                cleanName.Contains("bibliotecario") || cleanName.Contains("guardián"))
+            // Mapeo exacto de NPCs a archivos de sprites
+            // Basado en los archivos: custodioalfa.png, reporterofantasma.png, 
+            // Bibliotecarioerrante.png, Guardiandelamemoria.png, 
+            // Iarobot.png, Analistafractal.png
+            
+            if (cleanName.Contains("custodio") && cleanName.Contains("alfa"))
             {
-                return _npcBitmaps.Count > 0 ? _npcBitmaps[0] : null;
+                return LoadBitmap("custodioalfa.png");
+            }
+            else if (cleanName.Contains("reportero") && cleanName.Contains("fantasma"))
+            {
+                return LoadBitmap("reporterofantasma.png");
+            }
+            else if (cleanName.Contains("bibliotecario") && cleanName.Contains("errante"))
+            {
+                return LoadBitmap("Bibliotecarioerrante.png");
+            }
+            else if (cleanName.Contains("guardián") || cleanName.Contains("guardian"))
+            {
+                return LoadBitmap("Guardiandelamemoria.png");
+            }
+            else if ((cleanName.Contains("ia") || cleanName.Contains("centinela")) && cleanName.Contains("r-07"))
+            {
+                return LoadBitmap("Iarobot.png");
+            }
+            else if (cleanName.Contains("analista") && cleanName.Contains("fractal"))
+            {
+                return LoadBitmap("Analistafractal.png");
             }
             else if (cleanName.Contains("decano") || cleanName.Contains("villanueva"))
             {
+                // Decano usa el sprite genérico de líderes (npc2.png)
                 return _npcBitmaps.Count > 1 ? _npcBitmaps[1] : null;
             }
             else if (cleanName.Contains("noa") || cleanName.Contains("espectra"))
             {
+                // Noa usa el sprite genérico de resistencia (npc3.png)
                 return _npcBitmaps.Count > 2 ? _npcBitmaps[2] : null;
             }
-            else if (cleanName.Contains("archivero") || cleanName.Contains("julián") || 
-                     cleanName.Contains("casablancas"))
+            else if (cleanName.Contains("archivero") || cleanName.Contains("julián") || cleanName.Contains("casablancas"))
             {
+                // El Archivero usa el sprite genérico de gobierno (npc4.png)
                 return _npcBitmaps.Count > 3 ? _npcBitmaps[3] : null;
             }
-            else if (cleanName.Contains("ia") || cleanName.Contains("centinela") || 
-                     cleanName.Contains("analista") || cleanName.Contains("fractal"))
-            {
-                return _npcBitmaps.Count > 1 ? _npcBitmaps[1] : null;
-            }
             
-            return _npcBitmaps[0];
+            // Fallback: usar sprite genérico
+            return _npcBitmaps.Count > 0 ? _npcBitmaps[0] : null;
         }
 
         private Color GetLevelColor(int levelNumber)
