@@ -1842,7 +1842,11 @@ await advancedSeed.SeedAdvancedPuzzlesAsync();
 #### 1. Clonar el Repositorio
 ```bash
 git clone https://github.com/GIJAXF/GameAletheia.git
+<<<<<<< HEAD
 cd GameAletheia
+=======
+cd GameAletheiaCross
+>>>>>>> ebf2c97caced2367f5c371b0cdb8ac59c83894cb
 ```
 
 #### 2. Configurar MongoDB
