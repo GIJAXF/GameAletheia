@@ -1841,7 +1841,7 @@ await advancedSeed.SeedAdvancedPuzzlesAsync();
 
 #### 1. Clonar el Repositorio
 ```bash
-git clone https://github.com/tu-usuario/GameAletheiaCross.git
+git clone https://github.com/GIJAXF/GameAletheia.git
 cd GameAletheiaCross
 ```
 
